@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class MouseController : MonoBehaviour
 {
-    [SerializeField] private float scrollSpeed = 60f;
+    [SerializeField] private float scrollSpeed = 450f;
+    [SerializeField] private float zoomSpeed = 1500f;
+    [SerializeField] private float maxZoom = 1f;
+    [SerializeField] private float minZoom = 8f;
     [SerializeField] private GameObject indicator;
     [SerializeField] private GameObject indicatorPrefab;
     // Keep track of spawned indicators so we can remove them when not needed
@@ -40,6 +44,8 @@ public class MouseController : MonoBehaviour
         mousePosition.z = 0;
         // Handle mouse scrolling
         Scroll();
+        // Handle zooming
+        Zoom();
         // Handle selection
         Select();
         // Show the indicator
@@ -62,6 +68,17 @@ public class MouseController : MonoBehaviour
     }
 
     /// <summary>
+    /// Deals with zooming in and out based on mouse and keyboard input
+    /// </summary>
+    private void Zoom()
+    {
+        // Applies zoom to the camera based on zoom speed
+        Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime;
+        // Ensure we don't zoom too far in or out
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, maxZoom, minZoom);
+    }
+
+    /// <summary>
     /// Deals with all selection, including single selection and dragging.
     /// </summary>
     private void Select()
@@ -79,15 +96,13 @@ public class MouseController : MonoBehaviour
             ClearIndicators();
             // Get an X and y position bound by the world controller
             dragEnd = WorldController.GetTilePosition(mousePosition.x, mousePosition.y);
-            // For now debug
-            if (dragStart.Equals(dragEnd))
+            // For now set the type for the tile
+            for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
             {
-                Debug.Log($"Clicked on tile {dragStart}");
-
-            }
-            else
-            {
-                Debug.Log($"Dragged from tiles {dragStart} to {dragEnd}");
+                for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
+                {
+                    WorldController.Instance.SetTileType(x, y, TileType.Sand);
+                }
             }
             // Display the default indicator again
             indicator.SetActive(true);

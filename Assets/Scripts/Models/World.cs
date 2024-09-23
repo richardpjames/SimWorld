@@ -8,10 +8,12 @@ public class World
     private Tile[,] tiles;
     public int Width { get; private set; }
     public int Height { get; private set; }
+    public string Name { get; private set; }
 
-    public World(int width, int height)
+    public World(string name, int width, int height)
     {
-        // Store the width and height of the world
+        // Store the name, width and height of the world
+        this.Name = name;
         this.Width = width;
         this.Height = height;
         // Initialise the array of tiles
@@ -22,7 +24,7 @@ public class World
             for (int y = 0; y < height; y++)
             {
                 // Default each tile to be grass in the first instance
-                tiles[x, y] = new Tile(Tile.TileType.Grass);
+                tiles[x, y] = new Tile(x, y, TileType.Grass);
             }
         }
     }
