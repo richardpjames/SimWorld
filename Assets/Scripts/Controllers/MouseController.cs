@@ -63,7 +63,12 @@ public class MouseController : MonoBehaviour
         // For panning on right or middle mouse button
         if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
         {
-            Camera.main.transform.Translate((lastMousePosition - mousePosition) * scrollSpeed * Time.deltaTime);
+            // Get the main camera
+            Camera cam = Camera.main;
+            // Move it towards the mouse position based on the speed and delta time
+            cam.transform.Translate((lastMousePosition - mousePosition) * scrollSpeed * Time.deltaTime);
+            // Clamp the position so that the level is always visible
+            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.Width), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.Height), cam.transform.position.z);
         }
     }
 
