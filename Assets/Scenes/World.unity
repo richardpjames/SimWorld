@@ -298,17 +298,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67c2c9c516785e34684905ec4b89eae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 50
-  width: 50
+  height: 200
+  width: 200
   grassSprite: {fileID: -6687734564834169917, guid: 45c062f9e73950044ac0dbc606beaa47, type: 3}
   sandSprite: {fileID: 5760779080352699945, guid: 6a54af8814dbec54b9e8625d9a3c68e5, type: 3}
   waterSprite: {fileID: 1904263071609676208, guid: 5b54a454ce7beed46bdad67c09c26e99, type: 3}
   waves:
   - seed: 1
-    frequency: 2
-    amplitude: 2
-  scale: 1
-  offset: {x: 1, y: 1}
+    frequency: 50
+    amplitude: 50
+  scale: 0.00075
+  offset: {x: 0, y: 0}
 --- !u!4 &149690343
 Transform:
   m_ObjectHideFlags: 0
@@ -1665,7 +1665,7 @@ MonoBehaviour:
   scrollSpeed: 450
   zoomSpeed: 1500
   maxZoom: 3
-  minZoom: 10
+  minZoom: 20
   indicator: {fileID: 11996135}
   indicatorPrefab: {fileID: 3888685756683532860, guid: fba86ead6963f51499d1e094e536d153, type: 3}
 --- !u!4 &1981823092
