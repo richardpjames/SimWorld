@@ -71,7 +71,7 @@ public class MouseController : MonoBehaviour
             // Get the main camera
             Camera cam = Camera.main;
             // Move it towards the mouse position based on the speed and delta time
-            cam.transform.Translate((lastMousePosition - mousePosition) * scrollSpeed * Time.deltaTime);
+            cam.transform.Translate((lastMousePosition - mousePosition) * (scrollSpeed / cam.orthographicSize) * Time.deltaTime);
             // Clamp the position so that the level is always visible
             cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.Width), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.Height), cam.transform.position.z);
         }
@@ -83,7 +83,7 @@ public class MouseController : MonoBehaviour
     private void Zoom()
     {
         // Applies zoom to the camera based on zoom speed
-        Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime;
+        Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
         // Ensure we don't zoom too far in or out
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, maxZoom, minZoom);
     }

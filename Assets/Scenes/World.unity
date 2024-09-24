@@ -1662,10 +1662,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03455168a7bc8b4297ba09d6b7d86f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 450
-  zoomSpeed: 1500
-  maxZoom: 3
-  minZoom: 20
+  scrollSpeed: 6000
+  zoomSpeed: 2
+  maxZoom: 2
+  minZoom: 32
   indicator: {fileID: 11996135}
   indicatorPrefab: {fileID: 3888685756683532860, guid: fba86ead6963f51499d1e094e536d153, type: 3}
 --- !u!4 &1981823092
