@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Codice.Client.Common;
 
 [Serializable]
 public class Save

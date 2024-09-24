@@ -29,6 +29,10 @@ public class Square
     public void SetType(TileType type)
     {
         Type = type;
+        if(type == TileType.Water)
+        {
+            RemoveStructure();
+        }
         // Trigger an event to say that the tile is updated
         OnTileUpdated?.Invoke(Position);
     }

@@ -66,6 +66,15 @@ public class WorldController : MonoBehaviour
     /// </summary>
     public void Initialize(string name, Vector2Int size)
     {
+        // Clear any tiles if there is a tilemap present
+        if(terrainTilemap != null)
+        {
+            terrainTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        }
+        if (structureTilemap != null)
+        {
+            structureTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        }
         // Initialise grid and tilemap
         WorldGrid = new GameObject("World Grid").AddComponent<Grid>();
         WorldGrid.cellSize = new Vector3(1f, 1f, 1f);
