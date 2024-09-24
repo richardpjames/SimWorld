@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseController : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class MouseController : MonoBehaviour
     // For keeping track of dragging and selecting
     private Vector3 dragStart = Vector3.zero;
     private Vector3 dragEnd = Vector3.zero;
+    // For tracking what we are currently building
+    private TileType currentTileType = TileType.Grass;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -42,14 +45,18 @@ public class MouseController : MonoBehaviour
         //Capture the current mouse position
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
-        // Handle mouse scrolling
-        Scroll();
-        // Handle zooming
-        Zoom();
-        // Handle selection
-        Select();
-        // Show the indicator
-        SetIndicator();
+        // Check for UI Interaction
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            // Handle mouse scrolling
+            Scroll();
+            // Handle zooming
+            Zoom();
+            // Handle selection
+            Select();
+            // Show the indicator
+            SetIndicator();
+        }
         //Capture the final mouse position
         lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         lastMousePosition.z = 0;
@@ -106,7 +113,7 @@ public class MouseController : MonoBehaviour
             {
                 for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
                 {
-                    WorldController.Instance.SetTileType(x, y, TileType.Sand);
+                    WorldController.Instance.SetTileType(x, y, currentTileType);
                 }
             }
             // Display the default indicator again
@@ -133,6 +140,23 @@ public class MouseController : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Set the type of tile being drawn on the map when dragging.
+    /// </summary>
+    /// <param name="tileType">The tile type to be placed.</param>
+    public void SetTileTypeGrass()
+    {
+        currentTileType = TileType.Grass;
+    }
+    public void SetTileTypeSand()
+    {
+        currentTileType = TileType.Sand;
+    }
+    public void SetTileTypeWater()
+    {
+        currentTileType = TileType.Water;
     }
 
     /// <summary>

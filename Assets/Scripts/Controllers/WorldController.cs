@@ -10,6 +10,9 @@ public class WorldController : MonoBehaviour
     [SerializeField] private Sprite grassSprite;
     [SerializeField] private Sprite sandSprite;
     [SerializeField] private Sprite waterSprite;
+    [SerializeField] private Wave[] waves;
+    [SerializeField] private float scale;
+    [SerializeField] private Vector2 offset;
     [SerializeField] public string WorldName { get; private set; } = "Default";
     private GameObject[,] worldObjects;
     private World world;
@@ -81,6 +84,8 @@ public class WorldController : MonoBehaviour
                 World.GetTile(x, y).OnTileUpdated += TileUpdated;
             }
         }
+        // Generate random biomes
+        World.GenerateBiomes(waves, scale);
     }
 
     /// <summary>

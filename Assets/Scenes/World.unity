@@ -303,6 +303,12 @@ MonoBehaviour:
   grassSprite: {fileID: -6687734564834169917, guid: 45c062f9e73950044ac0dbc606beaa47, type: 3}
   sandSprite: {fileID: 5760779080352699945, guid: 6a54af8814dbec54b9e8625d9a3c68e5, type: 3}
   waterSprite: {fileID: 1904263071609676208, guid: 5b54a454ce7beed46bdad67c09c26e99, type: 3}
+  waves:
+  - seed: 1
+    frequency: 2
+    amplitude: 2
+  scale: 1
+  offset: {x: 1, y: 1}
 --- !u!4 &149690343
 Transform:
   m_ObjectHideFlags: 0
@@ -1119,7 +1125,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 964599840}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1981823091}
+        m_TargetAssemblyTypeName: MouseController, SimWorld
+        m_MethodName: SetTileTypeSand
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &964599840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1374,7 +1392,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1241734565}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1981823091}
+        m_TargetAssemblyTypeName: MouseController, SimWorld
+        m_MethodName: SetTileTypeGrass
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1241734565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1495,7 +1525,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1315545751}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1981823091}
+        m_TargetAssemblyTypeName: MouseController, SimWorld
+        m_MethodName: SetTileTypeWater
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1315545751
 MonoBehaviour:
   m_ObjectHideFlags: 0
