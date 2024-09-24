@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Codice.Client.Common;
 
 [Serializable]
 public class Save
@@ -36,6 +37,15 @@ public class Save
                 newTile.Y = y;
                 // Set the tile type from the controller
                 newTile.Type = WorldController.Instance.World.GetTile(x, y).Type;
+                // Add any structures
+                Structure structure = WorldController.Instance.World.GetTile(x, y).InstalledStructure;
+                if (structure != null)
+                {
+                    newTile.StructureType = structure.StructureType;
+                    newTile.MovementCost = structure.MovementCost;
+                    newTile.StructureWidth = structure.Width;
+                    newTile.StructureHeight = structure.Height;
+                }
                 // Add this tile to the list
                 Tiles.Add(newTile);
             }
@@ -45,8 +55,14 @@ public class Save
     [Serializable]
     public struct SaveTile
     {
+        // The tile itself
         public TileType Type;
         public int X;
         public int Y;
+        // Any structure on the tile
+        public string StructureType;
+        public float MovementCost;
+        public int StructureWidth;
+        public int StructureHeight;
     }
 }

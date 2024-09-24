@@ -11,8 +11,12 @@ public class Tile
     // Holds the type for this particular tile
     public TileType Type { get; private set; }
 
+    // Reference to the position in the world
     public int X { get; private set; }
     public int Y { get ; private set; }
+
+    // Keep track of any objects on the tile
+    public Structure InstalledStructure { get; private set; }
 
     // Constructor takes a base terrain for the tile
     public Tile(int x, int y, TileType type)
@@ -32,4 +36,30 @@ public class Tile
         // Trigger an event to say that the tile is updated
         OnTileUpdated?.Invoke(X,Y);
     }
+
+    /// <summary>
+    /// Places a structure into the tile
+    /// </summary>
+    /// <param name="type">The structure to be installed /param>
+    public void InstallStructure(Structure structure)
+    {
+        // Don't allow for building on water
+        if (Type == TileType.Water)
+        {
+            return;
+        }
+        InstalledStructure = structure;
+        // Trigger an event to say that the tile is updated
+        OnTileUpdated?.Invoke(X, Y);
+    }
+    /// <summary>
+    /// Removes any structures installed on this tile
+    /// </summary>
+    public void RemoveStructure()
+    {
+        InstalledStructure = null;
+        // Trigger an event to say that the tile is updated
+        OnTileUpdated?.Invoke(X, Y);
+    }
+
 }

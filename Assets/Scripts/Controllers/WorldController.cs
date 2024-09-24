@@ -9,18 +9,19 @@ public class WorldController : MonoBehaviour
     [SerializeField] private Sprite grassSprite;
     [SerializeField] private Sprite sandSprite;
     [SerializeField] private Sprite waterSprite;
+    [SerializeField] private Sprite wallSprite;
     [SerializeField] private Wave[] waves;
     [SerializeField] private float scale;
     [SerializeField] private Vector2 offset;
     [SerializeField] public string WorldName { get; private set; } = "Default";
     private GameObject[,] worldObjects;
-    private World world;
+    private GameObject[,] worldStructures;
+    public World World { get; private set; }
 
     // Allow for a static instance and accessible variables
     public static WorldController Instance { get; private set; }
     public int Height { get => height; private set => height = value; }
     public int Width { get => width; private set => width = value; }
-    public World World { get => world; private set => world = value; }
 
     private void Awake()
     {
@@ -56,10 +57,21 @@ public class WorldController : MonoBehaviour
                 Destroy(obj);
             }
         }
+        // Destroy objects if they exist
+        if (worldStructures != null)
+        {
+            // Loop through each and destroy
+            foreach (GameObject obj in worldStructures)
+            {
+                Destroy(obj);
+            }
+        }
         // Initialise a new world
         World = new World(name, width, height);
         // Initialise the world objects array
         worldObjects = new GameObject[width, height];
+        // Initialise the structyres objects array
+        worldStructures = new GameObject[width, height];
         // Generate a game object for each tile
         for (int x = 0; x < World.Width; x++)
         {
@@ -97,6 +109,24 @@ public class WorldController : MonoBehaviour
         GameObject go = worldObjects[x, y];
         SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
         sr.sprite = LookupSprite(World.GetTile(x, y).Type);
+        GameObject structure = worldStructures[x, y];
+        // If a structure is removed
+        if (structure != null && World.GetTile(x, y).InstalledStructure == null)
+        {
+            Destroy(structure);
+            worldStructures[x, y] = null;
+        }
+        // If a structure is added
+        if (structure == null && World.GetTile(x, y).InstalledStructure != null)
+        {
+            GameObject sgo = worldStructures[x, y] = new GameObject();
+            sgo.name = $"{World.GetTile(x, y).InstalledStructure.StructureType} at ({x},{y})";
+            sgo.transform.position = new Vector3(x, y, 0);
+            sgo.transform.SetParent(transform, false);
+            SpriteRenderer ssr = worldStructures[x, y].AddComponent<SpriteRenderer>();
+            ssr.sortingLayerName = "Structures";
+            ssr.sprite = wallSprite;
+        }
     }
 
     private Sprite LookupSprite(TileType type)
@@ -130,6 +160,6 @@ public class WorldController : MonoBehaviour
     public void SetTileType(int x, int y, TileType type)
     {
         // Set the tile to the new type
-        World.GetTile(x,y).SetType(type);
+        World.GetTile(x, y).SetType(type);
     }
 }

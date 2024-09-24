@@ -42,6 +42,11 @@ public class GameController : MonoBehaviour
                 foreach (SaveTile tile in save.Tiles)
                 {
                     WorldController.Instance.SetTileType(tile.X, tile.Y, tile.Type);
+                    // Recreate the saved structure
+                    if(tile.StructureType != "")
+                    {
+                        WorldController.Instance.World.GetTile(tile.X, tile.Y).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
+                    }
                 }
             }
         }

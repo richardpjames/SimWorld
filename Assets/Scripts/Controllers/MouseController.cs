@@ -20,6 +20,8 @@ public class MouseController : MonoBehaviour
     private Vector3 dragEnd = Vector3.zero;
     // For tracking what we are currently building
     private TileType currentTileType = TileType.Grass;
+    // For tracking the type of building we are doing
+    private BuildMode currentBuildMode = BuildMode.Tile;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -111,7 +113,19 @@ public class MouseController : MonoBehaviour
             {
                 for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
                 {
-                    WorldController.Instance.SetTileType(x, y, currentTileType);
+                    if (currentBuildMode == BuildMode.Tile)
+                    {
+                        WorldController.Instance.SetTileType(x, y, currentTileType);
+                    }
+                    else if(currentBuildMode == BuildMode.Structure)
+                    {
+                        Structure wall = new Structure("Wall", 0, 1, 1);
+                        WorldController.Instance.World.GetTile(x,y).InstallStructure(wall);
+                    }
+                    else if(currentBuildMode == BuildMode.Demolish)
+                    {
+                        WorldController.Instance.World.GetTile(x, y).RemoveStructure();
+                    }
                 }
             }
             // Display the default indicator again
@@ -140,22 +154,30 @@ public class MouseController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Set the type of tile being drawn on the map when dragging.
-    /// </summary>
-    /// <param name="tileType">The tile type to be placed.</param>
     public void SetTileTypeGrass()
     {
+        currentBuildMode = BuildMode.Tile;
         currentTileType = TileType.Grass;
     }
     public void SetTileTypeSand()
     {
+        currentBuildMode = BuildMode.Tile;
         currentTileType = TileType.Sand;
     }
     public void SetTileTypeWater()
     {
+        currentBuildMode = BuildMode.Tile;
         currentTileType = TileType.Water;
     }
+    public void SetTileTypeWall()
+    {
+        currentBuildMode = BuildMode.Structure;
+    }
+    public void SetTileTypeDemolish()
+    {
+        currentBuildMode = BuildMode.Demolish;
+    }
+
 
     /// <summary>
     /// Clear any indicators which are shown during the process of dragging
