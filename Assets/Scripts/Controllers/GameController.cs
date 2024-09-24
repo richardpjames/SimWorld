@@ -37,15 +37,15 @@ public class GameController : MonoBehaviour
             if (save != null)
             {
                 // Set up a new world
-                WorldController.Instance.Initialize(save.WorldName, save.WorldWidth, save.WorldHeight);
+                WorldController.Instance.Initialize(save.WorldName, new Vector2Int(save.WorldWidth, save.WorldHeight));
                 // Populate all of the tiles correctly
                 foreach (SaveTile tile in save.Tiles)
                 {
-                    WorldController.Instance.SetTileType(tile.X, tile.Y, tile.Type);
+                    WorldController.Instance.SetTileType(new Vector2Int(tile.X, tile.Y), tile.Type);
                     // Recreate the saved structure
                     if(tile.StructureType != "")
                     {
-                        WorldController.Instance.World.GetTile(tile.X, tile.Y).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
+                        WorldController.Instance.World.GetTile(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
                     }
                 }
             }

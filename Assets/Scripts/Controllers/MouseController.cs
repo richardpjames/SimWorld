@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 
 public class MouseController : MonoBehaviour
 {
+    [Header("Mouse Movement")]
     [SerializeField] private float scrollSpeed = 450f;
     [SerializeField] private float zoomSpeed = 1500f;
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private float minZoom = 8f;
+    [Header("Cursor Display")]
     [SerializeField] private GameObject indicator;
     [SerializeField] private GameObject indicatorPrefab;
     // Keep track of spawned indicators so we can remove them when not needed
@@ -75,7 +77,7 @@ public class MouseController : MonoBehaviour
             // Move it towards the mouse position based on the speed and delta time
             cam.transform.Translate((lastMousePosition - mousePosition) * (scrollSpeed / cam.orthographicSize) * Time.deltaTime);
             // Clamp the position so that the level is always visible
-            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.Width), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.Height), cam.transform.position.z);
+            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.World.Size.x), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.World.Size.y), cam.transform.position.z);
         }
     }
 
@@ -115,16 +117,16 @@ public class MouseController : MonoBehaviour
                 {
                     if (currentBuildMode == BuildMode.Tile)
                     {
-                        WorldController.Instance.SetTileType(x, y, currentTileType);
+                        WorldController.Instance.SetTileType(new Vector2Int(x,y), currentTileType);
                     }
                     else if(currentBuildMode == BuildMode.Structure)
                     {
                         Structure wall = new Structure("Wall", 0, 1, 1);
-                        WorldController.Instance.World.GetTile(x,y).InstallStructure(wall);
+                        WorldController.Instance.World.GetTile(new Vector2Int(x, y)).InstallStructure(wall);
                     }
                     else if(currentBuildMode == BuildMode.Demolish)
                     {
-                        WorldController.Instance.World.GetTile(x, y).RemoveStructure();
+                        WorldController.Instance.World.GetTile(new Vector2Int(x, y)).RemoveStructure();
                     }
                 }
             }

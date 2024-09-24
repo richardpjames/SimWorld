@@ -21,8 +21,8 @@ public class Save
     {
         // Set the basics about the world
         WorldName = world.Name;
-        WorldWidth = world.Width;
-        WorldHeight = world.Height;
+        WorldWidth = world.Size.x;
+        WorldHeight = world.Size.y;
         // Create a list of all tiles (which will need to hold their own coordinates)
         Tiles = new List<SaveTile>();
         // Loop through the world tiles and save their details
@@ -36,9 +36,9 @@ public class Save
                 newTile.X = x;
                 newTile.Y = y;
                 // Set the tile type from the controller
-                newTile.Type = WorldController.Instance.World.GetTile(x, y).Type;
+                newTile.Type = WorldController.Instance.World.GetTile(new Vector2Int(x,y)).Type;
                 // Add any structures
-                Structure structure = WorldController.Instance.World.GetTile(x, y).InstalledStructure;
+                Structure structure = WorldController.Instance.World.GetTile(new Vector2Int(x, y)).InstalledStructure;
                 if (structure != null)
                 {
                     newTile.StructureType = structure.StructureType;

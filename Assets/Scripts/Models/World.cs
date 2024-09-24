@@ -6,26 +6,24 @@ using UnityEngine.UIElements;
 public class World
 {
     // This holds our world
-    private Tile[,] tiles;
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    private Dictionary<Vector2Int, Tile> tiles;
+    public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
 
-    public World(string name, int width, int height)
+    public World(string name, Vector2Int size)
     {
         // Store the name, width and height of the world
         this.Name = name;
-        this.Width = width;
-        this.Height = height;
+        this.Size = size;
         // Initialise the array of tiles
-        tiles = new Tile[Width, Height];
+        tiles = new Dictionary<Vector2Int, Tile>();
         // Creates a world map with the height and width specified
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < Size.x; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < Size.y; y++)
             {
                 // Default each tile to be grass in the first instance
-                tiles[x, y] = new Tile(x, y, TileType.Grass);
+                tiles.Add(new Vector2Int(x, y), new Tile(new Vector2Int(x, y), TileType.Grass));
             }
         }
     }
@@ -38,27 +36,27 @@ public class World
         // Generate a random offset
         Vector2 offset = new Vector2(Random.Range(0, 500), Random.Range(0, 500));
         // Generate a heightmap for the biomes
-        float[,] heightMap = NoiseGenerator.Generate(Width, Height, scale, waves, offset);
+        float[,] heightMap = NoiseGenerator.Generate(Size, scale, waves, offset);
         // Update the tiles affected looping over the width
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x < Size.x; x++)
         {
             // Then loop over the height
-            for (int y = 0; y < Height; y++)
+            for (int y = 0; y < Size.y; y++)
             {
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    GetTile(x, y).SetType(TileType.Water);
+                    GetTile(new Vector2Int(x,y)).SetType(TileType.Water);
                 }
                 // Then sand as the height increases
                 else if (heightMap[x, y] < 0.3)
                 {
-                    GetTile(x, y).SetType(TileType.Sand);
+                    GetTile(new Vector2Int(x, y)).SetType(TileType.Sand);
                 }
                 // All remaining tiles are grass
                 else
                 {
-                    GetTile(x, y).SetType(TileType.Grass);
+                    GetTile(new Vector2Int(x, y)).SetType(TileType.Grass);
                 }
             }
         }
@@ -70,9 +68,9 @@ public class World
     /// <param name="x">The x world position.</param>
     /// <param name="y">The y world position.</param>
     /// <returns>The Tile at the specified world position.</returns>
-    public Tile GetTile(int x, int y)
+    public Tile GetTile(Vector2Int position)
     {
-        return tiles[x, y];
+        return tiles[position];
     }
 
 }

@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class NoiseGenerator : MonoBehaviour
 {
-    public static float[,] Generate(int width, int height, float scale, Wave[] waves, Vector2 offset)
+    public static float[,] Generate(Vector2Int size, float scale, Wave[] waves, Vector2 offset)
     {
         // create the noise map
-        float[,] noiseMap = new float[width, height];
+        float[,] noiseMap = new float[size.x, size.y];
         // loop through each element in the noise map
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < size.x; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < size.y; y++)
             {
                 // calculate the sample positions
                 float samplePosX = (float)x * scale + offset.x;

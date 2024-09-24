@@ -1,28 +1,24 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile
 {
-    public Action<int,int> OnTileUpdated;
-    // Represents the possible terrain types for a tile
+    // To let others know when a tile is updated
+    public Action<Vector2Int> OnTileUpdated;
 
     // Holds the type for this particular tile
     public TileType Type { get; private set; }
 
     // Reference to the position in the world
-    public int X { get; private set; }
-    public int Y { get ; private set; }
+    public Vector2Int Position { get; private set; }
 
-    // Keep track of any objects on the tile
+    // Keep track of any installed objects on the tile
     public Structure InstalledStructure { get; private set; }
 
     // Constructor takes a base terrain for the tile
-    public Tile(int x, int y, TileType type)
+    public Tile(Vector2Int position, TileType type)
     {
-        this.X = x;
-        this.Y = y;
+        this.Position = position;
         this.Type = type;
     }
 
@@ -34,7 +30,7 @@ public class Tile
     {
         Type = type;
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(X,Y);
+        OnTileUpdated?.Invoke(Position);
     }
 
     /// <summary>
@@ -50,7 +46,7 @@ public class Tile
         }
         InstalledStructure = structure;
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(X, Y);
+        OnTileUpdated?.Invoke(Position);
     }
     /// <summary>
     /// Removes any structures installed on this tile
@@ -59,7 +55,7 @@ public class Tile
     {
         InstalledStructure = null;
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(X, Y);
+        OnTileUpdated?.Invoke(Position);
     }
 
 }
