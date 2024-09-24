@@ -75,6 +75,7 @@ public class WorldController : MonoBehaviour
         TilemapRenderer terrainRenderer = terrainTilemap.AddComponent<TilemapRenderer>();
         terrainRenderer.sortingLayerName = "Terrain";
         terrainTilemap.transform.SetParent(WorldGrid.transform, false);
+        // Add another tilemap for structures
         structureTilemap = new GameObject("Structures");
         structureTilemap.AddComponent<Tilemap>();
         TilemapRenderer structureRenderer = structureTilemap.AddComponent<TilemapRenderer>();
@@ -83,15 +84,15 @@ public class WorldController : MonoBehaviour
         // Initialise a new world
         World = new World(name, size);
 
-        // Set the correct tile in the tilemap for each tile
+        // Set the correct tile in the tilemap for each square
         for (int x = 0; x < World.Size.x; x++)
         {
             for (int y = 0; y < World.Size.y; y++)
             {
-                // Set the tile type to grass initially
+                // Set the square type to grass initially
                 terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), worldTiles[TileType.Grass]);
                 // Subscribe to any tile changes
-                World.GetTile(new Vector2Int(x, y)).OnTileUpdated += TileUpdated;
+                World.GetTile(new Vector2Int(x, y)).OnTileUpdated += SquareUpdated;
             }
         }
         // Generate random biomes
@@ -104,7 +105,7 @@ public class WorldController : MonoBehaviour
     /// This should be called whenever a tile is updated at the specified position
     /// </summary>
     /// <param name="position">The world position as a Vector2</param>
-    private void TileUpdated(Vector2Int position)
+    private void SquareUpdated(Vector2Int position)
     {
         // Update the terrain for the tile
         terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), worldTiles[World.GetTile(position).Type]);
