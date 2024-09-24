@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Tile
+public class Square
 {
     // To let others know when a tile is updated
     public Action<Vector2Int> OnTileUpdated;
@@ -16,7 +16,7 @@ public class Tile
     public Structure InstalledStructure { get; private set; }
 
     // Constructor takes a base terrain for the tile
-    public Tile(Vector2Int position, TileType type)
+    public Square(Vector2Int position, TileType type)
     {
         this.Position = position;
         this.Type = type;

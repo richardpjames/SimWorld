@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class World
 {
     // This holds our world
-    private Dictionary<Vector2Int, Tile> tiles;
+    private Dictionary<Vector2Int, Square> tiles;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
 
@@ -16,14 +16,14 @@ public class World
         this.Name = name;
         this.Size = size;
         // Initialise the array of tiles
-        tiles = new Dictionary<Vector2Int, Tile>();
+        tiles = new Dictionary<Vector2Int, Square>();
         // Creates a world map with the height and width specified
         for (int x = 0; x < Size.x; x++)
         {
             for (int y = 0; y < Size.y; y++)
             {
                 // Default each tile to be grass in the first instance
-                tiles.Add(new Vector2Int(x, y), new Tile(new Vector2Int(x, y), TileType.Grass));
+                tiles.Add(new Vector2Int(x, y), new Square(new Vector2Int(x, y), TileType.Grass));
             }
         }
     }
@@ -68,7 +68,7 @@ public class World
     /// <param name="x">The x world position.</param>
     /// <param name="y">The y world position.</param>
     /// <returns>The Tile at the specified world position.</returns>
-    public Tile GetTile(Vector2Int position)
+    public Square GetTile(Vector2Int position)
     {
         return tiles[position];
     }

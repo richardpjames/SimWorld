@@ -19,6 +19,8 @@ public class WorldController : MonoBehaviour
     private Dictionary<Vector2Int, GameObject> worldStructures;
     public World World { get; private set; }
 
+    public Grid WorldGrid { get; private set; }
+
     // Allow for a static instance and accessible variables
     public static WorldController Instance { get; private set; }
 
