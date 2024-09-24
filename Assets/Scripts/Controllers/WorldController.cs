@@ -96,6 +96,8 @@ public class WorldController : MonoBehaviour
         }
         // Generate random biomes
         World.GenerateBiomes(waves, scale);
+        // Set the camera to the center of the world
+        Camera.main.transform.position = new Vector3(World.Size.x / 2, World.Size.y / 2, Camera.main.transform.position.z);
     }
 
     /// <summary>
@@ -125,14 +127,14 @@ public class WorldController : MonoBehaviour
     /// <param name="x">The x world position</param>
     /// <param name="y">The y world position</param>
     /// <returns>The position of the tile which occupies the requested position</returns>
-    public Vector3 GetTilePosition(float x, float y)
+    public Vector3Int GetTilePosition(float x, float y)
     {
         // Get the correct position from the grid
         Vector3 position = WorldGrid.WorldToCell(new Vector3(x,y,0));
         // Clamp to the world bounds
         position.x = Mathf.Clamp(position.x, 0, World.Size.x);
         position.y = Mathf.Clamp(position.y, 0, World.Size.y);
-        return position;
+        return new Vector3Int((int)position.x, (int)position.y,(int)position.z);
     }
 
     /// <summary>

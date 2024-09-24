@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 
 public class MouseController : MonoBehaviour
 {
@@ -10,16 +11,17 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private float minZoom = 8f;
     [Header("Cursor Display")]
-    [SerializeField] private GameObject indicator;
-    [SerializeField] private GameObject indicatorPrefab;
-    // Keep track of spawned indicators so we can remove them when not needed
-    private List<GameObject> spawnedIndicators = new List<GameObject>();
+    [SerializeField] private Sprite indicatorSprite;
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 mousePosition = Vector3.zero;
     private Vector3 lastMousePosition = Vector3.zero;
     // For keeping track of dragging and selecting
     private Vector3 dragStart = Vector3.zero;
     private Vector3 dragEnd = Vector3.zero;
+    private bool dragging = false;
+    // For drawing the indicators
+    private GameObject indicatorTilemap;
+    private Tile indicatorTile;
     // For tracking what we are currently building
     private TileType currentTileType = TileType.Grass;
     // For tracking the type of building we are doing
@@ -42,9 +44,25 @@ public class MouseController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // Initialise the tilemap for showing indicators
+        indicatorTilemap = new GameObject("Indicators");
+        // Parent to the world grid
+        indicatorTilemap.transform.SetParent(WorldController.Instance.WorldGrid.transform);
+        // Add the tilemap component
+        indicatorTilemap.AddComponent<Tilemap>();
+        TilemapRenderer indicatorRenderer = indicatorTilemap.AddComponent<TilemapRenderer>();
+        indicatorRenderer.sortingLayerName = "Indicators";
+        // Set up the tile
+        indicatorTile = ScriptableObject.CreateInstance<Tile>();
+        indicatorTile.sprite = indicatorSprite;
+    }
     void Update()
     {
-        //Capture the current mouse position
+        // Clear any temporary indicators which are shown
+        indicatorTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        // Capture the current mouse position
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
         // Check for UI Interaction
@@ -102,12 +120,11 @@ public class MouseController : MonoBehaviour
         {
             // Get an X and y position bound by the world controller
             dragStart = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragging = true;
         }
         // This is the end position for the drag
         else if (Input.GetMouseButtonUp(0))
         {
-            // Clear any temporary indicators which are shown
-            ClearIndicators();
             // Get an X and y position bound by the world controller
             dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
             // For now set the type for the tile
@@ -117,29 +134,25 @@ public class MouseController : MonoBehaviour
                 {
                     if (currentBuildMode == BuildMode.Tile)
                     {
-                        WorldController.Instance.SetTileType(new Vector2Int(x,y), currentTileType);
+                        WorldController.Instance.SetTileType(new Vector2Int(x, y), currentTileType);
                     }
-                    else if(currentBuildMode == BuildMode.Structure)
+                    else if (currentBuildMode == BuildMode.Structure)
                     {
                         Structure wall = new Structure("Wall", 0, 1, 1);
                         WorldController.Instance.World.GetTile(new Vector2Int(x, y)).InstallStructure(wall);
                     }
-                    else if(currentBuildMode == BuildMode.Demolish)
+                    else if (currentBuildMode == BuildMode.Demolish)
                     {
                         WorldController.Instance.World.GetTile(new Vector2Int(x, y)).RemoveStructure();
                     }
                 }
             }
-            // Display the default indicator again
-            indicator.SetActive(true);
+            // Reset the dragging indicator
+            dragging = false;
         }
         // This is while we are dragging
         else if (Input.GetMouseButton(0))
         {
-            // Clear any temporary indicators which are shown
-            ClearIndicators();
-            // Hide the default indicator while we are dragging
-            indicator.SetActive(false);
             // Get an X and y position bound by the world controller
             dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
             // Show the indicator over the area currently selected
@@ -147,10 +160,7 @@ public class MouseController : MonoBehaviour
             {
                 for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
                 {
-                    // Spawn the indicator and keep track in the list (which is cleared each frame)
-                    GameObject indicator = SimplePool.Spawn(indicatorPrefab, new Vector3(x, y, 0), Quaternion.identity);
-                    indicator.transform.SetParent(transform, false);
-                    spawnedIndicators.Add(indicator);
+                    indicatorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), indicatorTile);
                 }
             }
         }
@@ -182,25 +192,15 @@ public class MouseController : MonoBehaviour
 
 
     /// <summary>
-    /// Clear any indicators which are shown during the process of dragging
-    /// </summary>
-    private void ClearIndicators()
-    {
-        // Object pooling for any already spawned indicators
-        while (spawnedIndicators.Count > 0)
-        {
-            // Remove all spawned objects and release to the pool
-            GameObject go = spawnedIndicators[0];
-            spawnedIndicators.RemoveAt(0);
-            SimplePool.Despawn(go);
-        }
-    }
-
-    /// <summary>
     /// Move the visual indicator to the current tile which is underneath the mouse
     /// </summary>
     private void SetIndicator()
     {
-        indicator.transform.position = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
+        // This only happens if we are not dragging to avoid showing the indicator twice on some positions
+        if (!dragging)
+        {
+            // Set the indicator on the tilemap based on current position
+            indicatorTilemap.GetComponent<Tilemap>().SetTile(WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y), indicatorTile);
+        }
     }
 }
