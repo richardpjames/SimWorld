@@ -101,7 +101,7 @@ public class MouseController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // Get an X and y position bound by the world controller
-            dragStart = WorldController.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragStart = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
         }
         // This is the end position for the drag
         else if (Input.GetMouseButtonUp(0))
@@ -109,7 +109,7 @@ public class MouseController : MonoBehaviour
             // Clear any temporary indicators which are shown
             ClearIndicators();
             // Get an X and y position bound by the world controller
-            dragEnd = WorldController.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
             // For now set the type for the tile
             for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
             {
@@ -141,7 +141,7 @@ public class MouseController : MonoBehaviour
             // Hide the default indicator while we are dragging
             indicator.SetActive(false);
             // Get an X and y position bound by the world controller
-            dragEnd = WorldController.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
             // Show the indicator over the area currently selected
             for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
             {
@@ -201,6 +201,6 @@ public class MouseController : MonoBehaviour
     /// </summary>
     private void SetIndicator()
     {
-        indicator.transform.position = WorldController.GetTilePosition(mousePosition.x, mousePosition.y);
+        indicator.transform.position = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
     }
 }

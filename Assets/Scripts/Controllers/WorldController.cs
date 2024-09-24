@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Tilemaps;
 
 
 public class WorldController : MonoBehaviour
@@ -15,11 +16,13 @@ public class WorldController : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private Vector2 offset;
     [SerializeField] public string WorldName { get; private set; } = "Default";
-    private Dictionary<Vector2Int, GameObject> worldObjects;
-    private Dictionary<Vector2Int, GameObject> worldStructures;
+    private Dictionary<TileType, Tile> worldTiles;
+    private Dictionary<string, Tile> structureTiles;
     public World World { get; private set; }
 
     public Grid WorldGrid { get; private set; }
+    private GameObject terrainTilemap;
+    private GameObject structureTilemap;
 
     // Allow for a static instance and accessible variables
     public static WorldController Instance { get; private set; }
@@ -41,6 +44,20 @@ public class WorldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Initialize the dictionary of tile sprites
+        worldTiles = new Dictionary<TileType, Tile>();
+        // Add each of the sprite variations
+        worldTiles.Add(TileType.Sand, ScriptableObject.CreateInstance<Tile>());
+        worldTiles[TileType.Sand].sprite = sandSprite;
+        worldTiles.Add(TileType.Water, ScriptableObject.CreateInstance<Tile>());
+        worldTiles[TileType.Water].sprite = waterSprite;
+        worldTiles.Add(TileType.Grass, ScriptableObject.CreateInstance<Tile>());
+        worldTiles[TileType.Grass].sprite = grassSprite;
+        // Add sprite variations for structures
+        structureTiles = new Dictionary<string, Tile>();
+        structureTiles.Add("Wall", ScriptableObject.CreateInstance<Tile>());
+        structureTiles["Wall"].sprite = wallSprite;
+        // Initialise the world
         Initialize(WorldName, new Vector2Int(width, height));
     }
 
@@ -49,49 +66,30 @@ public class WorldController : MonoBehaviour
     /// </summary>
     public void Initialize(string name, Vector2Int size)
     {
-        // Destroy objects if they exist
-        if (worldObjects != null)
-        {
-            // Loop through each and destroy
-            foreach (KeyValuePair<Vector2Int, GameObject> pair in worldObjects)
-            {
-                Destroy(pair.Value);
-            }
-        }
-        // Destroy objects if they exist
-        if (worldStructures != null)
-        {
-            // Loop through each and destroy
-            foreach (KeyValuePair<Vector2Int, GameObject> pair in worldStructures)
-            {
-                Destroy(pair.Value);
-            }
-        }
+        // Initialise grid and tilemap
+        WorldGrid = new GameObject("World Grid").AddComponent<Grid>();
+        WorldGrid.cellSize = new Vector3(1f, 1f, 1f);
+        // Add the tilemap to the grid
+        terrainTilemap = new GameObject("Terrain");
+        terrainTilemap.AddComponent<Tilemap>();
+        TilemapRenderer terrainRenderer = terrainTilemap.AddComponent<TilemapRenderer>();
+        terrainRenderer.sortingLayerName = "Terrain";
+        terrainTilemap.transform.SetParent(WorldGrid.transform, false);
+        structureTilemap = new GameObject("Structures");
+        structureTilemap.AddComponent<Tilemap>();
+        TilemapRenderer structureRenderer = structureTilemap.AddComponent<TilemapRenderer>();
+        structureRenderer.sortingLayerName = "Structures";
+        structureTilemap.transform.SetParent(WorldGrid.transform, false);
         // Initialise a new world
         World = new World(name, size);
-        // Initialise the world objects array
-        worldObjects = new Dictionary<Vector2Int, GameObject>();
-        // Initialise the structyres objects array
-        worldStructures = new Dictionary<Vector2Int, GameObject>();
-        // Generate a game object for each tile
+
+        // Set the correct tile in the tilemap for each tile
         for (int x = 0; x < World.Size.x; x++)
         {
             for (int y = 0; y < World.Size.y; y++)
             {
-                // Create a Game Object
-                GameObject go = new GameObject();
-                // Set the name for the object
-                go.name = $"Tile at ({x},{y})";
-                // Set the parent to the manager
-                go.transform.SetParent(transform, false);
-                // Move this to the correct position on the grid
-                go.transform.position = new Vector3(x, y, 0);
-                // Add a sprite renderer
-                SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = LookupSprite(World.GetTile(new Vector2Int(x, y)).Type);
-                sr.sortingLayerName = "Terrain";
-                // Add to the dictionary of objects
-                worldObjects.Add(new Vector2Int(x, y), go);
+                // Set the tile type to grass initially
+                terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), worldTiles[TileType.Grass]);
                 // Subscribe to any tile changes
                 World.GetTile(new Vector2Int(x, y)).OnTileUpdated += TileUpdated;
             }
@@ -107,37 +105,18 @@ public class WorldController : MonoBehaviour
     private void TileUpdated(Vector2Int position)
     {
         // Update the terrain for the tile
-        GameObject go = worldObjects[position];
-        SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
-        sr.sprite = LookupSprite(World.GetTile(position).Type);
-        // If a structure is removed
-        if (worldStructures.ContainsKey(position) && World.GetTile(position).InstalledStructure == null)
+        terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), worldTiles[World.GetTile(position).Type]);
+        // If a structure is removed then set the structure tile to null
+        if (World.GetTile(position).InstalledStructure == null)
         {
-            Destroy(worldStructures[position]);
-            worldStructures.Remove(position);
-        }
-        // If a structure is added
-        if (!worldStructures.ContainsKey(position) && World.GetTile(position).InstalledStructure != null)
-        {
-            // Create a new game object to hold the structure sprite
-            GameObject sgo = new GameObject();
-            sgo.name = $"{World.GetTile(position).InstalledStructure.StructureType} at {position})";
-            sgo.transform.position = new Vector3(position.x, position.y, 0);
-            sgo.transform.SetParent(transform, false);
-            // Hold in the dictionary of structures
-            worldStructures.Add(position, sgo);
-            // Add a sprite renderer with the correct sprite
-            SpriteRenderer ssr = worldStructures[position].AddComponent<SpriteRenderer>();
-            ssr.sortingLayerName = "Structures";
-            ssr.sprite = wallSprite;
-        }
-    }
+            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
 
-    private Sprite LookupSprite(TileType type)
-    {
-        if (type == TileType.Sand) return sandSprite;
-        if (type == TileType.Water) return waterSprite;
-        return grassSprite;
+        }
+        // If a structure is added then find the correct tile from the dictionary
+        else
+        {
+            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), structureTiles[World.GetTile(position).InstalledStructure.StructureType]);
+        }
     }
 
     /// <summary>
@@ -146,13 +125,14 @@ public class WorldController : MonoBehaviour
     /// <param name="x">The x world position</param>
     /// <param name="y">The y world position</param>
     /// <returns>The position of the tile which occupies the requested position</returns>
-    public static Vector3 GetTilePosition(float x, float y)
+    public Vector3 GetTilePosition(float x, float y)
     {
-        // Cap the world position based on the width and height
-        int worldX = (int)Mathf.Clamp(Mathf.RoundToInt(x), 0, Instance.World.Size.x - 1);
-        int worldY = (int)Mathf.Clamp(Mathf.RoundToInt(y), 0, Instance.World.Size.y - 1);
-        // Return the value as a vector
-        return new Vector3(worldX, worldY, 0f);
+        // Get the correct position from the grid
+        Vector3 position = WorldGrid.WorldToCell(new Vector3(x,y,0));
+        // Clamp to the world bounds
+        position.x = Mathf.Clamp(position.x, 0, World.Size.x);
+        position.y = Mathf.Clamp(position.y, 0, World.Size.y);
+        return position;
     }
 
     /// <summary>
