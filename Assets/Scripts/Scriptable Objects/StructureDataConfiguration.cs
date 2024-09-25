@@ -7,7 +7,7 @@ using UnityEngine;
 public class StructureDataConfiguration : ScriptableObject
 {
     public StructureConfiguration[] configurations;
-    private List<StructureConfiguration> configurationList;
+    private List<StructureConfiguration> configurationList = new List<StructureConfiguration>();
     // Start is called before the first frame update
     void OnEnable()
     {

@@ -7,7 +7,7 @@ using UnityEngine;
 public class FloorDataConfiguration : ScriptableObject
 {
     public FloorConfiguration[] configurations;
-    private List<FloorConfiguration> configurationList;
+    private List<FloorConfiguration> configurationList = new List<FloorConfiguration>();
     // Start is called before the first frame update
     void OnEnable()
     {

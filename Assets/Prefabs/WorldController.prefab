@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainTileConfiguration: {fileID: 11400000, guid: b9ec5e83b9050084a800b9afdedc6656, type: 2}
-  structureSpriteConfiguration: {fileID: 11400000, guid: 9c25e778e307bee48a0fe5a3897eb7d3, type: 2}
+  structureTileConfiguration: {fileID: 11400000, guid: 9c25e778e307bee48a0fe5a3897eb7d3, type: 2}
   floorTileConfiguration: {fileID: 11400000, guid: 78410e9e5373e254b9b8b0610dcb75c3, type: 2}
   worldGrid: {fileID: 0}
   terrainTilemap: {fileID: 0}

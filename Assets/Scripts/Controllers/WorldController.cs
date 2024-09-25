@@ -6,9 +6,9 @@ using UnityEngine.Tilemaps;
 
 public class WorldController : MonoBehaviour
 {
-    [Header("Sprite Configuration")]
+    [Header("Tile Configuration")]
     [SerializeField] private TerrainTileConfiguration terrainTileConfiguration;
-    [SerializeField] private StructureSpriteConfiguration structureSpriteConfiguration;
+    [SerializeField] private StructureTileConfiguration structureTileConfiguration;
     [SerializeField] private FloorTileConfiguration floorTileConfiguration;
     [Header("Tilemaps")]
     [SerializeField] private Grid worldGrid;
@@ -70,7 +70,7 @@ public class WorldController : MonoBehaviour
             for (int y = 0; y < World.Size.y; y++)
             {
                 // Create a tile with the correct sprite and add to the tilemap
-                Tile tile = terrainTileConfiguration.GetTile(World.GetSquare(new Vector2Int(x, y)).TerrainType);
+                TileBase tile = terrainTileConfiguration.GetTile(World.GetSquare(new Vector2Int(x, y)).TerrainType);
                 terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), tile);
                 // Subscribe to any square or structure changes
                 World.GetSquare(new Vector2Int(x, y)).OnSquareUpdated += SquareUpdated;
@@ -91,7 +91,7 @@ public class WorldController : MonoBehaviour
     private void SquareUpdated(Vector2Int position)
     {
         // Update the terrain tile based on new information
-        Tile tile = terrainTileConfiguration.GetTile(World.GetSquare(position).TerrainType);
+        TileBase tile = terrainTileConfiguration.GetTile(World.GetSquare(position).TerrainType);
         // Apply the tile to the tilemap
         terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
     }
@@ -102,6 +102,7 @@ public class WorldController : MonoBehaviour
     /// <param name="position">The world position as a Vector2</param>
     private void StructureUpdated(Vector2Int position)
     {
+        Debug.Log("Structure updated");
         // If a structure is removed then set the structure tile to null
         if (World.GetSquare(position).InstalledStructure == null)
         {
@@ -110,25 +111,10 @@ public class WorldController : MonoBehaviour
         // If a structure is added then find the correct tile from the configuration
         else
         {
-            Tile tile = ScriptableObject.CreateInstance<Tile>();
-            tile.sprite = structureSpriteConfiguration.GetSprite(World.GetSquare(position).InstalledStructure);
+            Debug.Log("Adding Structure to Map");
+            TileBase tile = structureTileConfiguration.GetTile(World.GetSquare(position).InstalledStructure.StructureType);
+            Debug.Log($"Adding tile: {tile.name}");
             structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
-        }
-        // List of squares to be updated in order to ensure neighbours are correct
-        List<Square> squares = new List<Square>();
-        if (World.GetSquare(position).SquareNorth != null) squares.Add(World.GetSquare(position).SquareNorth);
-        if (World.GetSquare(position).SquareEast != null) squares.Add(World.GetSquare(position).SquareEast);
-        if (World.GetSquare(position).SquareSouth != null) squares.Add(World.GetSquare(position).SquareSouth);
-        if (World.GetSquare(position).SquareWest != null) squares.Add(World.GetSquare(position).SquareWest);
-        // Loop through and update the sprites
-        foreach (Square square in squares)
-        {
-            if (square != null && square.InstalledStructure != null)
-            {
-                Tile tile = ScriptableObject.CreateInstance<Tile>();
-                tile.sprite = structureSpriteConfiguration.GetSprite(square.InstalledStructure);
-                structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(square.Position.x, square.Position.y, 0), tile);
-            }
         }
     }
 
@@ -140,8 +126,8 @@ public class WorldController : MonoBehaviour
         }
         else
         {
-            // Update the terrain tile based on new information
-            Tile tile = floorTileConfiguration.GetTile(World.GetSquare(position).InstalledFloor.FloorType);
+            // Update the floor tile based on new information
+            TileBase tile = floorTileConfiguration.GetTile(World.GetSquare(position).InstalledFloor.FloorType);
             // Apply the tile to the tilemap
             floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }

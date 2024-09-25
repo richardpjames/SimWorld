@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class FloorTileConfiguration : ScriptableObject
 {
     public TileConfiguration[] configurations;
-    private List<TileConfiguration> configurationList;
+    private List<TileConfiguration> configurationList = new List<TileConfiguration>();
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -20,7 +20,7 @@ public class FloorTileConfiguration : ScriptableObject
     }
 
     // Update is called once per frame
-    public Tile GetTile(FloorType type)
+    public TileBase GetTile(FloorType type)
     {
         // Query our list for an item which matches the properties of the square 
         TileConfiguration match = configurationList.FirstOrDefault<TileConfiguration>(c => c.FloorType == type );
@@ -32,6 +32,6 @@ public class FloorTileConfiguration : ScriptableObject
     public struct TileConfiguration
     {
         public FloorType FloorType;
-        public Tile Tile;
+        public TileBase Tile;
     }
 }
