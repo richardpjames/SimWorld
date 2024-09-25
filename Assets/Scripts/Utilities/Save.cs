@@ -34,11 +34,14 @@ public class Save
                 newTile.X = x;
                 newTile.Y = y;
                 // Set the tile type from the controller
-                newTile.Type = WorldController.Instance.World.GetTile(new Vector2Int(x,y)).Type;
+                newTile.Type = WorldController.Instance.World.GetSquare(new Vector2Int(x,y)).TerrainType;
+                // Default to no structures
+                newTile.HasStructure = false;
                 // Add any structures
-                Structure structure = WorldController.Instance.World.GetTile(new Vector2Int(x, y)).InstalledStructure;
+                Structure structure = WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstalledStructure;
                 if (structure != null)
                 {
+                    newTile.HasStructure = true;
                     newTile.StructureType = structure.StructureType;
                     newTile.MovementCost = structure.MovementCost;
                     newTile.StructureWidth = structure.Width;
@@ -54,11 +57,12 @@ public class Save
     public struct SaveTile
     {
         // The tile itself
-        public TileType Type;
+        public TerrainType Type;
         public int X;
         public int Y;
         // Any structure on the tile
-        public string StructureType;
+        public bool HasStructure;
+        public StructureType StructureType;
         public float MovementCost;
         public int StructureWidth;
         public int StructureHeight;

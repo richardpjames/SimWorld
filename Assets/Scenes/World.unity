@@ -422,12 +422,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67c2c9c516785e34684905ec4b89eae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainSpriteConfiguration: {fileID: 11400000, guid: b9ec5e83b9050084a800b9afdedc6656, type: 2}
+  structureSpriteConfiguration: {fileID: 11400000, guid: 9c25e778e307bee48a0fe5a3897eb7d3, type: 2}
+  worldName: Default
   height: 200
   width: 200
-  grassSprite: {fileID: 21300000, guid: 18c046bd65c908a4bac7ca4a9965485a, type: 3}
-  sandSprite: {fileID: 21300000, guid: cd44bfefd6fcceb45b29a1dc3d3a36e4, type: 3}
-  waterSprite: {fileID: 21300000, guid: 28692c794bd5baf44a043e9e8e01e0bf, type: 3}
-  wallSprite: {fileID: -626630004, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
   waves:
   - seed: 1
     frequency: 50
@@ -1228,14 +1227,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1981823091}
         m_TargetAssemblyTypeName: MouseController, SimWorld
-        m_MethodName: SetTileTypeWall
-        m_Mode: 1
+        m_MethodName: SetStucture
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Wall
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &510829691
@@ -1791,14 +1790,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1981823091}
         m_TargetAssemblyTypeName: MouseController, SimWorld
-        m_MethodName: SetTileTypeSand
-        m_Mode: 1
+        m_MethodName: SetTerrain
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Sand
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &964599840
@@ -2058,14 +2057,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1981823091}
         m_TargetAssemblyTypeName: MouseController, SimWorld
-        m_MethodName: SetTileTypeGrass
-        m_Mode: 1
+        m_MethodName: SetTerrain
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Grass
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1241734565
@@ -2191,14 +2190,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1981823091}
         m_TargetAssemblyTypeName: MouseController, SimWorld
-        m_MethodName: SetTileTypeWater
-        m_Mode: 1
+        m_MethodName: SetTerrain
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Water
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1315545751

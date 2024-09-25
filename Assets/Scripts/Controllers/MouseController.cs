@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,9 +24,10 @@ public class MouseController : MonoBehaviour
     private GameObject indicatorTilemap;
     private Tile indicatorTile;
     // For tracking what we are currently building
-    private TileType currentTileType = TileType.Grass;
+    private TerrainType currentTerrainType = TerrainType.Grass;
+    private StructureType currentStructureType = StructureType.Wall;
     // For tracking the type of building we are doing
-    private BuildMode currentBuildMode = BuildMode.Tile;
+    private BuildMode currentBuildMode = BuildMode.Terrain;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -119,31 +121,31 @@ public class MouseController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // Get an X and y position bound by the world controller
-            dragStart = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragStart = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
             dragging = true;
         }
         // This is the end position for the drag
         else if (Input.GetMouseButtonUp(0))
         {
             // Get an X and y position bound by the world controller
-            dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragEnd = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
             // For now set the type for the tile
             for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
             {
                 for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
                 {
-                    if (currentBuildMode == BuildMode.Tile)
+                    if (currentBuildMode == BuildMode.Terrain)
                     {
-                        WorldController.Instance.SetTileType(new Vector2Int(x, y), currentTileType);
+                        WorldController.Instance.SetSquareType(new Vector2Int(x, y), currentTerrainType);
                     }
                     else if (currentBuildMode == BuildMode.Structure)
                     {
-                        Structure wall = new Structure("Wall", 0, 1, 1);
-                        WorldController.Instance.World.GetTile(new Vector2Int(x, y)).InstallStructure(wall);
+                        Structure wall = new Structure(currentStructureType, 0, 1, 1, true);
+                        WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallStructure(wall);
                     }
                     else if (currentBuildMode == BuildMode.Demolish)
                     {
-                        WorldController.Instance.World.GetTile(new Vector2Int(x, y)).RemoveStructure();
+                        WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveStructure();
                     }
                 }
             }
@@ -154,7 +156,7 @@ public class MouseController : MonoBehaviour
         else if (Input.GetMouseButton(0))
         {
             // Get an X and y position bound by the world controller
-            dragEnd = WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y);
+            dragEnd = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
             // Show the indicator over the area currently selected
             for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
             {
@@ -166,30 +168,20 @@ public class MouseController : MonoBehaviour
         }
     }
 
-    public void SetTileTypeGrass()
+    public void SetTerrain(string name)
     {
-        currentBuildMode = BuildMode.Tile;
-        currentTileType = TileType.Grass;
+        currentBuildMode = BuildMode.Terrain;
+        Enum.TryParse(name, out currentTerrainType);
     }
-    public void SetTileTypeSand()
-    {
-        currentBuildMode = BuildMode.Tile;
-        currentTileType = TileType.Sand;
-    }
-    public void SetTileTypeWater()
-    {
-        currentBuildMode = BuildMode.Tile;
-        currentTileType = TileType.Water;
-    }
-    public void SetTileTypeWall()
+    public void SetStucture(string name)
     {
         currentBuildMode = BuildMode.Structure;
+        Enum.TryParse(name, out currentStructureType);
     }
-    public void SetTileTypeDemolish()
+    public void SetDemolish()
     {
         currentBuildMode = BuildMode.Demolish;
     }
-
 
     /// <summary>
     /// Move the visual indicator to the current tile which is underneath the mouse
@@ -200,7 +192,7 @@ public class MouseController : MonoBehaviour
         if (!dragging)
         {
             // Set the indicator on the tilemap based on current position
-            indicatorTilemap.GetComponent<Tilemap>().SetTile(WorldController.Instance.GetTilePosition(mousePosition.x, mousePosition.y), indicatorTile);
+            indicatorTilemap.GetComponent<Tilemap>().SetTile(WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y), indicatorTile);
         }
     }
 }

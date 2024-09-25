@@ -41,11 +41,11 @@ public class GameController : MonoBehaviour
                 // Populate all of the tiles correctly
                 foreach (SaveTile tile in save.Tiles)
                 {
-                    WorldController.Instance.SetTileType(new Vector2Int(tile.X, tile.Y), tile.Type);
+                    WorldController.Instance.SetSquareType(new Vector2Int(tile.X, tile.Y), tile.Type);
                     // Recreate the saved structure
-                    if(tile.StructureType != "")
+                    if(tile.HasStructure)
                     {
-                        WorldController.Instance.World.GetTile(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
+                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
                     }
                 }
             }

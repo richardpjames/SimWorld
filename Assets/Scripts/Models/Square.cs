@@ -1,13 +1,17 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class Square
 {
+    // Reference to the world in which the square is contained
+    private World world;
     // To let others know when a tile is updated
-    public Action<Vector2Int> OnTileUpdated;
+    public Action<Vector2Int> OnSquareUpdated;
+    public Action<Vector2Int> OnStructureUpdated;
 
     // Holds the type for this particular tile
-    public TileType Type { get; private set; }
+    public TerrainType TerrainType { get; private set; }
 
     // Reference to the position in the world
     public Vector2Int Position { get; private set; }
@@ -15,26 +19,33 @@ public class Square
     // Keep track of any installed objects on the tile
     public Structure InstalledStructure { get; private set; }
 
+    // Reference to adjacent squares
+    public Square SquareNorth { get => world.GetSquare(new Vector2Int(Position.x, Position.y + 1)); }
+    public Square SquareEast { get => world.GetSquare(new Vector2Int(Position.x + 1, Position.y)); }
+    public Square SquareSouth { get => world.GetSquare(new Vector2Int(Position.x, Position.y - 1)); }
+    public Square SquareWest { get => world.GetSquare(new Vector2Int(Position.x - 1, Position.y)); }
+
     // Constructor takes a base terrain for the tile
-    public Square(Vector2Int position, TileType type)
+    public Square(World world, Vector2Int position, TerrainType type)
     {
+        this.world = world;
         this.Position = position;
-        this.Type = type;
+        this.TerrainType = type;
     }
 
     /// <summary>
     /// Sets the terrain type for this particular tile
     /// </summary>
     /// <param name="type">The terrain type</param>
-    public void SetType(TileType type)
+    public void SetType(TerrainType type)
     {
-        Type = type;
-        if(type == TileType.Water)
+        TerrainType = type;
+        if (type == TerrainType.Water)
         {
             RemoveStructure();
         }
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(Position);
+        OnSquareUpdated?.Invoke(Position);
     }
 
     /// <summary>
@@ -44,13 +55,14 @@ public class Square
     public void InstallStructure(Structure structure)
     {
         // Don't allow for building on water
-        if (Type == TileType.Water)
+        if (TerrainType == TerrainType.Water)
         {
             return;
         }
         InstalledStructure = structure;
+        structure.BaseSquare = this;
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(Position);
+        OnStructureUpdated?.Invoke(Position);
     }
     /// <summary>
     /// Removes any structures installed on this tile
@@ -59,7 +71,7 @@ public class Square
     {
         InstalledStructure = null;
         // Trigger an event to say that the tile is updated
-        OnTileUpdated?.Invoke(Position);
+        OnStructureUpdated?.Invoke(Position);
     }
 
 }
