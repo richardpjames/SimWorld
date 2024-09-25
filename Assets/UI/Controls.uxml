@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: column; flex-wrap: nowrap; max-width: 20%; bottom: auto; position: relative; flex-shrink: 1; justify-content: flex-end;">
+        <ui:Label tabindex="-1" text="Build" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:Button text="Wooden Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="true" name="wooden-floor" />
+        <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-wall" />
+        <ui:Button text="Rocks" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rocks" />
+        <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" />
+        <ui:Label tabindex="-1" text="Terraform" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:Button text="Grass" parse-escape-sequences="true" display-tooltip-when-elided="true" name="grass" />
+        <ui:Button text="Water" parse-escape-sequences="true" display-tooltip-when-elided="true" name="water" />
+        <ui:Button text="Sand" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sand" />
+        <ui:Label tabindex="-1" text="World" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save" />
+        <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
+    </ui:VisualElement>
+</ui:UXML>

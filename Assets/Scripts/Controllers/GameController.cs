@@ -21,36 +21,38 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Update()
+    /// <summary>
+    /// Saves the current world to a file
+    /// </summary>
+    public void Save()
     {
-        // Quick save set to F5
-        if (Input.GetKeyUp(KeyCode.F5))
+        Save save = new Save();
+        save.PopulateFromWorld(WorldController.Instance.World);
+        SaveGame(save);
+    }
+
+    /// <summary>
+    /// Loads the current world from a file
+    /// </summary>
+    public void Load()
+    {
+        Save save = LoadGame();
+        if (save != null)
         {
-            Save save = new Save();
-            save.PopulateFromWorld(WorldController.Instance.World);
-            SaveGame(save);
-        }
-        // Quick load set to F9
-        if (Input.GetKeyUp(KeyCode.F9))
-        {
-            Save save = LoadGame();
-            if (save != null)
+            // Set up a new world
+            WorldController.Instance.Initialize(save.WorldName, new Vector2Int(save.WorldWidth, save.WorldHeight));
+            // Populate all of the tiles correctly
+            foreach (SaveTile tile in save.Tiles)
             {
-                // Set up a new world
-                WorldController.Instance.Initialize(save.WorldName, new Vector2Int(save.WorldWidth, save.WorldHeight));
-                // Populate all of the tiles correctly
-                foreach (SaveTile tile in save.Tiles)
+                WorldController.Instance.SetSquareType(new Vector2Int(tile.X, tile.Y), tile.Type);
+                // Recreate the saved structure
+                if (tile.HasStructure)
                 {
-                    WorldController.Instance.SetSquareType(new Vector2Int(tile.X, tile.Y), tile.Type);
-                    // Recreate the saved structure
-                    if(tile.HasStructure)
-                    {
-                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
-                    }
-                    if(tile.HasFloor)
-                    {
-                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallFloor(new Floor(tile.FloorType, tile.FloorMovementCost));
-                    }
+                    WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
+                }
+                if (tile.HasFloor)
+                {
+                    WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallFloor(new Floor(tile.FloorType, tile.FloorMovementCost));
                 }
             }
         }

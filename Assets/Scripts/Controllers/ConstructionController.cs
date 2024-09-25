@@ -60,7 +60,7 @@ public class ConstructionController : MonoBehaviour
                     // Place it into the world
                     WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallStructure(structure);
                 }
-                else if(currentBuildMode == BuildMode.Floor)
+                else if (currentBuildMode == BuildMode.Floor)
                 {
                     // Get the configuration for the currently selected type from a scriptable object
                     FloorDataConfiguration.FloorConfiguration config = floorDataConfiguration.GetConfiguration(currentFloorType);
@@ -69,13 +69,18 @@ public class ConstructionController : MonoBehaviour
                     // Place it into the world
                     WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallFloor(floor);
                 }
-                else if (currentBuildMode == BuildMode.DemolishStructures)
+                else if (currentBuildMode == BuildMode.Demolish)
                 {
-                    WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveStructure();
-                }
-                else if (currentBuildMode == BuildMode.DemolishFloors)
-                {
-                    WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveFloor();
+                    // During demolision we first look for any structures (and remove) and then next, any floors
+                    Square square = WorldController.Instance.World.GetSquare(new Vector2Int(x, y));
+                    if (square.InstalledStructure != null)
+                    {
+                        square.RemoveStructure();
+                    }
+                    else if (square.InstalledFloor != null)
+                    {
+                        square.RemoveFloor();
+                    }
                 }
             }
         }
@@ -85,41 +90,34 @@ public class ConstructionController : MonoBehaviour
     /// Set the construction mode to placing terrain as specified by the named enum
     /// </summary>
     /// <param name="name">The name for the enum (which will be parsed)</param>
-    public void SetTerrain(string name)
+    public void SetTerrain(TerrainType type)
     {
         currentBuildMode = BuildMode.Terrain;
-        Enum.TryParse(name, out currentTerrainType);
+        currentTerrainType = type;
     }
     /// <summary>
     /// Set the construction mode to placing structures as specified by the named enum
     /// </summary>
     /// <param name="name">The name for the enum (which will be parsed)</param>
-    public void SetStucture(string name)
+    public void SetStucture(StructureType type)
     {
         currentBuildMode = BuildMode.Structure;
-        Enum.TryParse(name, out currentStructureType);
+        currentStructureType = type;
     }
     /// <summary>
     /// Set the construction mode to placing floors as specified by the named enum
     /// </summary>
     /// <param name="name">The name for the enum (which will be parsed)</param>
-    public void SetFloor(string name)
+    public void SetFloor(FloorType type)
     {
         currentBuildMode = BuildMode.Floor;
-        Enum.TryParse(name, out currentFloorType);
+        currentFloorType = type;
     }
     /// <summary>
-    /// Set the construction mode to demolish structures
+    /// Set the construction mode to demolish structures (and then floors)
     /// </summary>
-    public void SetDemolishStructures()
+    public void SetDemolish()
     {
-        currentBuildMode = BuildMode.DemolishStructures;
-    }
-    /// <summary>
-    /// Set the construction mode to demolish floors
-    /// </summary>
-    public void SetDemolishFloors()
-    {
-        currentBuildMode = BuildMode.DemolishFloors;
+        currentBuildMode = BuildMode.Demolish;
     }
 }
