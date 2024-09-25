@@ -160,14 +160,14 @@ public class WorldController : MonoBehaviour
     /// <param name="x">The x world position</param>
     /// <param name="y">The y world position</param>
     /// <returns>The position of the tile which occupies the requested position</returns>
-    public Vector3Int GetSquarePosition(float x, float y)
+    public Vector2Int GetSquarePosition(float x, float y)
     {
         // Get the correct position from the grid
         Vector3 position = WorldGrid.WorldToCell(new Vector3(x, y, 0));
         // Clamp to the world bounds
         position.x = Mathf.Clamp(position.x, 0, World.Size.x);
         position.y = Mathf.Clamp(position.y, 0, World.Size.y);
-        return new Vector3Int((int)position.x, (int)position.y, (int)position.z);
+        return new Vector2Int((int)position.x, (int)position.y);
     }
 
     /// <summary>

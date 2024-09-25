@@ -16,14 +16,14 @@ public class MouseController : MonoBehaviour
     private Vector3 mousePosition = Vector3.zero;
     private Vector3 lastMousePosition = Vector3.zero;
     // For keeping track of dragging and selecting
-    private Vector3 dragStart = Vector3.zero;
-    private Vector3 dragEnd = Vector3.zero;
+    private Vector2Int dragStart = Vector2Int.zero;
+    private Vector2Int dragEnd = Vector2Int.zero;
     private bool dragging = false;
     // For drawing the indicators
     private GameObject indicatorTilemap;
     private Tile indicatorTile;
     // To let others know when a selection is complete
-    public Action<Vector3, Vector3> OnDragComplete;
+    public Action<Vector2Int, Vector2Int> OnDragComplete;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -126,9 +126,9 @@ public class MouseController : MonoBehaviour
             // Get an X and y position bound by the world controller
             dragEnd = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
             // Work out the top left
-            Vector3 topLeft = new Vector3(Mathf.Min(dragStart.x, dragEnd.x), Mathf.Min(dragStart.y, dragEnd.y), 0f);
+            Vector2Int topLeft = new Vector2Int(Mathf.Min(dragStart.x, dragEnd.x), Mathf.Min(dragStart.y, dragEnd.y));
             // Work out the bottom right
-            Vector3 bottomRight = new Vector3(Mathf.Max(dragStart.x, dragEnd.x), Mathf.Max(dragStart.y, dragEnd.y), 0f);
+            Vector2Int bottomRight = new Vector2Int(Mathf.Max(dragStart.x, dragEnd.x), Mathf.Max(dragStart.y, dragEnd.y));
             // Let other components know that dragging is complete
             OnDragComplete?.Invoke(topLeft, bottomRight);
             // Reset the dragging indicator
@@ -159,7 +159,8 @@ public class MouseController : MonoBehaviour
         if (!dragging)
         {
             // Set the indicator on the tilemap based on current position
-            indicatorTilemap.GetComponent<Tilemap>().SetTile(WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y), indicatorTile);
+            Vector2Int position = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
+            indicatorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), indicatorTile);
         }
     }
 }

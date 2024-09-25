@@ -38,11 +38,11 @@ public class ConstructionController : MonoBehaviour
     /// <summary>
     /// Builds based on current configuration once a drag is complete
     /// </summary>
-    private void Build(Vector3 begin, Vector3 end)
+    private void Build(Vector2Int topLeft, Vector2Int bottomRight)
     {
-        for (int x = (int)begin.x; x <= (int)end.x; x++)
+        for (int x = topLeft.x; x <= bottomRight.x; x++)
         {
-            for (int y = (int)begin.y; y <= (int)end.y; y++)
+            for (int y = topLeft.y; y <= bottomRight.y; y++)
             {
                 if (currentBuildMode == BuildMode.Terrain)
                 {
