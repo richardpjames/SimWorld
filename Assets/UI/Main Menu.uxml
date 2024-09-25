@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=8eb73062173d43d4ba9453caa6143ccb&amp;type=3#Style" />
+    <ui:VisualElement style="flex-grow: 1; justify-content: center;">
+        <ui:VisualElement class="container" style="justify-content: center; align-self: center; align-items: stretch; margin-top: 10px; flex-direction: column; position: relative; bottom: auto; min-width: 500px; padding-top: 25px; padding-right: 25px; padding-bottom: 25px; padding-left: 25px;">
+            <ui:Label tabindex="-1" text="Sim World" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 28px; -unity-font-style: bold; -unity-text-align: upper-center; padding-bottom: 25px;" />
+            <ui:TextField picking-mode="Ignore" label="World Name" value="Default" name="world-name" />
+            <ui:SliderInt label="Height" high-value="500" low-value="100" name="world-height" />
+            <ui:SliderInt label="Width" high-value="500" low-value="100" name="world-width" />
+            <ui:Button text="Start" parse-escape-sequences="true" display-tooltip-when-elided="true" name="start-game" class="btn-blue" style="margin-top: 25px;" />
+            <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit" class="btn-blue" style="margin-top: 2px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

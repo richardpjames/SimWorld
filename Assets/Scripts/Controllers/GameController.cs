@@ -1,11 +1,18 @@
+using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Save;
 
 public class GameController : MonoBehaviour
 {
     // Holds an instance of the game manager for us elsewhere
     public static GameController Instance { get; private set; }
+
+    // Holds basic information about the game
+    public string WorldName = "Default";
+    public int WorldWidth = 50;
+    public int WorldHeight = 50;
 
     private void Awake()
     {
@@ -19,6 +26,25 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene("World");
+        StartCoroutine(Initilize());
+    }
+
+    private IEnumerator Initilize()
+    {
+        // Wait for the world controller to be created
+        while (WorldController.Instance == null)
+        {
+            yield return null;
+        }
+        // Then initialize the world
+        WorldController.Instance.Initialize(WorldName, new Vector2Int(WorldWidth, WorldHeight));
+        // Finally, try and load if possible
+        Load();
     }
 
     /// <summary>
@@ -65,7 +91,7 @@ public class GameController : MonoBehaviour
     private void SaveGame(Save save)
     {
         string data = JsonUtility.ToJson(save);
-        File.WriteAllText(Application.persistentDataPath + $"/SimWorld-{WorldController.Instance.WorldName}.json", data);
+        File.WriteAllText(Application.persistentDataPath + $"/SimWorld-{GameController.Instance.WorldName}.json", data);
     }
 
     /// <summary>
@@ -75,14 +101,23 @@ public class GameController : MonoBehaviour
     private Save LoadGame()
     {
         // Only load the file if it exists
-        if (File.Exists(Application.persistentDataPath + $"/SimWorld-{WorldController.Instance.WorldName}.json"))
+        if (File.Exists(Application.persistentDataPath + $"/SimWorld-{GameController.Instance.WorldName}.json"))
         {
-            string data = File.ReadAllText(Application.persistentDataPath + $"/SimWorld-{WorldController.Instance.WorldName}.json");
+            string data = File.ReadAllText(Application.persistentDataPath + $"/SimWorld-{GameController.Instance.WorldName}.json");
             Save save = JsonUtility.FromJson<Save>(data);
             return save;
         }
         // If the file is not found then return null
         return null;
+    }
+
+    /// <summary>
+    /// Takes the player back to the main menu and saves the game
+    /// </summary>
+    public void MainMenu()
+    {
+        Save();
+        SceneManager.LoadScene("MainMenu");
     }
 
     /// <summary>

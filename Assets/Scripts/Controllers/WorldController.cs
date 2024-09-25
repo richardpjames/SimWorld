@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.Tilemaps;
 
 
@@ -15,10 +13,6 @@ public class WorldController : MonoBehaviour
     [SerializeField] private Tilemap terrainTilemap;
     [SerializeField] private Tilemap floorTilemap;
     [SerializeField] private Tilemap structureTilemap;
-    [Header("World Generation")]
-    [SerializeField] private string worldName = "Default";
-    [SerializeField] private int height;
-    [SerializeField] private int width;
     [Header("Biome Generation")]
     [SerializeField] private Wave[] waves;
     [SerializeField] private float scale;
@@ -28,7 +22,6 @@ public class WorldController : MonoBehaviour
 
     // Allow for a static instance and accessible variables
     public static WorldController Instance { get; private set; }
-    public string WorldName { get => worldName; private set => worldName = value; }
 
     private void Awake()
     {
@@ -42,13 +35,6 @@ public class WorldController : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Initialise the world
-        Initialize(WorldName, new Vector2Int(width, height));
     }
 
     /// <summary>
@@ -138,6 +124,11 @@ public class WorldController : MonoBehaviour
     /// <returns>The position of the tile which occupies the requested position</returns>
     public Vector2Int GetSquarePosition(float x, float y)
     {
+        // Check that the world is created
+        if (World == null || worldGrid == null)
+        {
+            return Vector2Int.zero;
+        }
         // Get the correct position from the grid
         Vector3 position = worldGrid.WorldToCell(new Vector3(x, y, 0));
         // Clamp to the world bounds

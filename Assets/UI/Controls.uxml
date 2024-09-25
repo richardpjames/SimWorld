@@ -1,19 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=8eb73062173d43d4ba9453caa6143ccb&amp;type=3#Style" />
-    <ui:VisualElement style="position: absolute; bottom: 0; transition-duration: 0.5s;">
-        <ui:Label tabindex="-1" text="Build" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-        <ui:Button text="Wooden Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="true" name="wooden-floor" />
-        <ui:Button text="Foot Path" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath" />
-        <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-wall" />
-        <ui:Button text="Rocks" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rocks" />
-        <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" />
-        <ui:Label tabindex="-1" text="Terraform" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-        <ui:Button text="Grass" parse-escape-sequences="true" display-tooltip-when-elided="true" name="grass" />
-        <ui:Button text="Water" parse-escape-sequences="true" display-tooltip-when-elided="true" name="water" />
-        <ui:Button text="Sand" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sand" />
-        <ui:Label tabindex="-1" text="World" parse-escape-sequences="true" display-tooltip-when-elided="true" />
-        <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save" />
-        <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
-        <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit" />
+    <ui:VisualElement class="container">
+        <ui:Label tabindex="-1" text="Build" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="true" style="align-self: center; -unity-font-style: bold;" />
+        <ui:Button text="Wooden Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="true" name="wooden-floor" class="Button btn-blue" />
+        <ui:Button text="Foot Path" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath" class="btn-blue" />
+        <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-wall" class="btn-blue" />
+        <ui:Button text="Rocks" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rocks" class="btn-blue" />
+        <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" class="btn-blue" style="transition-duration: 0.1s;" />
+        <ui:Label tabindex="-1" text="Terraform" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-font-style: bold;" />
+        <ui:Button text="Grass" parse-escape-sequences="true" display-tooltip-when-elided="true" name="grass" class="btn-blue" />
+        <ui:Button text="Water" parse-escape-sequences="true" display-tooltip-when-elided="true" name="water" class="btn-blue" />
+        <ui:Button text="Sand" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sand" class="btn-blue" />
+        <ui:Label tabindex="-1" text="World" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-font-style: bold;" />
+        <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save" class="btn-blue" />
+        <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" class="btn-blue" />
+        <ui:Button text="Save and Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="mainmenu" class="btn-blue" />
     </ui:VisualElement>
 </ui:UXML>

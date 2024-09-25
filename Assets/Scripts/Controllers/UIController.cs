@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 public class UIController : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class UIController : MonoBehaviour
         root.Q<Button>("water").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Water);
         root.Q<Button>("save").clicked += () => GameController.Instance.Save();
         root.Q<Button>("load").clicked += () => GameController.Instance.Load();
-        root.Q<Button>("quit").clicked += () => GameController.Instance.Quit();
+        root.Q<Button>("mainmenu").clicked += () => GameController.Instance.MainMenu();
     }
 
 }
