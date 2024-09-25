@@ -84,4 +84,12 @@ public class GameController : MonoBehaviour
         // If the file is not found then return null
         return null;
     }
+
+    /// <summary>
+    /// Quits the application safely
+    /// </summary>
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }

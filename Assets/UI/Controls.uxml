@@ -1,7 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; flex-direction: column; flex-wrap: nowrap; max-width: 20%; bottom: auto; position: relative; flex-shrink: 1; justify-content: flex-end;">
+    <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=8eb73062173d43d4ba9453caa6143ccb&amp;type=3#Style" />
+    <ui:VisualElement style="position: absolute; bottom: 0; transition-duration: 0.5s;">
         <ui:Label tabindex="-1" text="Build" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         <ui:Button text="Wooden Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="true" name="wooden-floor" />
+        <ui:Button text="Foot Path" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath" />
         <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-wall" />
         <ui:Button text="Rocks" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rocks" />
         <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" />
@@ -12,5 +14,6 @@
         <ui:Label tabindex="-1" text="World" parse-escape-sequences="true" display-tooltip-when-elided="true" />
         <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save" />
         <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" />
+        <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit" />
     </ui:VisualElement>
 </ui:UXML>

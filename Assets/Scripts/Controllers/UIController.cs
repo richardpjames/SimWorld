@@ -2,42 +2,23 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class UIController : MonoBehaviour
 {
-    // Each of the buttons in the document
-    private Button woodenWallButton;
-    private Button woodenFloorButton;
-    private Button rocksButton;
-    private Button demolishButton;
-    private Button sandButton;
-    private Button grassButton;
-    private Button waterButton;
-    private Button saveButton;
-    private Button loadButton;
-
     // Start is called before the first frame update
     void Start()
     {
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-        // Get each of the buttons
-        woodenWallButton = root.Q<Button>("wooden-wall");
-        woodenFloorButton = root.Q<Button>("wooden-floor");
-        rocksButton = root.Q<Button>("rocks");
-        demolishButton = root.Q<Button>("demolish");
-        sandButton = root.Q<Button>("sand");
-        grassButton = root.Q<Button>("grass");
-        waterButton = root.Q<Button>("water");
-        saveButton = root.Q<Button>("save");
-        loadButton = root.Q<Button>("load");
-        // Set their actions
-        woodenWallButton.clicked += () => ConstructionController.Instance.SetStucture(StructureType.Wall);
-        woodenFloorButton.clicked += () => ConstructionController.Instance.SetFloor(FloorType.Wooden);
-        rocksButton.clicked += () => ConstructionController.Instance.SetStucture(StructureType.Rock);
-        demolishButton.clicked += () => ConstructionController.Instance.SetDemolish();
-        sandButton.clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Sand);
-        grassButton.clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Grass);
-        waterButton.clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Water);
-        saveButton.clicked += () => GameController.Instance.Save();
-        loadButton.clicked += () => GameController.Instance.Load();
+        // Get each of the buttons and set their actions
+        root.Q<Button>("wooden-wall").clicked += () => ConstructionController.Instance.SetStucture(StructureType.Wall);
+        root.Q<Button>("wooden-floor").clicked += () => ConstructionController.Instance.SetFloor(FloorType.Wooden);
+        root.Q<Button>("footpath").clicked += () => ConstructionController.Instance.SetFloor(FloorType.Footpath);
+        root.Q<Button>("rocks").clicked += () => ConstructionController.Instance.SetStucture(StructureType.Rock);
+        root.Q<Button>("demolish").clicked += () => ConstructionController.Instance.SetDemolish();
+        root.Q<Button>("sand").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Sand);
+        root.Q<Button>("grass").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Grass);
+        root.Q<Button>("water").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Water);
+        root.Q<Button>("save").clicked += () => GameController.Instance.Save();
+        root.Q<Button>("load").clicked += () => GameController.Instance.Load();
+        root.Q<Button>("quit").clicked += () => GameController.Instance.Quit();
     }
 
 }
