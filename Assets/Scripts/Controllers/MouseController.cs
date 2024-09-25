@@ -11,7 +11,9 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private float minZoom = 8f;
     [Header("Cursor Display")]
-    [SerializeField] private Sprite indicatorSprite;
+    [SerializeField] private Tilemap indicatorTilemap;
+    [SerializeField] private Tile indicator;
+
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 mousePosition = Vector3.zero;
     private Vector3 lastMousePosition = Vector3.zero;
@@ -19,9 +21,6 @@ public class MouseController : MonoBehaviour
     private Vector2Int dragStart = Vector2Int.zero;
     private Vector2Int dragEnd = Vector2Int.zero;
     private bool dragging = false;
-    // For drawing the indicators
-    private GameObject indicatorTilemap;
-    private Tile indicatorTile;
     // To let others know when a selection is complete
     public Action<Vector2Int, Vector2Int> OnDragComplete;
 
@@ -42,20 +41,6 @@ public class MouseController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // Initialise the tilemap for showing indicators
-        indicatorTilemap = new GameObject("Indicators");
-        // Parent to the world grid
-        indicatorTilemap.transform.SetParent(WorldController.Instance.WorldGrid.transform);
-        // Add the tilemap component
-        indicatorTilemap.AddComponent<Tilemap>();
-        TilemapRenderer indicatorRenderer = indicatorTilemap.AddComponent<TilemapRenderer>();
-        indicatorRenderer.sortingLayerName = "Indicators";
-        // Set up the tile
-        indicatorTile = ScriptableObject.CreateInstance<Tile>();
-        indicatorTile.sprite = indicatorSprite;
-    }
     void Update()
     {
         // Clear any temporary indicators which are shown
@@ -144,7 +129,7 @@ public class MouseController : MonoBehaviour
             {
                 for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
                 {
-                    indicatorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), indicatorTile);
+                    indicatorTilemap.SetTile(new Vector3Int(x, y, 0), indicator);
                 }
             }
         }
@@ -160,7 +145,7 @@ public class MouseController : MonoBehaviour
         {
             // Set the indicator on the tilemap based on current position
             Vector2Int position = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
-            indicatorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), indicatorTile);
+            indicatorTilemap.SetTile(new Vector3Int(position.x, position.y, 0), indicator);
         }
     }
 }

@@ -43,9 +43,18 @@ public class Save
                 {
                     newTile.HasStructure = true;
                     newTile.StructureType = structure.StructureType;
-                    newTile.MovementCost = structure.MovementCost;
+                    newTile.StructureMovementCost = structure.MovementCost;
                     newTile.StructureWidth = structure.Width;
                     newTile.StructureHeight = structure.Height;
+                }
+                // Default to no floors
+                newTile.HasStructure = false;
+                Floor floor = WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstalledFloor;
+                if (floor != null)
+                {
+                    newTile.HasFloor = true;
+                    newTile.FloorType = floor.FloorType;
+                    newTile.FloorMovementCost = floor.MovementCost;
                 }
                 // Add this tile to the list
                 Tiles.Add(newTile);
@@ -63,8 +72,12 @@ public class Save
         // Any structure on the tile
         public bool HasStructure;
         public StructureType StructureType;
-        public float MovementCost;
+        public float StructureMovementCost;
         public int StructureWidth;
         public int StructureHeight;
+        // Any floors on the tile
+        public bool HasFloor;
+        public FloorType FloorType;
+        public float FloorMovementCost;
     }
 }

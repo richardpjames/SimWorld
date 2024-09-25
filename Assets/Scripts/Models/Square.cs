@@ -9,15 +9,16 @@ public class Square
     // To let others know when a tile is updated
     public Action<Vector2Int> OnSquareUpdated;
     public Action<Vector2Int> OnStructureUpdated;
+    public Action<Vector2Int> OnFloorUpdated;
 
     // Holds the type for this particular tile
     public TerrainType TerrainType { get; private set; }
-
     // Reference to the position in the world
     public Vector2Int Position { get; private set; }
-
     // Keep track of any installed objects on the tile
     public Structure InstalledStructure { get; private set; }
+    // Keep track of any intalled floors on the tile
+    public Floor InstalledFloor { get; private set; }
 
     // Reference to adjacent squares
     public Square SquareNorth { get => world.GetSquare(new Vector2Int(Position.x, Position.y + 1)); }
@@ -43,6 +44,7 @@ public class Square
         if (type == TerrainType.Water)
         {
             RemoveStructure();
+            RemoveFloor();
         }
         // Trigger an event to say that the tile is updated
         OnSquareUpdated?.Invoke(Position);
@@ -72,6 +74,32 @@ public class Square
         InstalledStructure = null;
         // Trigger an event to say that the tile is updated
         OnStructureUpdated?.Invoke(Position);
+    }
+
+    /// <summary>
+    /// Places a floor into the tile
+    /// </summary>
+    /// <param name="floor">The floor to be installed /param>
+    public void InstallFloor(Floor floor)
+    {
+        // Don't allow for building on water
+        if (TerrainType == TerrainType.Water)
+        {
+            return;
+        }
+        InstalledFloor = floor;
+        floor.BaseSquare = this;
+        // Trigger an event to say that the tile is updated
+        OnFloorUpdated?.Invoke(Position);
+    }
+    /// <summary>
+    /// Removes any floor installed on this tile
+    /// </summary>
+    public void RemoveFloor()
+    {
+        InstalledFloor = null;
+        // Trigger an event to say that the tile is updated
+        OnFloorUpdated?.Invoke(Position);
     }
 
 }

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97eb5d0be63f4f44d9cb3504a1788a35, type: 3}
-  m_Name: TerrainSpriteConfiguration
+  m_Name: TerrainTileConfiguration
   m_EditorClassIdentifier: 
   configurations:
   - Terrain: 0
-    Sprite: {fileID: 21300000, guid: 18c046bd65c908a4bac7ca4a9965485a, type: 3}
+    Tile: {fileID: 11400000, guid: 45d947f44c8fa6a4c90864769316192b, type: 2}
   - Terrain: 1
-    Sprite: {fileID: 21300000, guid: cd44bfefd6fcceb45b29a1dc3d3a36e4, type: 3}
+    Tile: {fileID: 11400000, guid: c92c2f59b33d8704bb3151139638502e, type: 2}
   - Terrain: 2
-    Sprite: {fileID: 21300000, guid: 28692c794bd5baf44a043e9e8e01e0bf, type: 3}
+    Tile: {fileID: 11400000, guid: 72e86cf5422cf9445be7ad4b500ecaff, type: 2}

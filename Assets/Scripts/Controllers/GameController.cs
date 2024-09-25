@@ -45,7 +45,11 @@ public class GameController : MonoBehaviour
                     // Recreate the saved structure
                     if(tile.HasStructure)
                     {
-                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.MovementCost, tile.StructureWidth, tile.StructureHeight));
+                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
+                    }
+                    if(tile.HasFloor)
+                    {
+                        WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallFloor(new Floor(tile.FloorType, tile.FloorMovementCost));
                     }
                 }
             }

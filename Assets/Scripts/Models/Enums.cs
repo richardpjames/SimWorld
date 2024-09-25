@@ -1,3 +1,4 @@
 public enum TerrainType { Grass, Sand, Water }
 public enum StructureType { Wall, Rock }
-public enum BuildMode { Terrain, Structure, Demolish }
+public enum FloorType { Wooden }
+public enum BuildMode { Terrain, Floor, Structure, Demolish }
