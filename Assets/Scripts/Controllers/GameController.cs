@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.F5))
         {
             Save save = new Save();
-            save.PopulateWorld(WorldController.Instance.World);
+            save.PopulateFromWorld(WorldController.Instance.World);
             SaveGame(save);
         }
         // Quick load set to F9

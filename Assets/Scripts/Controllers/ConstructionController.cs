@@ -69,9 +69,12 @@ public class ConstructionController : MonoBehaviour
                     // Place it into the world
                     WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallFloor(floor);
                 }
-                else if (currentBuildMode == BuildMode.Demolish)
+                else if (currentBuildMode == BuildMode.DemolishStructures)
                 {
                     WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveStructure();
+                }
+                else if (currentBuildMode == BuildMode.DemolishFloors)
+                {
                     WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveFloor();
                 }
             }
@@ -108,8 +111,15 @@ public class ConstructionController : MonoBehaviour
     /// <summary>
     /// Set the construction mode to demolish structures
     /// </summary>
-    public void SetDemolish()
+    public void SetDemolishStructures()
     {
-        currentBuildMode = BuildMode.Demolish;
+        currentBuildMode = BuildMode.DemolishStructures;
+    }
+    /// <summary>
+    /// Set the construction mode to demolish floors
+    /// </summary>
+    public void SetDemolishFloors()
+    {
+        currentBuildMode = BuildMode.DemolishFloors;
     }
 }

@@ -15,7 +15,7 @@ public class Save
     /// Creates the save game data from a world (saving the world and tiles)
     /// </summary>
     /// <param name="world">The world containing the tiles to be saved</param>
-    public void PopulateWorld(World world)
+    public void PopulateFromWorld(World world)
     {
         // Set the basics about the world
         WorldName = world.Name;
@@ -48,7 +48,7 @@ public class Save
                     newTile.StructureHeight = structure.Height;
                 }
                 // Default to no floors
-                newTile.HasStructure = false;
+                newTile.HasFloor = false;
                 Floor floor = WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstalledFloor;
                 if (floor != null)
                 {

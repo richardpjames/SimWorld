@@ -102,7 +102,6 @@ public class WorldController : MonoBehaviour
     /// <param name="position">The world position as a Vector2</param>
     private void StructureUpdated(Vector2Int position)
     {
-        Debug.Log("Structure updated");
         // If a structure is removed then set the structure tile to null
         if (World.GetSquare(position).InstalledStructure == null)
         {
@@ -111,9 +110,7 @@ public class WorldController : MonoBehaviour
         // If a structure is added then find the correct tile from the configuration
         else
         {
-            Debug.Log("Adding Structure to Map");
             TileBase tile = structureTileConfiguration.GetTile(World.GetSquare(position).InstalledStructure.StructureType);
-            Debug.Log($"Adding tile: {tile.name}");
             structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
