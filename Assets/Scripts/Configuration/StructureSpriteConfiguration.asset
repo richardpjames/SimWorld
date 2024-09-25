@@ -13,98 +13,104 @@ MonoBehaviour:
   m_Name: StructureSpriteConfiguration
   m_EditorClassIdentifier: 
   configurations:
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -626630004, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 0
     ConnectedSouth: 0
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 1383137400, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 1
     ConnectedSouth: 0
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 2058589212, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 1
     ConnectedSouth: 1
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 1569223148, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 1
     ConnectedSouth: 1
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -960241864, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 0
     ConnectedSouth: 0
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 473346115, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 1
     ConnectedSouth: 0
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 133398236, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 1
     ConnectedSouth: 1
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -17310259, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 1
     ConnectedSouth: 1
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -318775199, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 0
     ConnectedSouth: 0
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -1922940333, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 0
     ConnectedSouth: 1
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -1684440910, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 0
     ConnectedSouth: 1
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 624895397, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 0
     ConnectedSouth: 0
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 1371350320, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 0
     ConnectedSouth: 1
     ConnectedWest: 0
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -1995230876, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 0
     ConnectedEast: 1
     ConnectedSouth: 0
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: -979362224, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 1
     ConnectedSouth: 0
     ConnectedWest: 1
-  - StructureType: Wall
+  - StructureType: 0
     Sprite: {fileID: 1764367517, guid: 821cb9b1b4207d548b91a3b11e9eed37, type: 3}
+    ConnectedNorth: 1
+    ConnectedEast: 0
+    ConnectedSouth: 1
+    ConnectedWest: 1
+  - StructureType: 1
+    Sprite: {fileID: 21300000, guid: 44ca481d55779344386e17f053569d7a, type: 3}
     ConnectedNorth: 1
     ConnectedEast: 0
     ConnectedSouth: 1

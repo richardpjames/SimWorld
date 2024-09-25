@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Structure
 {
     // Structure type is used to look up information from configuration etc.
@@ -39,5 +41,18 @@ public class Structure
         this.Width = width;
         this.Height = height;
         this.Connected = connected;
+    }
+
+    /// <summary>
+    /// Build a structure from a configuration provided by the StructureDataConfiguration scriptable object.
+    /// </summary>
+    /// <param name="config"></param>
+    public Structure(StructureDataConfiguration.StructureConfiguration config)
+    {
+        this.StructureType = config.StructureType;
+        this.MovementCost = config.MovementCost;
+        this.Width = config.Width;
+        this.Height = config.Height;
+        this.Connected = config.Connected;
     }
 }

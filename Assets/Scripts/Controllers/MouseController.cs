@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -23,11 +22,8 @@ public class MouseController : MonoBehaviour
     // For drawing the indicators
     private GameObject indicatorTilemap;
     private Tile indicatorTile;
-    // For tracking what we are currently building
-    private TerrainType currentTerrainType = TerrainType.Grass;
-    private StructureType currentStructureType = StructureType.Wall;
-    // For tracking the type of building we are doing
-    private BuildMode currentBuildMode = BuildMode.Terrain;
+    // To let others know when a selection is complete
+    public Action<Vector3, Vector3> OnDragComplete;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -129,26 +125,12 @@ public class MouseController : MonoBehaviour
         {
             // Get an X and y position bound by the world controller
             dragEnd = WorldController.Instance.GetSquarePosition(mousePosition.x, mousePosition.y);
-            // For now set the type for the tile
-            for (int x = (int)Mathf.Min(dragStart.x, dragEnd.x); x <= (int)Mathf.Max(dragStart.x, dragEnd.x); x++)
-            {
-                for (int y = (int)Mathf.Min(dragStart.y, dragEnd.y); y <= (int)Mathf.Max(dragStart.y, dragEnd.y); y++)
-                {
-                    if (currentBuildMode == BuildMode.Terrain)
-                    {
-                        WorldController.Instance.SetSquareType(new Vector2Int(x, y), currentTerrainType);
-                    }
-                    else if (currentBuildMode == BuildMode.Structure)
-                    {
-                        Structure wall = new Structure(currentStructureType, 0, 1, 1, true);
-                        WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallStructure(wall);
-                    }
-                    else if (currentBuildMode == BuildMode.Demolish)
-                    {
-                        WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).RemoveStructure();
-                    }
-                }
-            }
+            // Work out the top left
+            Vector3 topLeft = new Vector3(Mathf.Min(dragStart.x, dragEnd.x), Mathf.Min(dragStart.y, dragEnd.y), 0f);
+            // Work out the bottom right
+            Vector3 bottomRight = new Vector3(Mathf.Max(dragStart.x, dragEnd.x), Mathf.Max(dragStart.y, dragEnd.y), 0f);
+            // Let other components know that dragging is complete
+            OnDragComplete?.Invoke(topLeft, bottomRight);
             // Reset the dragging indicator
             dragging = false;
         }
@@ -166,21 +148,6 @@ public class MouseController : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void SetTerrain(string name)
-    {
-        currentBuildMode = BuildMode.Terrain;
-        Enum.TryParse(name, out currentTerrainType);
-    }
-    public void SetStucture(string name)
-    {
-        currentBuildMode = BuildMode.Structure;
-        Enum.TryParse(name, out currentStructureType);
-    }
-    public void SetDemolish()
-    {
-        currentBuildMode = BuildMode.Demolish;
     }
 
     /// <summary>
