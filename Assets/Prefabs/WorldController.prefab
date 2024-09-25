@@ -53,8 +53,8 @@ MonoBehaviour:
   floorTilemap: {fileID: 0}
   structureTilemap: {fileID: 0}
   worldName: Default
-  height: 5
-  width: 5
+  height: 200
+  width: 200
   waves:
   - seed: 1
     frequency: 50
