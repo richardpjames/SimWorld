@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configurations:
   - Terrain: 0
-    Tile: {fileID: 11400000, guid: 45d947f44c8fa6a4c90864769316192b, type: 2}
+    Tile: {fileID: 11400000, guid: 07daa403efc08d14b8261db2fd1169c9, type: 2}
   - Terrain: 1
-    Tile: {fileID: 11400000, guid: c92c2f59b33d8704bb3151139638502e, type: 2}
+    Tile: {fileID: 11400000, guid: 1533a8ec36545374c83007885d7074f8, type: 2}
   - Terrain: 2
     Tile: {fileID: 11400000, guid: 72e86cf5422cf9445be7ad4b500ecaff, type: 2}

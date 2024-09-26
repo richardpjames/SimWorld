@@ -24,7 +24,6 @@ public class TerrainTileConfiguration : ScriptableObject
     {
         // Query our list for an item which matches the properties of the square 
         TileConfiguration match = configurationList.FirstOrDefault<TileConfiguration>(c => c.Terrain == type);
-        // Return the matched sprite from the above
         return match.Tile;
     }
 
