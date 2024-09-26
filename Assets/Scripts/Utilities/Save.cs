@@ -34,11 +34,11 @@ public class Save
                 newTile.X = x;
                 newTile.Y = y;
                 // Set the tile type from the controller
-                newTile.Type = WorldController.Instance.World.GetSquare(new Vector2Int(x,y)).TerrainType;
+                newTile.Type = WorldController.Instance.GetTerrain(new Vector2Int(x,y)).TerrainType;
                 // Default to no structures
                 newTile.HasStructure = false;
                 // Add any structures
-                Structure structure = WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstalledStructure;
+                Structure structure = WorldController.Instance.GetStructure(new Vector2Int(x, y));
                 if (structure != null)
                 {
                     newTile.HasStructure = true;
@@ -49,7 +49,7 @@ public class Save
                 }
                 // Default to no floors
                 newTile.HasFloor = false;
-                Floor floor = WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstalledFloor;
+                Floor floor = WorldController.Instance.GetFloor(new Vector2Int(x, y));
                 if (floor != null)
                 {
                     newTile.HasFloor = true;

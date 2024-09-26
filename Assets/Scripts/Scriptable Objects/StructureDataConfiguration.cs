@@ -36,6 +36,5 @@ public class StructureDataConfiguration : ScriptableObject
         public int Width;
         public int Height;
         public int MovementCost;
-        public bool Connected;
     }
 }

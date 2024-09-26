@@ -49,6 +49,8 @@ public class WorldController : MonoBehaviour
 
         // Initialise a new world
         World = new World(name, size);
+        // Generate random biomes
+        World.GenerateBiomes(waves, scale);
 
         // Set the correct tile in the tilemap for each square
         for (int x = 0; x < World.Size.x; x++)
@@ -56,63 +58,94 @@ public class WorldController : MonoBehaviour
             for (int y = 0; y < World.Size.y; y++)
             {
                 // Create a tile with the correct sprite and add to the tilemap
-                TileBase tile = terrainTileConfiguration.GetTile(World.GetSquare(new Vector2Int(x, y)).TerrainType);
+                TileBase tile = terrainTileConfiguration.GetTile(World.GetTerrain(new Vector2Int(x, y)).TerrainType);
                 terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), tile);
-                // Subscribe to any square or structure changes
-                World.GetSquare(new Vector2Int(x, y)).OnSquareUpdated += SquareUpdated;
-                World.GetSquare(new Vector2Int(x, y)).OnStructureUpdated += StructureUpdated;
-                World.GetSquare(new Vector2Int(x, y)).OnFloorUpdated += FloorUpdated;
             }
         }
-        // Generate random biomes
-        World.GenerateBiomes(waves, scale);
+
         // Set the camera to the center of the world
         Camera.main.transform.position = new Vector3(World.Size.x / 2, World.Size.y / 2, Camera.main.transform.position.z);
     }
 
     /// <summary>
-    /// This should be called whenever a tile is updated at the specified position
+    /// Gets the floor at the specified position
     /// </summary>
-    /// <param name="position">The world position as a Vector2</param>
-    private void SquareUpdated(Vector2Int position)
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public Floor GetFloor(Vector2Int position)
     {
-        // Update the terrain tile based on new information
-        TileBase tile = terrainTileConfiguration.GetTile(World.GetSquare(position).TerrainType);
-        // Apply the tile to the tilemap
-        terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+        return World.GetFloor(position);
     }
 
     /// <summary>
-    /// To be called whenever a structure is updated at the specified position
+    /// Installs a floor at the specified position and also updates the graphics.
     /// </summary>
-    /// <param name="position">The world position as a Vector2</param>
-    private void StructureUpdated(Vector2Int position)
+    /// <param name="position"></param>
+    /// <param name="floor"></param>
+    public void InstallFloor(Vector2Int position, Floor floor)
     {
-        // If a structure is removed then set the structure tile to null
-        if (World.GetSquare(position).InstalledStructure == null)
+        bool success = World.InstallFloor(position, floor);
+        // If the floor was installed, then update the tilemap
+        if (success)
         {
-            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+            // Update the floor tile based on new information
+            TileBase tile = floorTileConfiguration.GetTile(floor.FloorType);
+            // Apply the tile to the tilemap
+            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
-        // If a structure is added then find the correct tile from the configuration
-        else
+    }
+
+    /// <summary>
+    /// Removes a floor at the specified position and also updates the graphics.
+    /// </summary>
+    /// <param name="position"></param>
+    public void RemoveFloor(Vector2Int position)
+    {
+        bool success = World.RemoveFloor(position);
+        // If the floor was removed then update the tilemap
+        if (success)
         {
-            TileBase tile = structureTileConfiguration.GetTile(World.GetSquare(position).InstalledStructure.StructureType);
+            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+        }
+    }
+
+    /// <summary>
+    /// Gets the structure at the specified position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public Structure GetStructure(Vector2Int position)
+    {
+        return World.GetStructure(position);
+    }
+
+    /// <summary>
+    /// Installs a structure at the specified position and also updates the graphics.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="structure"></param>
+    public void InstallStructure(Vector2Int position, Structure structure)
+    {
+        bool success = World.InstallStructure(position, structure);
+        // If the floor was installed, then update the tilemap
+        if (success)
+        {
+            TileBase tile = structureTileConfiguration.GetTile(structure.StructureType);
             structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
 
-    private void FloorUpdated(Vector2Int position)
+    /// <summary>
+    /// Removes a floor at the specified position and also updates the graphics.
+    /// </summary>
+    /// <param name="position"></param>
+    public void RemoveStructure(Vector2Int position)
     {
-        if (World.GetSquare(position).InstalledFloor == null)
+        bool success = World.RemoveStructure(position);
+        // If the floor was removed then update the tilemap
+        if (success)
         {
-            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
-        }
-        else
-        {
-            // Update the floor tile based on new information
-            TileBase tile = floorTileConfiguration.GetTile(World.GetSquare(position).InstalledFloor.FloorType);
-            // Apply the tile to the tilemap
-            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
         }
     }
 
@@ -138,14 +171,31 @@ public class WorldController : MonoBehaviour
     }
 
     /// <summary>
+    /// Get the terrain at a particular position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public Terrain GetTerrain(Vector2Int position)
+    {
+        return World.GetTerrain(position);
+    }
+
+    /// <summary>
     /// Set the type of a tile at a sepecific world location
     /// </summary>
     /// <param name="x">The x coordinate</param>
     /// <param name="y">The y coordinate</param>
     /// <param name="type">The type (e.g. sand)</param>
-    public void SetSquareType(Vector2Int position, TerrainType type)
+    public void SetTerrainType(Vector2Int position, TerrainType type)
     {
         // Set the tile to the new type
-        World.GetSquare(position).SetType(type);
+        bool success = World.GetTerrain(position).SetType(type);
+        if (success)
+        {
+            // Update the terrain tile based on new information
+            TileBase tile = terrainTileConfiguration.GetTile(type);
+            // Apply the tile to the tilemap
+            terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+        }
     }
 }

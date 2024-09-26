@@ -70,15 +70,15 @@ public class GameController : MonoBehaviour
             // Populate all of the tiles correctly
             foreach (SaveTile tile in save.Tiles)
             {
-                WorldController.Instance.SetSquareType(new Vector2Int(tile.X, tile.Y), tile.Type);
+                WorldController.Instance.SetTerrainType(new Vector2Int(tile.X, tile.Y), tile.Type);
                 // Recreate the saved structure
                 if (tile.HasStructure)
                 {
-                    WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallStructure(new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
+                    WorldController.Instance.InstallStructure(new Vector2Int(tile.X, tile.Y),new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
                 }
                 if (tile.HasFloor)
                 {
-                    WorldController.Instance.World.GetSquare(new Vector2Int(tile.X, tile.Y)).InstallFloor(new Floor(tile.FloorType, tile.FloorMovementCost));
+                    WorldController.Instance.InstallFloor(new Vector2Int(tile.X, tile.Y), new Floor(tile.FloorType, tile.FloorMovementCost));
                 }
             }
         }
@@ -117,6 +117,11 @@ public class GameController : MonoBehaviour
     public void MainMenu()
     {
         Save();
+        // Remove any unneeded managers to reset the game
+        Destroy(GameObject.Find("WorldController"));
+        Destroy(GameObject.Find("ConstructionController"));
+        Destroy(GameObject.Find("MouseController"));
+        // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }
 

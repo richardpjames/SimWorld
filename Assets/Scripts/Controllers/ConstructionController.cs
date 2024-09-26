@@ -49,7 +49,7 @@ public class ConstructionController : MonoBehaviour
             {
                 if (currentBuildMode == BuildMode.Terrain)
                 {
-                    WorldController.Instance.SetSquareType(new Vector2Int(x, y), currentTerrainType);
+                    WorldController.Instance.SetTerrainType(new Vector2Int(x, y), currentTerrainType);
                 }
                 else if (currentBuildMode == BuildMode.Structure)
                 {
@@ -58,7 +58,7 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Structure structure = new Structure(config);
                     // Place it into the world
-                    WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallStructure(structure);
+                    WorldController.Instance.InstallStructure(new Vector2Int(x, y), structure);
                 }
                 else if (currentBuildMode == BuildMode.Floor)
                 {
@@ -67,19 +67,18 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Floor floor = new Floor(config);
                     // Place it into the world
-                    WorldController.Instance.World.GetSquare(new Vector2Int(x, y)).InstallFloor(floor);
+                    WorldController.Instance.InstallFloor(new Vector2Int(x, y), floor);
                 }
                 else if (currentBuildMode == BuildMode.Demolish)
                 {
                     // During demolision we first look for any structures (and remove) and then next, any floors
-                    Square square = WorldController.Instance.World.GetSquare(new Vector2Int(x, y));
-                    if (square.InstalledStructure != null)
+                    if (WorldController.Instance.GetStructure(new Vector2Int(x, y)) != null)
                     {
-                        square.RemoveStructure();
+                        WorldController.Instance.World.RemoveStructure(new Vector2Int(x, y));
                     }
-                    else if (square.InstalledFloor != null)
+                    else if (WorldController.Instance.GetFloor(new Vector2Int(x, y)) != null)
                     {
-                        square.RemoveFloor();
+                        WorldController.Instance.RemoveFloor(new Vector2Int(x, y));
                     }
                 }
             }

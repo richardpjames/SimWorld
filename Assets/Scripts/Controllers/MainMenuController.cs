@@ -11,10 +11,6 @@ public class MainMenuController : MonoBehaviour
     {
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-        // Remove any unneeded managers to reset the game if coming from a world
-        Destroy(GameObject.Find("WorldController"));
-        Destroy(GameObject.Find("ConstructionController"));
-        Destroy(GameObject.Find("MouseController"));
         // Set up actions for buttons
         root.Q<Button>("quit").clicked += () => GameController.Instance.Quit();
         root.Q<Button>("start-game").clicked += StartGame;

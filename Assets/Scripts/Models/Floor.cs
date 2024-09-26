@@ -6,7 +6,7 @@ public class Floor
 {
     public FloorType FloorType { get; private set; }
     public float MovementCost { get; private set; }
-    public Square BaseSquare { get; set; }
+    public Terrain BaseSquare { get; set; }
 
     // Constructor takes all of the required information for creating a floor
     public Floor(FloorType floorType, float movementCost)
