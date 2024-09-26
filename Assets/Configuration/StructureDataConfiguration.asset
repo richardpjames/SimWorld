@@ -17,9 +17,9 @@ MonoBehaviour:
     Width: 1
     Height: 1
     MovementCost: 0
-    Connected: 1
+    Tile: {fileID: 11400000, guid: 7b3d0af9c91d36440a43e955dfd63eb5, type: 2}
   - StructureType: 1
     Width: 1
     Height: 1
     MovementCost: 0
-    Connected: 0
+    Tile: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}

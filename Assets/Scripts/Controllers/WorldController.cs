@@ -5,9 +5,9 @@ using UnityEngine.Tilemaps;
 public class WorldController : MonoBehaviour
 {
     [Header("Tile Configuration")]
-    [SerializeField] private TerrainTileConfiguration terrainTileConfiguration;
-    [SerializeField] private StructureTileConfiguration structureTileConfiguration;
-    [SerializeField] private FloorTileConfiguration floorTileConfiguration;
+    [SerializeField] private TerrainDataConfiguration terrainTileConfiguration;
+    [SerializeField] private StructureDataConfiguration structureDataConfiguration;
+    [SerializeField] private FloorDataConfiguration floorDataConfiguration;
     [Header("Tilemaps")]
     [SerializeField] private Grid worldGrid;
     [SerializeField] private Tilemap terrainTilemap;
@@ -18,7 +18,8 @@ public class WorldController : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private Vector2 offset;
 
-    public World World { get; private set; }
+    // All access to the world is through the controller (no direct references)
+    private World world;
 
     // Allow for a static instance and accessible variables
     public static WorldController Instance { get; private set; }
@@ -48,23 +49,38 @@ public class WorldController : MonoBehaviour
         floorTilemap.GetComponent<Tilemap>().ClearAllTiles();
 
         // Initialise a new world
-        World = new World(name, size);
+        world = new World(name, size);
         // Generate random biomes
-        World.GenerateBiomes(waves, scale);
+        world.GenerateBiomes(waves, scale);
 
         // Set the correct tile in the tilemap for each square
-        for (int x = 0; x < World.Size.x; x++)
+        for (int x = 0; x < world.Size.x; x++)
         {
-            for (int y = 0; y < World.Size.y; y++)
+            for (int y = 0; y < world.Size.y; y++)
             {
                 // Create a tile with the correct sprite and add to the tilemap
-                TileBase tile = terrainTileConfiguration.GetTile(World.GetTerrain(new Vector2Int(x, y)).TerrainType);
+                TileBase tile = terrainTileConfiguration.GetTile(world.GetTerrain(new Vector2Int(x, y)).TerrainType);
                 terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), tile);
             }
         }
 
         // Set the camera to the center of the world
-        Camera.main.transform.position = new Vector3(World.Size.x / 2, World.Size.y / 2, Camera.main.transform.position.z);
+        Camera.main.transform.position = new Vector3(world.Size.x / 2, world.Size.y / 2, Camera.main.transform.position.z);
+    }
+
+    // TODO: Get rid of references to this throughout the game
+    public World GetWorld()
+    {
+        return world;
+    }
+
+    /// <summary>
+    /// Gets the size of the world as a vector
+    /// </summary>
+    /// <returns></returns>
+    public Vector2Int GetWorldSize()
+    {
+        return world.Size; 
     }
 
     /// <summary>
@@ -74,7 +90,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Floor GetFloor(Vector2Int position)
     {
-        return World.GetFloor(position);
+        return world.GetFloor(position);
     }
 
     /// <summary>
@@ -84,12 +100,12 @@ public class WorldController : MonoBehaviour
     /// <param name="floor"></param>
     public void InstallFloor(Vector2Int position, Floor floor)
     {
-        bool success = World.InstallFloor(position, floor);
+        bool success = world.InstallFloor(position, floor);
         // If the floor was installed, then update the tilemap
         if (success)
         {
             // Update the floor tile based on new information
-            TileBase tile = floorTileConfiguration.GetTile(floor.FloorType);
+            TileBase tile = floorDataConfiguration.GetTile(floor.FloorType);
             // Apply the tile to the tilemap
             floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
@@ -101,7 +117,7 @@ public class WorldController : MonoBehaviour
     /// <param name="position"></param>
     public void RemoveFloor(Vector2Int position)
     {
-        bool success = World.RemoveFloor(position);
+        bool success = world.RemoveFloor(position);
         // If the floor was removed then update the tilemap
         if (success)
         {
@@ -116,7 +132,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Structure GetStructure(Vector2Int position)
     {
-        return World.GetStructure(position);
+        return world.GetStructure(position);
     }
 
     /// <summary>
@@ -126,11 +142,11 @@ public class WorldController : MonoBehaviour
     /// <param name="structure"></param>
     public void InstallStructure(Vector2Int position, Structure structure)
     {
-        bool success = World.InstallStructure(position, structure);
+        bool success = world.InstallStructure(position, structure);
         // If the floor was installed, then update the tilemap
         if (success)
         {
-            TileBase tile = structureTileConfiguration.GetTile(structure.StructureType);
+            TileBase tile = structureDataConfiguration.GetTile(structure.StructureType);
             structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
@@ -141,7 +157,7 @@ public class WorldController : MonoBehaviour
     /// <param name="position"></param>
     public void RemoveStructure(Vector2Int position)
     {
-        bool success = World.RemoveStructure(position);
+        bool success = world.RemoveStructure(position);
         // If the floor was removed then update the tilemap
         if (success)
         {
@@ -158,15 +174,15 @@ public class WorldController : MonoBehaviour
     public Vector2Int GetSquarePosition(float x, float y)
     {
         // Check that the world is created
-        if (World == null || worldGrid == null)
+        if (world == null || worldGrid == null)
         {
             return Vector2Int.zero;
         }
         // Get the correct position from the grid
         Vector3 position = worldGrid.WorldToCell(new Vector3(x, y, 0));
         // Clamp to the world bounds
-        position.x = Mathf.Clamp(position.x, 0, World.Size.x - 1);
-        position.y = Mathf.Clamp(position.y, 0, World.Size.y - 1);
+        position.x = Mathf.Clamp(position.x, 0, world.Size.x - 1);
+        position.y = Mathf.Clamp(position.y, 0, world.Size.y - 1);
         return new Vector2Int((int)position.x, (int)position.y);
     }
 
@@ -177,7 +193,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Terrain GetTerrain(Vector2Int position)
     {
-        return World.GetTerrain(position);
+        return world.GetTerrain(position);
     }
 
     /// <summary>
@@ -189,7 +205,7 @@ public class WorldController : MonoBehaviour
     public void SetTerrainType(Vector2Int position, TerrainType type)
     {
         // Set the tile to the new type
-        bool success = World.GetTerrain(position).SetType(type);
+        bool success = world.GetTerrain(position).SetType(type);
         if (success)
         {
             // Update the terrain tile based on new information

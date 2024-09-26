@@ -4,8 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName = "StructureTileConfiguration", menuName = "ScriptableObjects/Structure Tile Configuration", order = 1)]
-public class StructureTileConfiguration : ScriptableObject
+[CreateAssetMenu(fileName = "TerrainDataConfiguration", menuName = "ScriptableObjects/Terrain Data Configuration", order = 1)]
+public class TerrainDataConfiguration : ScriptableObject
 {
     public TileConfiguration[] configurations;
     private List<TileConfiguration> configurationList = new List<TileConfiguration>();
@@ -20,18 +20,17 @@ public class StructureTileConfiguration : ScriptableObject
     }
 
     // Update is called once per frame
-    public TileBase GetTile(StructureType type)
+    public TileBase GetTile(TerrainType type)
     {
-        // Query our list for an item which matches the properties of the structure 
-        TileConfiguration match = configurationList.FirstOrDefault<TileConfiguration>(c => c.StructureType == type);
-        // Return the matched sprite from the above
+        // Query our list for an item which matches the properties of the square 
+        TileConfiguration match = configurationList.FirstOrDefault<TileConfiguration>(c => c.Terrain == type);
         return match.Tile;
     }
 
     [Serializable]
     public struct TileConfiguration
     {
-        public StructureType StructureType;
+        public TerrainType Terrain;
         public TileBase Tile;
     }
 }

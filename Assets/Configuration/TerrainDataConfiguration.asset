@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97eb5d0be63f4f44d9cb3504a1788a35, type: 3}
-  m_Name: TerrainTileConfiguration
+  m_Name: TerrainDataConfiguration
   m_EditorClassIdentifier: 
   configurations:
   - Terrain: 0

@@ -74,7 +74,7 @@ public class ConstructionController : MonoBehaviour
                     // During demolision we first look for any structures (and remove) and then next, any floors
                     if (WorldController.Instance.GetStructure(new Vector2Int(x, y)) != null)
                     {
-                        WorldController.Instance.World.RemoveStructure(new Vector2Int(x, y));
+                        WorldController.Instance.RemoveStructure(new Vector2Int(x, y));
                     }
                     else if (WorldController.Instance.GetFloor(new Vector2Int(x, y)) != null)
                     {

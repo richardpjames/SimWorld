@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "StructureDataConfiguration", menuName = "ScriptableObjects/Structure Data Configuration", order = 1)]
 public class StructureDataConfiguration : ScriptableObject
@@ -18,7 +19,6 @@ public class StructureDataConfiguration : ScriptableObject
         }
     }
 
-    // Update is called once per frame
     public StructureConfiguration GetConfiguration(StructureType type)
     {
         // Query our list for an item which matches the properties of the structure 
@@ -29,6 +29,16 @@ public class StructureDataConfiguration : ScriptableObject
         return match;
     }
 
+    public TileBase GetTile(StructureType type)
+    {
+        // Query our list for an item which matches the properties of the structure 
+        // i.e. the same name and connections
+        StructureConfiguration match = configurationList.FirstOrDefault<StructureConfiguration>(c => c.StructureType == type);
+
+        // Return the matched sprite from the above
+        return match.Tile;   
+    }
+
     [Serializable]
     public struct StructureConfiguration
     {
@@ -36,5 +46,6 @@ public class StructureDataConfiguration : ScriptableObject
         public int Width;
         public int Height;
         public int MovementCost;
+        public TileBase Tile;
     }
 }

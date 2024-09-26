@@ -78,7 +78,7 @@ public class MouseController : MonoBehaviour
             // Move it towards the mouse position based on the speed and delta time
             cam.transform.Translate((lastMousePosition - mousePosition) * (scrollSpeed / cam.orthographicSize) * Time.deltaTime);
             // Clamp the position so that the level is always visible
-            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.World.Size.x), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.World.Size.y), cam.transform.position.z);
+            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.GetWorldSize().x), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.GetWorldSize().y), cam.transform.position.z);
         }
     }
 

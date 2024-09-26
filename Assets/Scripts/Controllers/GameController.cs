@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour
     public void Save()
     {
         Save save = new Save();
-        save.PopulateFromWorld(WorldController.Instance.World);
+        save.PopulateFromWorld(WorldController.Instance.GetWorld());
         SaveGame(save);
     }
 

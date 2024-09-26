@@ -2915,6 +2915,18 @@ PrefabInstance:
       propertyPath: structureTilemap
       value: 
       objectReference: {fileID: 1021952713}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: floorDataConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: 881e7fdcfd563cc479f98cc9deea1945, type: 2}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: terrainTileConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: 88859a041de7f7d4cbff36fa8fcf09df, type: 2}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: structureDataConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: 83ccc20f7534d7040aec80a4de7fe243, type: 2}
     - target: {fileID: 7020827817224751349, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

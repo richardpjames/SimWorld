@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(fileName = "FloorDataConfiguration", menuName = "ScriptableObjects/Floor Data Configuration", order = 1)]
 public class FloorDataConfiguration : ScriptableObject
@@ -29,10 +30,21 @@ public class FloorDataConfiguration : ScriptableObject
         return match;
     }
 
+    public TileBase GetTile(FloorType type)
+    {
+        // Query our list for an item which matches the properties of the floor 
+        // i.e. the same name
+        FloorConfiguration match = configurationList.FirstOrDefault<FloorConfiguration>(c => c.FloorType == type);
+
+        // Return the matched sprite from the above
+        return match.Tile;
+    }
+
     [Serializable]
     public struct FloorConfiguration
     {
         public FloorType FloorType;
         public int MovementCost;
+        public TileBase Tile;
     }
 }
