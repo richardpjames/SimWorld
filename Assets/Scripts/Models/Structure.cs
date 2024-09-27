@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Structure
+public class Structure: TileType, IBuildableObject
 {
     // Structure type is used to look up information from configuration etc.
     public StructureType StructureType { get; private set; }

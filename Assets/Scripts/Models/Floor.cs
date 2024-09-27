@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor
+public class Floor : TileType, IBuildableObject
 {
     public FloorType FloorType { get; private set; }
     public float MovementCost { get; private set; }

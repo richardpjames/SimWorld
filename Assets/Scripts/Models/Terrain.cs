@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
-public class Terrain
+public class Terrain : TileType
 {
     // Holds the type for this particular tile
     public TerrainType TerrainType { get; set; }

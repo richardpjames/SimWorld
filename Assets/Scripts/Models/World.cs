@@ -1,14 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class World
 {
     // This holds our world
-    private Dictionary<Vector2Int, Terrain> terrains;
-    private Dictionary<Vector2Int, Structure> structures;
-    private Dictionary<Vector2Int, Floor> floors;
+    private Dictionary<Vector2Int, TileType> _terrains;
+    private Dictionary<Vector2Int, TileType> _structures;
+    private Dictionary<Vector2Int, TileType> _floors;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
 
@@ -18,16 +16,16 @@ public class World
         this.Name = name;
         this.Size = size;
         // Initialise the array of tiles
-        terrains = new Dictionary<Vector2Int, Terrain>();
-        structures = new Dictionary<Vector2Int, Structure>();
-        floors = new Dictionary<Vector2Int, Floor>();
+        _terrains = new Dictionary<Vector2Int, TileType>();
+        _structures = new Dictionary<Vector2Int, TileType>();
+        _floors = new Dictionary<Vector2Int, TileType>();
         // Creates a world map with the height and width specified
         for (int x = 0; x < Size.x; x++)
         {
             for (int y = 0; y < Size.y; y++)
             {
                 // Default each tile to be grass in the first instance
-                terrains.Add(new Vector2Int(x, y), new Terrain(TerrainType.Grass));
+                _terrains.Add(new Vector2Int(x, y), new Terrain(TerrainType.Grass));
             }
         }
     }
@@ -50,82 +48,31 @@ public class World
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    GetTerrain(new Vector2Int(x, y)).SetType(TerrainType.Water);
+                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
+                    terrain.SetType(TerrainType.Water);
                 }
                 // Then sand as the height increases
                 else if (heightMap[x, y] < 0.3)
                 {
-                    GetTerrain(new Vector2Int(x, y)).SetType(TerrainType.Sand);
+                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
+                    terrain.SetType(TerrainType.Sand);
                 }
                 // All remaining tiles are grass
                 else
                 {
-                    GetTerrain(new Vector2Int(x, y)).SetType(TerrainType.Grass);
+                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
+                    terrain.SetType(TerrainType.Grass);
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Returns the tile within the world at the specified x and y coordinates.
-    /// </summary>
-    /// <param name="x">The x world position.</param>
-    /// <param name="y">The y world position.</param>
-    /// <returns>The Tile at the specified world position.</returns>
-    public Terrain GetTerrain(Vector2Int position)
+    // Get the floor or structure at a position
+    public T Get<T>(Vector2Int position) where T : TileType
     {
-        // Check for whether we are out of bounds
-        if (CheckBounds(position) && terrains.ContainsKey(position))
+        if (CheckBounds(position) && GetDictionary<T>().ContainsKey(position))
         {
-            // If not then return the terrain
-            return terrains[position];
-        }
-        // If we are, then return null
-        return null;
-    }
-    // Get the structure at a position
-    public Structure GetStructure(Vector2Int position)
-    {
-        if (CheckBounds(position) && structures.ContainsKey(position))
-        {
-            return structures[position];
-        }
-        return null;
-    }
-
-    /// <summary>
-    /// Places a structure into the tile
-    /// </summary>
-    /// <param name="type">The structure to be installed /param>
-    public bool InstallStructure(Vector2Int position, Structure structure)
-    {
-        if (CheckBounds(position) && GetTerrain(position).TerrainType != TerrainType.Water && !structures.ContainsKey(position))
-        {
-            structures.Add(position, structure);
-            return true;
-        }
-        // If the floor could not be installed
-        return false;
-    }
-    /// <summary>
-    /// Removes any structures installed on this tile
-    /// </summary>
-    public bool RemoveStructure(Vector2Int position)
-    {
-        if (structures.ContainsKey(position))
-        {
-            structures.Remove(position);
-            return true;
-        }
-        return false;
-    }
-
-    // Get the floor at a position
-    public Floor GetFloor(Vector2Int position)
-    {
-        if (CheckBounds(position) && floors.ContainsKey(position))
-        {
-            return floors[position];
+            return (T)GetDictionary<T>()[position];
         }
         return null;
     }
@@ -134,25 +81,26 @@ public class World
     /// Places a floor into the tile
     /// </summary>
     /// <param name="floor">The floor to be installed </param>
-    public bool InstallFloor(Vector2Int position, Floor floor)
+    public bool Install<T>(Vector2Int position, T item) where T : TileType, IBuildableObject
     {
-        if (CheckBounds(position) && GetTerrain(position).TerrainType != TerrainType.Water && !floors.ContainsKey(position))
+        // Check if we are out of bounds or trying to build on water
+        if (CheckBounds(position) && Get<Terrain>(position).TerrainType != TerrainType.Water && !GetDictionary<T>().ContainsKey(position))
         {
-            floors.Add(position, floor);
+            GetDictionary<T>().Add(position, item);
             return true;
         }
-        // If the floor could not be installed
+        // If the item could not be installed
         return false;
     }
 
     /// <summary>
-    /// Removes any floor installed on this tile
+    /// Removes any floor or structure installed on this tile
     /// </summary>
-    public bool RemoveFloor(Vector2Int position)
+    public bool Remove<T>(Vector2Int position) where T : TileType, IBuildableObject
     {
-        if (floors.ContainsKey(position))
+        if (GetDictionary<T>().ContainsKey(position))
         {
-            floors.Remove(position);
+            GetDictionary<T>().Remove(position);
             return true;
         }
         return false;
@@ -167,4 +115,18 @@ public class World
         return !(position.x < 0 || position.x >= Size.x || position.y < 0 || position.y >= Size.y);
     }
 
+    /// <summary>
+    /// Gets the appropriate dictionary based on the type passed in
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    private Dictionary<Vector2Int, TileType> GetDictionary<T>()
+    {
+        // Return the correct tilemap based on the type
+        if (typeof(T) == typeof(Structure)) return _structures;
+        if (typeof(T) == typeof(Floor)) return _floors;
+        if (typeof(T) == typeof(Terrain)) return _terrains;
+        // For all other types return null
+        return null;
+    }
 }

@@ -44,9 +44,9 @@ public class WorldController : MonoBehaviour
     public void Initialize(string name, Vector2Int size)
     {
         // Clear any tiles if there is a tilemap present
-        terrainTilemap.GetComponent<Tilemap>().ClearAllTiles();
-        structureTilemap.GetComponent<Tilemap>().ClearAllTiles();
-        floorTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        GetTilemap<Terrain>().ClearAllTiles();
+        GetTilemap<Structure>().ClearAllTiles();
+        GetTilemap<Floor>().ClearAllTiles();
 
         // Initialise a new world
         world = new World(name, size);
@@ -59,8 +59,9 @@ public class WorldController : MonoBehaviour
             for (int y = 0; y < world.Size.y; y++)
             {
                 // Create a tile with the correct sprite and add to the tilemap
-                TileBase tile = terrainTileConfiguration.GetTile(world.GetTerrain(new Vector2Int(x, y)).TerrainType);
-                terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(x, y, 0), tile);
+                Terrain terrain = world.Get<Terrain>(new Vector2Int(x, y));
+                TileBase tile = terrainTileConfiguration.GetTile(terrain.TerrainType);
+                GetTilemap<Terrain>().SetTile(new Vector3Int(x, y, 0), tile);
             }
         }
 
@@ -80,7 +81,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Vector2Int GetWorldSize()
     {
-        return world.Size; 
+        return world.Size;
     }
 
     /// <summary>
@@ -90,7 +91,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Floor GetFloor(Vector2Int position)
     {
-        return world.GetFloor(position);
+        return world.Get<Floor>(position);
     }
 
     /// <summary>
@@ -100,14 +101,14 @@ public class WorldController : MonoBehaviour
     /// <param name="floor"></param>
     public void InstallFloor(Vector2Int position, Floor floor)
     {
-        bool success = world.InstallFloor(position, floor);
+        bool success = world.Install<Floor>(position, floor);
         // If the floor was installed, then update the tilemap
         if (success)
         {
             // Update the floor tile based on new information
             TileBase tile = floorDataConfiguration.GetTile(floor.FloorType);
             // Apply the tile to the tilemap
-            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+            GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
 
@@ -117,11 +118,11 @@ public class WorldController : MonoBehaviour
     /// <param name="position"></param>
     public void RemoveFloor(Vector2Int position)
     {
-        bool success = world.RemoveFloor(position);
+        bool success = world.Remove<Floor>(position);
         // If the floor was removed then update the tilemap
         if (success)
         {
-            floorTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+            GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), null);
         }
     }
 
@@ -132,7 +133,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Structure GetStructure(Vector2Int position)
     {
-        return world.GetStructure(position);
+        return world.Get<Structure>(position);
     }
 
     /// <summary>
@@ -142,12 +143,12 @@ public class WorldController : MonoBehaviour
     /// <param name="structure"></param>
     public void InstallStructure(Vector2Int position, Structure structure)
     {
-        bool success = world.InstallStructure(position, structure);
+        bool success = world.Install<Structure>(position, structure);
         // If the floor was installed, then update the tilemap
         if (success)
         {
             TileBase tile = structureDataConfiguration.GetTile(structure.StructureType);
-            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+            GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
 
@@ -157,11 +158,11 @@ public class WorldController : MonoBehaviour
     /// <param name="position"></param>
     public void RemoveStructure(Vector2Int position)
     {
-        bool success = world.RemoveStructure(position);
+        bool success = world.Remove<Structure>(position);
         // If the floor was removed then update the tilemap
         if (success)
         {
-            structureTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+            GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), null);
         }
     }
 
@@ -193,7 +194,7 @@ public class WorldController : MonoBehaviour
     /// <returns></returns>
     public Terrain GetTerrain(Vector2Int position)
     {
-        return world.GetTerrain(position);
+        return world.Get<Terrain>(position);
     }
 
     /// <summary>
@@ -205,13 +206,30 @@ public class WorldController : MonoBehaviour
     public void SetTerrainType(Vector2Int position, TerrainType type)
     {
         // Set the tile to the new type
-        bool success = world.GetTerrain(position).SetType(type);
+        Terrain terrain = world.Get<Terrain>(position);
+        bool success = terrain.SetType(type);
         if (success)
         {
             // Update the terrain tile based on new information
             TileBase tile = terrainTileConfiguration.GetTile(type);
             // Apply the tile to the tilemap
-            terrainTilemap.GetComponent<Tilemap>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
+            GetTilemap<Terrain>().SetTile(new Vector3Int(position.x, position.y, 0), tile);
         }
     }
+
+    /// <summary>
+    /// Get the tilemap component for the provided type
+    /// </summary>
+    /// <typeparam name="Structure"></typeparam>
+    /// <returns></returns>
+    private Tilemap GetTilemap<T>()
+    {
+        // Return the correct tilemap based on the type
+        if (typeof(T) == typeof(Structure)) return structureTilemap.GetComponent<Tilemap>();
+        if (typeof(T) == typeof(Floor)) return floorTilemap.GetComponent<Tilemap>();
+        if (typeof(T) == typeof(Terrain)) return terrainTilemap.GetComponent<Tilemap>();
+        // For all other types return null
+        return null;
+    }
+
 }
