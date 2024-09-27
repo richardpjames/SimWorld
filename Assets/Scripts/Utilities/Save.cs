@@ -46,6 +46,8 @@ public class Save
                     newTile.StructureMovementCost = structure.MovementCost;
                     newTile.StructureWidth = structure.Width;
                     newTile.StructureHeight = structure.Height;
+                    newTile.StructureIsDoor = structure.IsDoor;
+                    newTile.StructureIsWall = structure.IsWall;
                 }
                 // Default to no floors
                 newTile.HasFloor = false;
@@ -75,6 +77,8 @@ public class Save
         public float StructureMovementCost;
         public int StructureWidth;
         public int StructureHeight;
+        public bool StructureIsDoor;
+        public bool StructureIsWall;
         // Any floors on the tile
         public bool HasFloor;
         public FloorType FloorType;

@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
                 // Recreate the saved structure
                 if (tile.HasStructure)
                 {
-                    WorldController.Instance.InstallStructure(new Vector2Int(tile.X, tile.Y),new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight));
+                    WorldController.Instance.InstallStructure(new Vector2Int(tile.X, tile.Y),new Structure(tile.StructureType, tile.StructureMovementCost, tile.StructureWidth, tile.StructureHeight, tile.StructureIsDoor, tile.StructureIsWall));
                 }
                 if (tile.HasFloor)
                 {

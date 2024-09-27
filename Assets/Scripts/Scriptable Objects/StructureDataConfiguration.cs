@@ -47,5 +47,7 @@ public class StructureDataConfiguration : ScriptableObject
         public int Height;
         public int MovementCost;
         public TileBase Tile;
+        public bool IsWall;
+        public bool IsDoor;
     }
 }
