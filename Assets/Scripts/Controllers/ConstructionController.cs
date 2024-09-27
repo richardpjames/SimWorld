@@ -6,15 +6,20 @@ using UnityEngine.Tilemaps;
 public class ConstructionController : MonoBehaviour
 {
     [Header("Configuration")]
+    [SerializeField] private TerrainDataConfiguration terrainDataConfiguration;
     [SerializeField] private StructureDataConfiguration structureDataConfiguration;
     [SerializeField] private FloorDataConfiguration floorDataConfiguration;
+    [SerializeField] private TileBase indicatorTile;
 
     // For tracking what we are currently building
     private TerrainType currentTerrainType = TerrainType.Grass;
     private StructureType currentStructureType = StructureType.Wall;
     private FloorType currentFloorType = FloorType.Wooden;
     // For tracking the type of construction we are doing
-    private BuildMode currentBuildMode = BuildMode.Terrain;
+    private BuildMode currentBuildMode = BuildMode.None;
+
+    // Actions
+    public Action<TileBase> OnBuildingModeSet;
 
     // Allow for singleton pattern
     public static ConstructionController Instance { get; private set; }
@@ -36,6 +41,7 @@ public class ConstructionController : MonoBehaviour
     private void Start()
     {
         MouseController.Instance.OnDragComplete += Build;
+        MouseController.Instance.OnDeselectComplete += () => { currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
     }
 
     /// <summary>
@@ -93,6 +99,7 @@ public class ConstructionController : MonoBehaviour
     {
         currentBuildMode = BuildMode.Terrain;
         currentTerrainType = type;
+        OnBuildingModeSet?.Invoke(terrainDataConfiguration.GetTile(type));
     }
     /// <summary>
     /// Set the construction mode to placing structures as specified by the named enum
@@ -102,6 +109,7 @@ public class ConstructionController : MonoBehaviour
     {
         currentBuildMode = BuildMode.Structure;
         currentStructureType = type;
+        OnBuildingModeSet?.Invoke(structureDataConfiguration.GetTile(type));
     }
     /// <summary>
     /// Set the construction mode to placing floors as specified by the named enum
@@ -111,6 +119,7 @@ public class ConstructionController : MonoBehaviour
     {
         currentBuildMode = BuildMode.Floor;
         currentFloorType = type;
+        OnBuildingModeSet?.Invoke(floorDataConfiguration.GetTile(type));
     }
     /// <summary>
     /// Set the construction mode to demolish structures (and then floors)
@@ -118,5 +127,6 @@ public class ConstructionController : MonoBehaviour
     public void SetDemolish()
     {
         currentBuildMode = BuildMode.Demolish;
+        OnBuildingModeSet?.Invoke(indicatorTile);
     }
 }

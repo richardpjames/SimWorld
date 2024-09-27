@@ -12,17 +12,18 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float minZoom = 8f;
     [Header("Cursor Display")]
     [SerializeField] private Tilemap indicatorTilemap;
-    [SerializeField] private Tile indicator;
 
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 mousePosition = Vector3.zero;
     private Vector3 lastMousePosition = Vector3.zero;
     // For keeping track of dragging and selecting
+    private TileBase indicator;
     private Vector2Int dragStart = Vector2Int.zero;
     private Vector2Int dragEnd = Vector2Int.zero;
     private bool dragging = false;
     // To let others know when a selection is complete
     public Action<Vector2Int, Vector2Int> OnDragComplete;
+    public Action OnDeselectComplete;
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -41,6 +42,12 @@ public class MouseController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // Subscribe to the construction controller action
+        ConstructionController.Instance.OnBuildingModeSet += (TileBase tile) => { indicator = tile; };
+    }
+
     void Update()
     {
         // Clear any temporary indicators which are shown
@@ -57,6 +64,8 @@ public class MouseController : MonoBehaviour
             Zoom();
             // Handle selection
             Select();
+            // Handle deselection
+            Deselect();
             // Show the indicator
             SetIndicator();
         }
@@ -70,8 +79,8 @@ public class MouseController : MonoBehaviour
     /// </summary>
     private void Scroll()
     {
-        // For panning on right or middle mouse button
-        if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
+        // For panning on middle mouse button
+        if (Input.GetMouseButton(2))
         {
             // Get the main camera
             Camera cam = Camera.main;
@@ -132,6 +141,19 @@ public class MouseController : MonoBehaviour
                     indicatorTilemap.SetTile(new Vector3Int(x, y, 0), indicator);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Allows the user to deselect using the right mouse button
+    /// </summary>
+    private void Deselect()
+    {
+        // Chcek for right mouse button
+        if (Input.GetMouseButtonDown(1))
+        {
+            // Indicate that we have deselected
+            OnDeselectComplete?.Invoke();
         }
     }
 

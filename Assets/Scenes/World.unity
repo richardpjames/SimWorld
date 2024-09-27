@@ -642,6 +642,10 @@ PrefabInstance:
       propertyPath: m_ChunkCullingBounds.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1219270018744723448, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5019608
+      objectReference: {fileID: 0}
     - target: {fileID: 3082821731825952953, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
       propertyPath: m_Size.x
       value: 22

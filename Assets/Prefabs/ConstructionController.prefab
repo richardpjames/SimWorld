@@ -44,5 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32bb6e07d1070aa43ae11d47297ab289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainDataConfiguration: {fileID: 11400000, guid: 88859a041de7f7d4cbff36fa8fcf09df, type: 2}
   structureDataConfiguration: {fileID: 11400000, guid: 83ccc20f7534d7040aec80a4de7fe243, type: 2}
   floorDataConfiguration: {fileID: 11400000, guid: 881e7fdcfd563cc479f98cc9deea1945, type: 2}
+  indicatorTile: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
