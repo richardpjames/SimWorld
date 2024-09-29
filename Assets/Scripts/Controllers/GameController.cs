@@ -26,6 +26,15 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // If we haven't started in the main menu, then load it
+        if(SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            MainMenu();
+        }
+    }
+
     public void StartGame()
     {
         SceneManager.LoadScene("World");

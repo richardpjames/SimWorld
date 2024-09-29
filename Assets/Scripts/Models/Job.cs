@@ -10,7 +10,7 @@ public class Job
     public bool Complete { get; private set; }
     public TileBase Indicator { get; private set; }
 
-    public Job(Vector2Int location, Action<Vector2Int> onJobComplete, float jobCost)
+    public Job(Vector2Int location, Action<Vector2Int> onJobComplete, float jobCost, JobTarget jobTarget = JobTarget.Structure)
     {
         Location = location;
         OnJobComplete += onJobComplete;
