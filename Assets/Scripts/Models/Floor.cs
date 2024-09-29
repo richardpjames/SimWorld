@@ -1,19 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Floor : TileType, IBuildableObject
 {
     public FloorType FloorType { get; private set; }
-    public float MovementCost { get; private set; }
-    public Terrain BaseSquare { get; set; }
 
     // Constructor takes all of the required information for creating a floor
-    public Floor(FloorType floorType, float movementCost)
+    public Floor(FloorType floorType, float movementCost, TileBase tile)
     {
         this.FloorType = floorType;
         this.MovementCost = movementCost;
-
+        this.Tile = tile;
     }
 
     /// <summary>
@@ -24,5 +23,6 @@ public class Floor : TileType, IBuildableObject
     {
         this.FloorType = config.FloorType;
         this.MovementCost = config.MovementCost;
+        this.Tile = config.Tile;
     }
 }

@@ -49,5 +49,6 @@ public class StructureDataConfiguration : ScriptableObject
         public TileBase Tile;
         public bool IsWall;
         public bool IsDoor;
+        public bool IsFloor;
     }
 }

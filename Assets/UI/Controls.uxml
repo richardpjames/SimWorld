@@ -6,14 +6,8 @@
         <ui:Button text="Foot Path" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath" class="btn-blue" />
         <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-wall" class="btn-blue" />
         <ui:Button text="Rocks" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rocks" class="btn-blue" />
-        <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" class="btn-blue" style="transition-duration: 0.1s;" />
-        <ui:Label tabindex="-1" text="Terraform" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-font-style: bold;" />
-        <ui:Button text="Grass" parse-escape-sequences="true" display-tooltip-when-elided="true" name="grass" class="btn-blue" />
-        <ui:Button text="Water" parse-escape-sequences="true" display-tooltip-when-elided="true" name="water" class="btn-blue" />
-        <ui:Button text="Sand" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sand" class="btn-blue" />
+        <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish" class="btn-blue" style="transition-duration: 0.1s; background-color: rgb(200, 36, 31);" />
         <ui:Label tabindex="-1" text="World" parse-escape-sequences="true" display-tooltip-when-elided="true" style="align-self: center; -unity-font-style: bold;" />
-        <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save" class="btn-blue" />
-        <ui:Button text="Load" parse-escape-sequences="true" display-tooltip-when-elided="true" name="load" class="btn-blue" />
-        <ui:Button text="Save and Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="mainmenu" class="btn-blue" />
+        <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="mainmenu" class="btn-blue" />
     </ui:VisualElement>
 </ui:UXML>

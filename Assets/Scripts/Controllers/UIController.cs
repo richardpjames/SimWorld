@@ -14,11 +14,6 @@ public class UIController : MonoBehaviour
         root.Q<Button>("footpath").clicked += () => ConstructionController.Instance.SetFloor(FloorType.Footpath);
         root.Q<Button>("rocks").clicked += () => ConstructionController.Instance.SetStucture(StructureType.Rock);
         root.Q<Button>("demolish").clicked += () => ConstructionController.Instance.SetDemolish();
-        root.Q<Button>("sand").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Sand);
-        root.Q<Button>("grass").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Grass);
-        root.Q<Button>("water").clicked += () => ConstructionController.Instance.SetTerrain(TerrainType.Water);
-        root.Q<Button>("save").clicked += () => GameController.Instance.Save();
-        root.Q<Button>("load").clicked += () => GameController.Instance.Load();
         root.Q<Button>("mainmenu").clicked += () => GameController.Instance.MainMenu();
     }
 

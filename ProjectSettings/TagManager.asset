@@ -50,6 +50,9 @@ TagManager:
   - name: Structures
     uniqueID: 543487183
     locked: 0
+  - name: Job Indicators
+    uniqueID: 152479523
+    locked: 0
   - name: Indicators
     uniqueID: 1140824287
     locked: 0

@@ -6,13 +6,11 @@ using UnityEngine.Tilemaps;
 public class ConstructionController : MonoBehaviour
 {
     [Header("Configuration")]
-    [SerializeField] private TerrainDataConfiguration terrainDataConfiguration;
     [SerializeField] private StructureDataConfiguration structureDataConfiguration;
     [SerializeField] private FloorDataConfiguration floorDataConfiguration;
     [SerializeField] private TileBase indicatorTile;
 
     // For tracking what we are currently building
-    private TerrainType _currentTerrainType = TerrainType.Grass;
     private StructureType _currentStructureType = StructureType.Wall;
     private FloorType _currentFloorType = FloorType.Wooden;
     // For tracking the type of construction we are doing
@@ -51,20 +49,16 @@ public class ConstructionController : MonoBehaviour
     {
         for (int x = topLeft.x; x <= bottomRight.x; x++)
         {
-            for (int y = topLeft.y; y <= bottomRight.y; y++)
+            for (int y = bottomRight.y; y >= topLeft.y; y--)
             {
-                if (_currentBuildMode == BuildMode.Terrain)
-                {
-                    WorldController.Instance.SetTerrainType(new Vector2Int(x, y), _currentTerrainType);
-                }
-                else if (_currentBuildMode == BuildMode.Structure)
+                if (_currentBuildMode == BuildMode.Structure)
                 {
                     // Get the configuration for the currently selected type from a scriptable object
                     StructureDataConfiguration.StructureConfiguration config = structureDataConfiguration.GetConfiguration(_currentStructureType);
                     // Build a structure from that configuration
                     Structure structure = new Structure(config);
                     // Place it into the world
-                    WorldController.Instance.InstallStructure(new Vector2Int(x, y), structure);
+                    WorldController.Instance.Install<Structure>(new Vector2Int(x, y), structure);
                 }
                 else if (_currentBuildMode == BuildMode.Floor)
                 {
@@ -73,34 +67,24 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Floor floor = new Floor(config);
                     // Place it into the world
-                    WorldController.Instance.InstallFloor(new Vector2Int(x, y), floor);
+                    WorldController.Instance.Install(new Vector2Int(x, y), floor);
                 }
                 else if (_currentBuildMode == BuildMode.Demolish)
                 {
                     // During demolision we first look for any structures (and remove) and then next, any floors
-                    if (WorldController.Instance.GetStructure(new Vector2Int(x, y)) != null)
+                    if (WorldController.Instance.Get<Structure>(new Vector2Int(x, y)) != null)
                     {
-                        WorldController.Instance.RemoveStructure(new Vector2Int(x, y));
+                        WorldController.Instance.Remove<Structure>(new Vector2Int(x, y));
                     }
-                    else if (WorldController.Instance.GetFloor(new Vector2Int(x, y)) != null)
+                    else if (WorldController.Instance.Get<Floor>(new Vector2Int(x, y)) != null)
                     {
-                        WorldController.Instance.RemoveFloor(new Vector2Int(x, y));
+                        WorldController.Instance.Remove<Floor>(new Vector2Int(x, y));
                     }
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Set the construction mode to placing terrain as specified by the named enum
-    /// </summary>
-    /// <param name="name">The name for the enum (which will be parsed)</param>
-    public void SetTerrain(TerrainType type)
-    {
-        _currentBuildMode = BuildMode.Terrain;
-        _currentTerrainType = type;
-        OnBuildingModeSet?.Invoke(terrainDataConfiguration.GetTile(type));
-    }
     /// <summary>
     /// Set the construction mode to placing structures as specified by the named enum
     /// </summary>
