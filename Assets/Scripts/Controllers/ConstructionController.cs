@@ -12,11 +12,11 @@ public class ConstructionController : MonoBehaviour
     [SerializeField] private TileBase indicatorTile;
 
     // For tracking what we are currently building
-    private TerrainType currentTerrainType = TerrainType.Grass;
-    private StructureType currentStructureType = StructureType.Wall;
-    private FloorType currentFloorType = FloorType.Wooden;
+    private TerrainType _currentTerrainType = TerrainType.Grass;
+    private StructureType _currentStructureType = StructureType.Wall;
+    private FloorType _currentFloorType = FloorType.Wooden;
     // For tracking the type of construction we are doing
-    private BuildMode currentBuildMode = BuildMode.None;
+    private BuildMode _currentBuildMode = BuildMode.None;
 
     // Actions
     public Action<TileBase> OnBuildingModeSet;
@@ -41,7 +41,7 @@ public class ConstructionController : MonoBehaviour
     private void Start()
     {
         MouseController.Instance.OnDragComplete += Build;
-        MouseController.Instance.OnDeselectComplete += () => { currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
+        MouseController.Instance.OnDeselectComplete += () => { _currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
     }
 
     /// <summary>
@@ -53,29 +53,29 @@ public class ConstructionController : MonoBehaviour
         {
             for (int y = topLeft.y; y <= bottomRight.y; y++)
             {
-                if (currentBuildMode == BuildMode.Terrain)
+                if (_currentBuildMode == BuildMode.Terrain)
                 {
-                    WorldController.Instance.SetTerrainType(new Vector2Int(x, y), currentTerrainType);
+                    WorldController.Instance.SetTerrainType(new Vector2Int(x, y), _currentTerrainType);
                 }
-                else if (currentBuildMode == BuildMode.Structure)
+                else if (_currentBuildMode == BuildMode.Structure)
                 {
                     // Get the configuration for the currently selected type from a scriptable object
-                    StructureDataConfiguration.StructureConfiguration config = structureDataConfiguration.GetConfiguration(currentStructureType);
+                    StructureDataConfiguration.StructureConfiguration config = structureDataConfiguration.GetConfiguration(_currentStructureType);
                     // Build a structure from that configuration
                     Structure structure = new Structure(config);
                     // Place it into the world
                     WorldController.Instance.InstallStructure(new Vector2Int(x, y), structure);
                 }
-                else if (currentBuildMode == BuildMode.Floor)
+                else if (_currentBuildMode == BuildMode.Floor)
                 {
                     // Get the configuration for the currently selected type from a scriptable object
-                    FloorDataConfiguration.FloorConfiguration config = floorDataConfiguration.GetConfiguration(currentFloorType);
+                    FloorDataConfiguration.FloorConfiguration config = floorDataConfiguration.GetConfiguration(_currentFloorType);
                     // Build a structure from that configuration
                     Floor floor = new Floor(config);
                     // Place it into the world
                     WorldController.Instance.InstallFloor(new Vector2Int(x, y), floor);
                 }
-                else if (currentBuildMode == BuildMode.Demolish)
+                else if (_currentBuildMode == BuildMode.Demolish)
                 {
                     // During demolision we first look for any structures (and remove) and then next, any floors
                     if (WorldController.Instance.GetStructure(new Vector2Int(x, y)) != null)
@@ -97,8 +97,8 @@ public class ConstructionController : MonoBehaviour
     /// <param name="name">The name for the enum (which will be parsed)</param>
     public void SetTerrain(TerrainType type)
     {
-        currentBuildMode = BuildMode.Terrain;
-        currentTerrainType = type;
+        _currentBuildMode = BuildMode.Terrain;
+        _currentTerrainType = type;
         OnBuildingModeSet?.Invoke(terrainDataConfiguration.GetTile(type));
     }
     /// <summary>
@@ -107,8 +107,8 @@ public class ConstructionController : MonoBehaviour
     /// <param name="name">The name for the enum (which will be parsed)</param>
     public void SetStucture(StructureType type)
     {
-        currentBuildMode = BuildMode.Structure;
-        currentStructureType = type;
+        _currentBuildMode = BuildMode.Structure;
+        _currentStructureType = type;
         OnBuildingModeSet?.Invoke(structureDataConfiguration.GetTile(type));
     }
     /// <summary>
@@ -117,8 +117,8 @@ public class ConstructionController : MonoBehaviour
     /// <param name="name">The name for the enum (which will be parsed)</param>
     public void SetFloor(FloorType type)
     {
-        currentBuildMode = BuildMode.Floor;
-        currentFloorType = type;
+        _currentBuildMode = BuildMode.Floor;
+        _currentFloorType = type;
         OnBuildingModeSet?.Invoke(floorDataConfiguration.GetTile(type));
     }
     /// <summary>
@@ -126,7 +126,7 @@ public class ConstructionController : MonoBehaviour
     /// </summary>
     public void SetDemolish()
     {
-        currentBuildMode = BuildMode.Demolish;
+        _currentBuildMode = BuildMode.Demolish;
         OnBuildingModeSet?.Invoke(indicatorTile);
     }
 }
