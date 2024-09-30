@@ -112,31 +112,15 @@ public class GraphicsController : MonoBehaviour
         Terrain terrain = _world.Get<Terrain>(position);
         Floor floor = _world.Get<Floor>(position);
         Structure structure = _world.Get<Structure>(position);
-        // Update the tilemaps - if there is a type of tile present then update the tilemap, otherwise show null
-        if (terrain != null)
-        {
-            GetTilemap<Terrain>().SetTile(new Vector3Int(position.x, position.y, 0), terrain.Tile);
-        }
-        else
-        {
-            GetTilemap<Terrain>().SetTile(new Vector3Int(position.x, position.y, 0), null);
-        }
-        if (floor != null)
-        {
-            GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), floor.Tile);
-        }
-        else
-        {
-            GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), null);
-        }
-        if (structure != null)
-        {
-            GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), structure.Tile);
-        }
-        else
-        {
-            GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), null);
-        }
+        // If present - update the terrain otherwise set to null
+        if (terrain != null) GetTilemap<Terrain>().SetTile(new Vector3Int(position.x, position.y, 0), terrain.Tile);
+        else GetTilemap<Terrain>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+        // If present - update the floors otherwise set to null
+        if (floor != null) GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), floor.Tile);
+        else GetTilemap<Floor>().SetTile(new Vector3Int(position.x, position.y, 0), null);
+        // If present - update the structures otherwise set to null
+        if (structure != null) GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), structure.Tile);
+        else GetTilemap<Structure>().SetTile(new Vector3Int(position.x, position.y, 0), null);
     }
 
     /// <summary>

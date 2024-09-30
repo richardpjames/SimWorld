@@ -78,29 +78,4 @@ public class WorldController : MonoBehaviour
             currentJob.Work(Time.deltaTime * 4);
         }
     }
-
-    /// <summary>
-    /// Installs a structure or floor at the specified position and also updates the graphics.
-    /// </summary>
-    public void Install<T>(Vector2Int position, T item) where T : TileType, IBuildableObject
-    {
-        // Create the job and subscribe to the completion
-        Job job = World.Install<T>(position, item, 1f);
-    }
-
-    /// <summary>
-    /// Removes a floor or structure at the specified position.
-    /// </summary>
-    public void Remove<T>(Vector2Int position) where T : TileType, IBuildableObject
-    {
-        Job job = World.Remove<T>(position, 1f);
-    }
-
-    /// <summary>
-    /// Gets the structure, floor or terrain at the specified position.
-    /// </summary>
-    public T Get<T>(Vector2Int position) where T : TileType
-    {
-        return World.Get<T>(position);
-    }
 }

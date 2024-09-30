@@ -19,6 +19,9 @@ public class ConstructionController : MonoBehaviour
     // Actions
     public Action<TileBase> OnBuildingModeSet;
 
+    // Accessors for easier access
+    private World _world { get => WorldController.Instance.World; }
+
     // Allow for singleton pattern
     public static ConstructionController Instance { get; private set; }
 
@@ -58,7 +61,7 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Structure structure = new Structure(config);
                     // Place it into the world
-                    WorldController.Instance.Install<Structure>(new Vector2Int(x, y), structure);
+                    _world.Install<Structure>(new Vector2Int(x, y), structure, 1f);
                 }
                 else if (_currentBuildMode == BuildMode.Floor)
                 {
@@ -67,18 +70,18 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Floor floor = new Floor(config);
                     // Place it into the world
-                    WorldController.Instance.Install(new Vector2Int(x, y), floor);
+                    _world.Install(new Vector2Int(x, y), floor, 1f);
                 }
                 else if (_currentBuildMode == BuildMode.Demolish)
                 {
                     // During demolision we first look for any structures (and remove) and then next, any floors
-                    if (WorldController.Instance.Get<Structure>(new Vector2Int(x, y)) != null)
+                    if (_world.Get<Structure>(new Vector2Int(x, y)) != null)
                     {
-                        WorldController.Instance.Remove<Structure>(new Vector2Int(x, y));
+                        _world.Remove<Structure>(new Vector2Int(x, y), 1f);
                     }
-                    else if (WorldController.Instance.Get<Floor>(new Vector2Int(x, y)) != null)
+                    else if (_world.Get<Floor>(new Vector2Int(x, y)) != null)
                     {
-                        WorldController.Instance.Remove<Floor>(new Vector2Int(x, y));
+                        _world.Remove<Floor>(new Vector2Int(x, y), 1f);
                     }
                 }
             }
