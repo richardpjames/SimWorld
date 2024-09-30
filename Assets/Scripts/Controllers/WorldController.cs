@@ -1,8 +1,4 @@
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using UnityEngine.WSA;
-
 
 public class WorldController : MonoBehaviour
 {
@@ -49,18 +45,6 @@ public class WorldController : MonoBehaviour
         World = new World(name, size, terrainDataConfiguration);
         // Generate random biomes
         World.GenerateBiomes(waves, scale, terrainDataConfiguration);
-
-        // Set the correct tile in the tilemap for each square
-        for (int x = 0; x < World.Size.x; x++)
-        {
-            for (int y = 0; y < World.Size.y; y++)
-            {
-                // Create a tile with the correct sprite and add to the tilemap
-                Terrain terrain = World.Get<Terrain>(new Vector2Int(x, y));
-                TileBase tile = terrain.Tile;
-            }
-        }
-
         // Set the camera to the center of the world
         Camera.main.transform.position = new Vector3(World.Size.x / 2, World.Size.y / 2, Camera.main.transform.position.z);
     }

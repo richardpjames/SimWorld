@@ -38,20 +38,12 @@ public class GraphicsController : MonoBehaviour
 
     private void Start()
     {
-        // Clear any existing tiles from the tilemap
-        ClearTiles();
         // Subscribe to any events from the world
         _world.OnSquareUpdated += OnSquareUpdated;
         _world.OnJobCreated += OnJobCreated;
         _world.OnJobCompleted += OnJobCompleted;
-        // Initialize by drawing all tiles
-        for (int x = 0; x < _world.Size.x; x++)
-        {
-            for (int y = 0; y < _world.Size.y; y++)
-            {
-                OnSquareUpdated(new Vector2Int(x, y));
-            }
-        }
+        // Initial draw of all tiles
+        RedrawTiles();
     }
 
     /// <summary>
@@ -63,9 +55,26 @@ public class GraphicsController : MonoBehaviour
         GetTilemap<Terrain>().ClearAllTiles();
         GetTilemap<Structure>().ClearAllTiles();
         GetTilemap<Floor>().ClearAllTiles();
-        GetJobTilemap(JobTarget.Floor).ClearAllTiles();
-        GetJobTilemap(JobTarget.Structure).ClearAllTiles();
-        GetJobTilemap(JobTarget.Demolish).ClearAllTiles();
+        GetTilemap(JobTarget.Floor).ClearAllTiles();
+        GetTilemap(JobTarget.Structure).ClearAllTiles();
+        GetTilemap(JobTarget.Demolish).ClearAllTiles();
+    }
+
+    /// <summary>
+    /// Redraws all tiles (for use after world initialisation)
+    /// </summary>
+    public void RedrawTiles()
+    {
+        // First remove any existing tiles
+        ClearTiles();
+        // Loop over the whole world and redraw the tiles
+        for (int x = 0; x < _world.Size.x; x++)
+        {
+            for (int y = 0; y < _world.Size.y; y++)
+            {
+                OnSquareUpdated(new Vector2Int(x, y));
+            }
+        }
     }
 
     /// <summary>
@@ -75,7 +84,7 @@ public class GraphicsController : MonoBehaviour
     private void OnJobCreated(Job job, TileType tile)
     {
         // Get the correct tilemap for this type of job
-        Tilemap tilemap = GetJobTilemap(job.Target);
+        Tilemap tilemap = GetTilemap(job.Target);
         // If there is a tilemap and tile then update 
         if (job.Target == JobTarget.Demolish && tilemap != null)
         {
@@ -94,7 +103,7 @@ public class GraphicsController : MonoBehaviour
     private void OnJobCompleted(Job job)
     {
         // Get the correct tilemap for this type of job
-        Tilemap tilemap = GetJobTilemap(job.Target);
+        Tilemap tilemap = GetTilemap(job.Target);
         if (tilemap != null)
         {
             // Remove the indicator
@@ -163,7 +172,7 @@ public class GraphicsController : MonoBehaviour
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
-    private Tilemap GetJobTilemap(JobTarget target)
+    private Tilemap GetTilemap(JobTarget target)
     {
         if (target == JobTarget.Structure) return structureJobTilemap.GetComponent<Tilemap>();
         if (target == JobTarget.Floor) return floorJobTilemap.GetComponent<Tilemap>();

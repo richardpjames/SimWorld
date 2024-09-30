@@ -10,18 +10,6 @@ public class Structure: TileType, IBuildableObject
     public bool IsDoor { get; private set; }
     public bool IsWall { get; private set; }
 
-    // Constructor takes all of the required information for creating a structure
-    public Structure(StructureType structureType, float movementCost, int width, int height, TileBase tile, bool isDoor = false, bool isWall = false)
-    {
-        this.StructureType = structureType;
-        this.MovementCost = movementCost;
-        this.Width = width;
-        this.Height = height;
-        this.IsDoor = isDoor;
-        this.IsWall = IsWall;
-        this.Tile = tile;
-    }
-
     /// <summary>
     /// Build a structure from a configuration provided by the StructureDataConfiguration scriptable object.
     /// </summary>

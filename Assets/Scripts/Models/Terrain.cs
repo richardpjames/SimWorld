@@ -7,13 +7,13 @@ public class Terrain : TileType
 {
     // Holds the type for this particular tile
     public TerrainType TerrainType { get; set; }
-    // Reference to the position in the world
 
     // Constructor takes a base terrain for the tile
-    public Terrain(TerrainType type, TileBase tile)
+    public Terrain(TerrainType type, TileBase tile, float movementCost = 1)
     {
         this.TerrainType = type;
         this.Tile = tile;
+        this.MovementCost = movementCost;
     }
 
     /// <summary>

@@ -7,14 +7,6 @@ public class Floor : TileType, IBuildableObject
 {
     public FloorType FloorType { get; private set; }
 
-    // Constructor takes all of the required information for creating a floor
-    public Floor(FloorType floorType, float movementCost, TileBase tile)
-    {
-        this.FloorType = floorType;
-        this.MovementCost = movementCost;
-        this.Tile = tile;
-    }
-
     /// <summary>
     /// Build a floor from a configuration provided by the FloorDataConfiguration scriptable object.
     /// </summary>

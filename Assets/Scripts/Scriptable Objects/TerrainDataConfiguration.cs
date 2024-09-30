@@ -31,6 +31,7 @@ public class TerrainDataConfiguration : ScriptableObject
     public struct TileConfiguration
     {
         public TerrainType Terrain;
+        public float MovementCost;
         public TileBase Tile;
     }
 }
