@@ -28,6 +28,7 @@ public class MouseController : MonoBehaviour
     // Accessors for easier access to controllers etc.
     private World _world { get => WorldController.Instance.World; }
     private GraphicsController _graphics { get => GraphicsController.Instance; }
+    private ConstructionController _construction { get => ConstructionController.Instance; }
 
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
@@ -49,7 +50,7 @@ public class MouseController : MonoBehaviour
     private void Start()
     {
         // Subscribe to the construction controller action
-        ConstructionController.Instance.OnBuildingModeSet += (TileBase tile) => { _indicator = tile; };
+        _construction.OnBuildingModeSet += (TileBase tile) => { _indicator = tile; };
     }
 
     void Update()
@@ -136,7 +137,7 @@ public class MouseController : MonoBehaviour
         else if (Input.GetMouseButton(0))
         {
             // Get an X and y position bound by the world controller
-            _dragEnd = GraphicsController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
+            _dragEnd = _graphics.GetSquarePosition(_mousePosition.x, _mousePosition.y);
             // Show the indicator over the area currently selected
             for (int x = (int)Mathf.Min(_dragStart.x, _dragEnd.x); x <= (int)Mathf.Max(_dragStart.x, _dragEnd.x); x++)
             {

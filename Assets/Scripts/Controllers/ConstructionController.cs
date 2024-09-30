@@ -21,6 +21,7 @@ public class ConstructionController : MonoBehaviour
 
     // Accessors for easier access
     private World _world { get => WorldController.Instance.World; }
+    private MouseController _mouse { get => MouseController.Instance;  }
 
     // Allow for singleton pattern
     public static ConstructionController Instance { get; private set; }
@@ -41,8 +42,8 @@ public class ConstructionController : MonoBehaviour
 
     private void Start()
     {
-        MouseController.Instance.OnDragComplete += Build;
-        MouseController.Instance.OnDeselectComplete += () => { _currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
+        _mouse.OnDragComplete += Build;
+        _mouse.OnDeselectComplete += () => { _currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
     }
 
     /// <summary>

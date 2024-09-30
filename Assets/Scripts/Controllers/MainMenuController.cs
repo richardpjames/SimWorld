@@ -6,13 +6,14 @@ using UnityEngine.UIElements;
 
 public class MainMenuController : MonoBehaviour
 {
+    private GameController _game { get => GameController.Instance; }
     // Start is called before the first frame update
     void Start()
     {
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         // Set up actions for buttons
-        root.Q<Button>("quit").clicked += () => GameController.Instance.Quit();
+        root.Q<Button>("quit").clicked += () => _game.Quit();
         root.Q<Button>("start-game").clicked += StartGame;
 
     }
@@ -22,12 +23,12 @@ public class MainMenuController : MonoBehaviour
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         // Set up the game controller
-        GameController.Instance.WorldName = root.Q<TextField>("world-name").text;
-        GameController.Instance.WorldHeight = root.Q<SliderInt>("world-height").value;
-        GameController.Instance.WorldWidth = root.Q<SliderInt>("world-width").value;
+        _game.WorldName = root.Q<TextField>("world-name").text;
+        _game.WorldHeight = root.Q<SliderInt>("world-height").value;
+        _game.WorldWidth = root.Q<SliderInt>("world-width").value;
 
         // Start the scene
-        GameController.Instance.StartGame();
+        _game.StartGame();
     }
 
 }
