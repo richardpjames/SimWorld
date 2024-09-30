@@ -25,6 +25,10 @@ public class MouseController : MonoBehaviour
     public Action<Vector2Int, Vector2Int> OnDragComplete;
     public Action OnDeselectComplete;
 
+    // Accessors for easier access to controllers etc.
+    private World _world { get => WorldController.Instance.World; }
+    private GraphicsController _graphics { get => GraphicsController.Instance; }
+
     // Allow for singleton pattern
     public static MouseController Instance { get; private set; }
 
@@ -87,7 +91,7 @@ public class MouseController : MonoBehaviour
             // Move it towards the mouse position based on the speed and delta time
             cam.transform.Translate((_lastMousePosition - _mousePosition) * (scrollSpeed / cam.orthographicSize) * Time.deltaTime);
             // Clamp the position so that the level is always visible
-            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, WorldController.Instance.GetWorldSize().x), Mathf.Clamp(cam.transform.position.y, 0, WorldController.Instance.GetWorldSize().y), cam.transform.position.z);
+            cam.transform.position = new Vector3(Mathf.Clamp(cam.transform.position.x, 0, _world.Size.x), Mathf.Clamp(cam.transform.position.y, 0, _world.Size.y), cam.transform.position.z);
         }
     }
 
@@ -111,14 +115,14 @@ public class MouseController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // Get an X and y position bound by the world controller
-            _dragStart = WorldController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
+            _dragStart = _graphics.GetSquarePosition(_mousePosition.x, _mousePosition.y);
             _dragging = true;
         }
         // This is the end position for the drag
         else if (Input.GetMouseButtonUp(0))
         {
             // Get an X and y position bound by the world controller
-            _dragEnd = WorldController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
+            _dragEnd = _graphics.GetSquarePosition(_mousePosition.x, _mousePosition.y);
             // Work out the top left
             Vector2Int topLeft = new Vector2Int(Mathf.Min(_dragStart.x, _dragEnd.x), Mathf.Min(_dragStart.y, _dragEnd.y));
             // Work out the bottom right
@@ -132,7 +136,7 @@ public class MouseController : MonoBehaviour
         else if (Input.GetMouseButton(0))
         {
             // Get an X and y position bound by the world controller
-            _dragEnd = WorldController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
+            _dragEnd = GraphicsController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
             // Show the indicator over the area currently selected
             for (int x = (int)Mathf.Min(_dragStart.x, _dragEnd.x); x <= (int)Mathf.Max(_dragStart.x, _dragEnd.x); x++)
             {
@@ -166,7 +170,7 @@ public class MouseController : MonoBehaviour
         if (!_dragging)
         {
             // Set the indicator on the tilemap based on current position
-            Vector2Int position = WorldController.Instance.GetSquarePosition(_mousePosition.x, _mousePosition.y);
+            Vector2Int position = _graphics.GetSquarePosition(_mousePosition.x, _mousePosition.y);
             indicatorTilemap.SetTile(new Vector3Int(position.x, position.y, 0), _indicator);
         }
     }

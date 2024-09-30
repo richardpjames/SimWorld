@@ -630,6 +630,95 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 1219270018744723448, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
   m_PrefabInstance: {fileID: 1319448464548337207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &695952526754397103
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2619231999842583520, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_Name
+      value: GraphicsController
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 575.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 294.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: worldGrid
+      value: 
+      objectReference: {fileID: 290388371}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: floorTilemap
+      value: 
+      objectReference: {fileID: 626582002}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: demolitionTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: terrainTilemap
+      value: 
+      objectReference: {fileID: 1128013506}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: floorJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337208}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: structureTilemap
+      value: 
+      objectReference: {fileID: 1021952713}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: structureJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337210}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: demolitionJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337209}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
 --- !u!1001 &1319448464548337207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -988,5 +1077,6 @@ SceneRoots:
   - {fileID: 8507308567742406523}
   - {fileID: 3359582813764579080}
   - {fileID: 1319448464548337207}
+  - {fileID: 695952526754397103}
   - {fileID: 619394802}
   - {fileID: 540862250}

@@ -15,6 +15,8 @@ public class World
     public string Name { get; private set; }
     // Lets others know that a tile at the specified position is updated
     public Action<Vector2Int> OnSquareUpdated;
+    public Action<Job, TileType> OnJobCreated;
+    public Action<Job> OnJobCompleted;
 
     public World(string name, Vector2Int size, TerrainDataConfiguration terrrainDataConfiguration)
     {
@@ -75,7 +77,12 @@ public class World
         }
     }
 
-    // Get the floor or structure at a position
+    /// <summary>
+    /// Get the floor, structure or terrain at a position
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public T Get<T>(Vector2Int position) where T : TileType
     {
         if (CheckBounds(position) && GetDictionary<T>().ContainsKey(position))
@@ -100,8 +107,11 @@ public class World
             // Check if we are out of bounds or trying to build on water
             if (CheckBounds(location) && Get<Terrain>(location).TerrainType != TerrainType.Water && !GetDictionary<T>().ContainsKey(location))
             {
-                Job job = new Job(location, (position, job) => { CompleteInstall<T>(position, item); }, jobCost, GetJobTarget<T>());
+                Job job = new Job(location, (job) => { CompleteInstall<T>(job, item); }, jobCost, GetJobTarget<T>());
                 JobQueue.Enqueue(job);
+                // Make sure the right events fire
+                job.OnJobComplete += OnJobCompleted;
+                OnJobCreated?.Invoke(job, item);
                 return job;
             }
         }
@@ -111,10 +121,10 @@ public class World
     /// Places a floor or structure into the tile
     /// </summary>
     /// <param name="floor">The floor to be installed </param>
-    private void CompleteInstall<T>(Vector2Int position, T item) where T : TileType, IBuildableObject
+    private void CompleteInstall<T>(Job job, T item) where T : TileType, IBuildableObject
     {
-        GetDictionary<T>().Add(position, item);
-        OnSquareUpdated?.Invoke(position);
+        GetDictionary<T>().Add(job.Location, item);
+        OnSquareUpdated?.Invoke(job.Location);
     }
 
     /// <summary>
@@ -129,8 +139,11 @@ public class World
         // Check if a job already exists at this location
         if (JobQueue.Any((job) => job.Location == location && job.Target == GetJobTarget<T>()) == false)
         {
-            Job job = new Job(location, (position, job) => { CompleteRemove<T>(position); }, jobCost, JobTarget.Demolish);
+            Job job = new Job(location, (job) => { CompleteRemove<T>(job); }, jobCost, JobTarget.Demolish);
             JobQueue.Enqueue(job);
+            // Set up the correct actions
+            job.OnJobComplete += OnJobCompleted;
+            OnJobCreated?.Invoke(job, null);
             return job;
         }
         return null;
@@ -139,12 +152,12 @@ public class World
     /// <summary>
     /// Removes any floor or structure installed on this tile
     /// </summary>
-    private void CompleteRemove<T>(Vector2Int position) where T : TileType, IBuildableObject
+    private void CompleteRemove<T>(Job job) where T : TileType, IBuildableObject
     {
-        if (GetDictionary<T>().ContainsKey(position))
+        if (GetDictionary<T>().ContainsKey(job.Location))
         {
-            GetDictionary<T>().Remove(position);
-            OnSquareUpdated?.Invoke(position);
+            GetDictionary<T>().Remove(job.Location);
+            OnSquareUpdated?.Invoke(job.Location);
         }
     }
 

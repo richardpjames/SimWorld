@@ -19,6 +19,11 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            // If we haven't started in the main menu, then load it
+            if (SceneManager.GetActiveScene().name != "MainMenu")
+            {
+                MainMenu();
+            }
         }
         else
         {
@@ -26,30 +31,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // If we haven't started in the main menu, then load it
-        if(SceneManager.GetActiveScene().name != "MainMenu")
-        {
-            MainMenu();
-        }
-    }
-
     public void StartGame()
     {
         SceneManager.LoadScene("World");
-        StartCoroutine(Initilize());
-    }
-
-    private IEnumerator Initilize()
-    {
-        // Wait for the world controller to be created
-        while (WorldController.Instance == null)
-        {
-            yield return null;
-        }
-        // Then initialize the world
-        WorldController.Instance.Initialize(WorldName, new Vector2Int(WorldWidth, WorldHeight));
     }
 
     /// <summary>
@@ -60,6 +44,7 @@ public class GameController : MonoBehaviour
         // Remove any unneeded managers to reset the game
         Destroy(GameObject.Find("WorldController"));
         Destroy(GameObject.Find("ConstructionController"));
+        Destroy(GameObject.Find("GraphicsController"));
         Destroy(GameObject.Find("MouseController"));
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
