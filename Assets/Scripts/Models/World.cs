@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class World
 {
@@ -96,12 +95,12 @@ public class World
     public Job Install<T>(Vector2Int location, T item, float jobCost) where T : TileType, IBuildableObject
     {
         // Check if a job already exists at this location
-        if (JobQueue.Any((job) => job.Location == location) == false)
+        if (JobQueue.Any((job) => job.Location == location && job.Target == GetJobTarget<T>()) == false)
         {
             // Check if we are out of bounds or trying to build on water
             if (CheckBounds(location) && Get<Terrain>(location).TerrainType != TerrainType.Water && !GetDictionary<T>().ContainsKey(location))
             {
-                Job job = new Job(location, (position) => { CompleteInstall<T>(position, item); }, jobCost);
+                Job job = new Job(location, (position, job) => { CompleteInstall<T>(position, item); }, jobCost, GetJobTarget<T>());
                 JobQueue.Enqueue(job);
                 return job;
             }
@@ -128,9 +127,9 @@ public class World
     public Job Remove<T>(Vector2Int location, float jobCost) where T : TileType, IBuildableObject
     {
         // Check if a job already exists at this location
-        if (JobQueue.Any((job) => job.Location == location) == false)
+        if (JobQueue.Any((job) => job.Location == location && job.Target == GetJobTarget<T>()) == false)
         {
-            Job job = new Job(location, (position) => { CompleteRemove<T>(position); }, jobCost);
+            Job job = new Job(location, (position, job) => { CompleteRemove<T>(position); }, jobCost, JobTarget.Demolish);
             JobQueue.Enqueue(job);
             return job;
         }
@@ -171,5 +170,17 @@ public class World
         if (typeof(T) == typeof(Terrain)) return _terrains;
         // For all other types return null
         return null;
+    }
+
+    /// <summary>
+    /// Convert types into job targets
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    private JobTarget GetJobTarget<T>()
+    {
+        if (typeof(T) == typeof(Structure)) return JobTarget.Structure;
+        if (typeof(T) == typeof(Floor)) return JobTarget.Floor;
+        return JobTarget.Demolish;
     }
 }

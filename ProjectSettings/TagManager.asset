@@ -50,9 +50,15 @@ TagManager:
   - name: Structures
     uniqueID: 543487183
     locked: 0
-  - name: Job Indicators
+  - name: Floor Job Indicators
     uniqueID: 152479523
     locked: 0
-  - name: Indicators
+  - name: Structure Job Indicators
+    uniqueID: 200066653
+    locked: 0
+  - name: Demolition Job Indicators
+    uniqueID: 2922373267
+    locked: 0
+  - name: Mouse Indicators
     uniqueID: 1140824287
     locked: 0

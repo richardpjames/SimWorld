@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a71609
+  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a716095dc6ec0b93e02fae
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -692,6 +692,16 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 4823997105124275686, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
   m_PrefabInstance: {fileID: 1319448464548337207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1319448464548337209 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 3707704993613825419, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+  m_PrefabInstance: {fileID: 1319448464548337207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1319448464548337210 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 5956724843726353477, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+  m_PrefabInstance: {fileID: 1319448464548337207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2541952864893012155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -717,13 +727,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
     - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: demolitionTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: terrainTilemap
       value: 
       objectReference: {fileID: 1128013506}
     - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: floorJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337208}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: structureTilemap
       value: 
       objectReference: {fileID: 1021952713}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: structureJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337210}
+    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
+      propertyPath: demolitionJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337209}
     - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: terrainDataConfiguration
       value: 

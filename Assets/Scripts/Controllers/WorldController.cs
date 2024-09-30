@@ -11,8 +11,10 @@ public class WorldController : MonoBehaviour
     [SerializeField] private Tilemap terrainTilemap;
     [SerializeField] private Tilemap floorTilemap;
     [SerializeField] private Tilemap structureTilemap;
-    [SerializeField] private Tilemap jobTilemap;
-    [SerializeField] private TileBase demolisionTile;
+    [SerializeField] private Tilemap floorJobTilemap;
+    [SerializeField] private Tilemap structureJobTilemap;
+    [SerializeField] private Tilemap demolitionJobTilemap;
+    [SerializeField] private TileBase demolitionTile;
     [Header("World Configuration")]
     [SerializeField] private TerrainDataConfiguration terrainDataConfiguration;
     [Header("Biome Generation")]
@@ -52,7 +54,9 @@ public class WorldController : MonoBehaviour
         GetTilemap<Terrain>().ClearAllTiles();
         GetTilemap<Structure>().ClearAllTiles();
         GetTilemap<Floor>().ClearAllTiles();
-        GetTilemap<Job>().ClearAllTiles();
+        GetJobTilemap(JobTarget.Floor).ClearAllTiles();
+        GetJobTilemap(JobTarget.Structure).ClearAllTiles();
+        GetJobTilemap(JobTarget.Demolish).ClearAllTiles();
 
         // Initialise a new world
         world = new World(name, size, terrainDataConfiguration);
@@ -142,10 +146,10 @@ public class WorldController : MonoBehaviour
     /// Updated graphics when a job is complete.
     /// </summary>
     /// <param name="position"></param>
-    private void JobComplete(Vector2Int position)
+    private void JobComplete(Vector2Int position, Job job)
     {
         // When a job is complete at a position, then remove the tile
-        Tilemap tilemap = GetTilemap<Job>();
+        Tilemap tilemap = GetJobTilemap(job.Target);
         tilemap.SetTile(new Vector3Int(position.x, position.y, 0), null);
     }
 
@@ -160,7 +164,7 @@ public class WorldController : MonoBehaviour
         {
             job.OnJobComplete += JobComplete;
             // Get the jobs tilemap (which will display the temporary indicator
-            Tilemap tilemap = GetTilemap<Job>();
+            Tilemap tilemap = GetJobTilemap(job.Target);
             tilemap.SetTile(new Vector3Int(position.x, position.y, 0), item.Tile);
         }
     }
@@ -175,8 +179,8 @@ public class WorldController : MonoBehaviour
         {
             job.OnJobComplete += JobComplete;
             // Get the jobs tilemap (which will display the temporary indicator
-            Tilemap tilemap = GetTilemap<Job>();
-            tilemap.SetTile(new Vector3Int(position.x, position.y, 0), demolisionTile);
+            Tilemap tilemap = GetJobTilemap(JobTarget.Demolish);
+            tilemap.SetTile(new Vector3Int(position.x, position.y, 0), demolitionTile);
         }
     }
 
@@ -220,7 +224,15 @@ public class WorldController : MonoBehaviour
         if (typeof(T) == typeof(Structure)) return structureTilemap.GetComponent<Tilemap>();
         if (typeof(T) == typeof(Floor)) return floorTilemap.GetComponent<Tilemap>();
         if (typeof(T) == typeof(Terrain)) return terrainTilemap.GetComponent<Tilemap>();
-        if (typeof(T) == typeof(Job)) return jobTilemap.GetComponent<Tilemap>();
+        // For all other types return null
+        return null;
+    }
+
+    private Tilemap GetJobTilemap(JobTarget target)
+    {
+        if (target == JobTarget.Structure) return structureJobTilemap.GetComponent<Tilemap>();
+        if (target == JobTarget.Floor) return floorJobTilemap.GetComponent<Tilemap>();
+        if (target == JobTarget.Demolish) return demolitionJobTilemap.GetComponent<Tilemap>();
         // For all other types return null
         return null;
     }
