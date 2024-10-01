@@ -20,7 +20,8 @@ public class ConstructionController : MonoBehaviour
 
     // Accessors for easier access
     private World _world { get => WorldController.Instance.World; }
-    private MouseController _mouse { get => MouseController.Instance;  }
+    private MouseController _mouse { get => MouseController.Instance; }
+    private JobQueue _jobQueue { get => JobController.Instance.JobQueue; }
 
     // Allow for singleton pattern
     public static ConstructionController Instance { get; private set; }
@@ -54,6 +55,7 @@ public class ConstructionController : MonoBehaviour
         {
             for (int y = bottomRight.y; y >= topLeft.y; y--)
             {
+                Vector2Int position = new Vector2Int(x, y);
                 if (_currentBuildMode == BuildMode.Structure)
                 {
                     // Get the configuration for the currently selected type from a scriptable object
@@ -61,7 +63,7 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Structure structure = new Structure(config);
                     // Place it into the world
-                    _world.Install<Structure>(new Vector2Int(x, y), structure, 1f);
+                    _jobQueue.Add(new Job(position, (job) => { _world.Install<Structure>(position, structure); }, 1f, structure.Tile, JobType.Structure));
                 }
                 else if (_currentBuildMode == BuildMode.Floor)
                 {
@@ -70,18 +72,18 @@ public class ConstructionController : MonoBehaviour
                     // Build a structure from that configuration
                     Floor floor = new Floor(config);
                     // Place it into the world
-                    _world.Install(new Vector2Int(x, y), floor, 1f);
+                    _jobQueue.Add(new Job(position, (job) => { _world.Install<Floor>(position, floor); }, 1f, floor.Tile, JobType.Floor));
                 }
                 else if (_currentBuildMode == BuildMode.Demolish)
                 {
                     // During demolision we first look for any structures (and remove) and then next, any floors
-                    if (_world.Get<Structure>(new Vector2Int(x, y)) != null)
+                    if (_world.Get<Structure>(position) != null)
                     {
-                        _world.Remove<Structure>(new Vector2Int(x, y), 1f);
+                        _jobQueue.Add(new Job(position, (job) => { _world.Remove<Structure>(position); }, 1f, indicatorTile, JobType.Demolish));
                     }
-                    else if (_world.Get<Floor>(new Vector2Int(x, y)) != null)
+                    else if (_world.Get<Floor>(position) != null)
                     {
-                        _world.Remove<Floor>(new Vector2Int(x, y), 1f);
+                        _jobQueue.Add(new Job(position, (job) => { _world.Remove<Floor>(position); }, 1f, indicatorTile, JobType.Demolish));
                     }
                 }
             }

@@ -4,20 +4,21 @@ using UnityEngine.Tilemaps;
 
 public class Job
 {
-    public Vector2Int Location { get; private set; }
+    public Vector2Int Position { get; private set; }
     public Action<Job> OnJobComplete;
     public float JobCost { get; private set; }
     public bool Complete { get; private set; }
     public TileBase Indicator { get; private set; }
-    public JobTarget Target { get; private set; }
+    public JobType Type { get; private set; }
 
-    public Job(Vector2Int location, Action<Job> onJobComplete, float jobCost, JobTarget jobTarget = JobTarget.Structure)
+    public Job(Vector2Int position, Action<Job> onJobComplete, float jobCost, TileBase indicator = null, JobType jobType = JobType.Structure)
     {
-        Location = location;
+        Position = position;
         OnJobComplete += onJobComplete;
         JobCost = jobCost;
         Complete = false;
-        Target = jobTarget;
+        Type = jobType;
+        Indicator = indicator;
     }
 
     public void Work(float points)

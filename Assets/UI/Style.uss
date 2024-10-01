@@ -9,6 +9,8 @@
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     transition-duration: 0.1s;
+    max-width: 150px;
+    max-height: 40px;
 }
 
 .btn-blue:hover {
@@ -42,4 +44,12 @@
     margin-right: 10px;
     margin-bottom: 10px;
     margin-left: 10px;
+}
+
+.btn-red {
+    background-color: rgb(200, 31, 41);
+}
+
+.btn-red:hover {
+    background-color: rgb(200, 31, 41);
 }

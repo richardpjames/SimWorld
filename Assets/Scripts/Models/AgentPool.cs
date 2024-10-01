@@ -7,7 +7,7 @@ public class AgentPool
     public Action<Agent> OnAgentCreated;
     public Action<Agent> OnAgentUpdated;
 
-    public AgentPool(int size, float speed, Queue<Job> jobQueue)
+    public AgentPool(int size, float speed, JobQueue jobQueue)
     {
         // Create a pool of the provided size
         Agents = new List<Agent>();

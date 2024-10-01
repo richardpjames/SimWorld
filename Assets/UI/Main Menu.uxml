@@ -6,8 +6,8 @@
             <ui:TextField picking-mode="Ignore" label="World Name" value="Default" name="world-name" />
             <ui:SliderInt label="Height" high-value="500" low-value="100" name="world-height" />
             <ui:SliderInt label="Width" high-value="500" low-value="100" name="world-width" />
-            <ui:Button text="Start" parse-escape-sequences="true" display-tooltip-when-elided="true" name="start-game" class="btn-blue" style="margin-top: 25px;" />
-            <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit" class="btn-blue" style="margin-top: 2px;" />
+            <ui:Button text="Start" parse-escape-sequences="true" display-tooltip-when-elided="true" name="start-game" class="btn-blue" style="margin-top: 25px; max-width: none;" />
+            <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit" class="btn-blue" style="margin-top: 2px; max-width: none;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

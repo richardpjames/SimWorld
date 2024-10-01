@@ -5,9 +5,9 @@ public class Agent
 {
     public Vector2 Position { get; private set; }
     private float speed;
-    private Queue<Job> jobQueue;
+    private JobQueue jobQueue;
     private Job currentJob;
-    public Agent(float speed, Queue<Job> jobQueue)
+    public Agent(float speed, JobQueue jobQueue)
     {
         this.jobQueue = jobQueue;
         Position = Vector2.zero;
@@ -18,28 +18,26 @@ public class Agent
     public void Update(float deltaTime)
     {
         
-        if (jobQueue.Count > 0 && (currentJob == null || currentJob.Complete))
+        if (currentJob == null || currentJob.Complete)
         {
             // Get the next job from the list
-            currentJob = jobQueue.Dequeue();
+            currentJob = jobQueue.GetNext();
             return;
         }
         if (currentJob != null)
         {
-            Vector2 targetLocation = new Vector2(currentJob.Location.x + 0.5f, currentJob.Location.y + 0.5f);
             // Progress the job if we have reached the location
-            if (Position == targetLocation && !currentJob.Complete)
+            if (Position == currentJob.Position && !currentJob.Complete)
             {
                 currentJob.Work(deltaTime);
                 return;
             }
             // Otherwise move towards the location
-            if (Position != targetLocation && !currentJob.Complete)
+            if (Position != currentJob.Position && !currentJob.Complete)
             {
-                Position = Vector2.MoveTowards(Position, targetLocation, deltaTime * speed);
+                Position = Vector2.MoveTowards(Position, currentJob.Position, deltaTime * speed);
                 return;
             }
         }
-
     }
 }

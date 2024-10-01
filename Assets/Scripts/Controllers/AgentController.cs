@@ -11,7 +11,8 @@ public class AgentController : MonoBehaviour
     public AgentPool AgentPool { get; private set; }
 
     // Accessor for easy access
-    private World _world { get => WorldController.Instance.World; }
+    private JobQueue _jobQueue { get => JobController.Instance.JobQueue; }
+
     public static AgentController Instance { get; private set; }
 
     private void Awake()
@@ -27,7 +28,7 @@ public class AgentController : MonoBehaviour
             Destroy(gameObject);
         }
         // Create a new pool with the initial number of agents
-        AgentPool = new AgentPool(_initialAgents, _agentSpeed, _world.JobQueue);
+        AgentPool = new AgentPool(_initialAgents, _agentSpeed, _jobQueue);
     }
 
     private void Update()

@@ -24,6 +24,7 @@ public class GraphicsController : MonoBehaviour
     // Accessors for easier access to controllers etc.
     private World _world { get => WorldController.Instance.World; }
     private AgentPool _agentPool { get => AgentController.Instance.AgentPool; }
+    private JobQueue _jobQueue { get =>JobController.Instance.JobQueue; }
 
 
     // Allow for a static instance and accessible variables
@@ -49,8 +50,8 @@ public class GraphicsController : MonoBehaviour
     {
         // Subscribe to any events from the world
         _world.OnSquareUpdated += OnSquareUpdated;
-        _world.OnJobCreated += OnJobCreated;
-        _world.OnJobCompleted += OnJobCompleted;
+        _jobQueue.OnJobCreated += OnJobCreated;
+        _jobQueue.OnJobCompleted += OnJobCompleted;
         // Subscribe to any events about agents
         _agentPool.OnAgentCreated += OnAgentCreated;
         _agentPool.OnAgentUpdated += OnAgentUpdated;
@@ -92,9 +93,9 @@ public class GraphicsController : MonoBehaviour
         GetTilemap<Terrain>().ClearAllTiles();
         GetTilemap<Structure>().ClearAllTiles();
         GetTilemap<Floor>().ClearAllTiles();
-        GetTilemap(JobTarget.Floor).ClearAllTiles();
-        GetTilemap(JobTarget.Structure).ClearAllTiles();
-        GetTilemap(JobTarget.Demolish).ClearAllTiles();
+        GetTilemap(JobType.Floor).ClearAllTiles();
+        GetTilemap(JobType.Structure).ClearAllTiles();
+        GetTilemap(JobType.Demolish).ClearAllTiles();
     }
 
     /// <summary>
@@ -149,18 +150,18 @@ public class GraphicsController : MonoBehaviour
     /// Update the graphics whenever a job is created
     /// </summary>
     /// <param name="job"></param>
-    private void OnJobCreated(Job job, TileType tile)
+    private void OnJobCreated(Job job)
     {
         // Get the correct tilemap for this type of job
-        Tilemap tilemap = GetTilemap(job.Target);
+        Tilemap tilemap = GetTilemap(job.Type);
         // If there is a tilemap and tile then update 
-        if (job.Target == JobTarget.Demolish && tilemap != null)
+        if (job.Type == JobType.Demolish && tilemap != null)
         {
-            tilemap.SetTile(new Vector3Int(job.Location.x, job.Location.y, 0), _demolitionTile);
+            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), _demolitionTile);
         }
-        else if (tilemap != null && tile != null)
+        else if (tilemap != null && job.Indicator != null)
         {
-            tilemap.SetTile(new Vector3Int(job.Location.x, job.Location.y, 0), tile.Tile);
+            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), job.Indicator);
         }
     }
 
@@ -171,11 +172,11 @@ public class GraphicsController : MonoBehaviour
     private void OnJobCompleted(Job job)
     {
         // Get the correct tilemap for this type of job
-        Tilemap tilemap = GetTilemap(job.Target);
+        Tilemap tilemap = GetTilemap(job.Type);
         if (tilemap != null)
         {
             // Remove the indicator
-            tilemap.SetTile(new Vector3Int(job.Location.x, job.Location.y, 0), null);
+            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), null);
         }
     }
 
@@ -240,11 +241,11 @@ public class GraphicsController : MonoBehaviour
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
-    private Tilemap GetTilemap(JobTarget target)
+    private Tilemap GetTilemap(JobType target)
     {
-        if (target == JobTarget.Structure) return _structureJobTilemap.GetComponent<Tilemap>();
-        if (target == JobTarget.Floor) return _floorJobTilemap.GetComponent<Tilemap>();
-        if (target == JobTarget.Demolish) return _demolitionJobTilemap.GetComponent<Tilemap>();
+        if (target == JobType.Structure) return _structureJobTilemap.GetComponent<Tilemap>();
+        if (target == JobType.Floor) return _floorJobTilemap.GetComponent<Tilemap>();
+        if (target == JobType.Demolish) return _demolitionJobTilemap.GetComponent<Tilemap>();
         // For all other types return null
         return null;
     }
