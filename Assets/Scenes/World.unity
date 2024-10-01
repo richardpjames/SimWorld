@@ -1056,7 +1056,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1022073523221190941, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
       propertyPath: _initialAgents
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
       propertyPath: m_LocalPosition.x
