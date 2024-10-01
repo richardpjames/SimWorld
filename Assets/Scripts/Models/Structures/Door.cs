@@ -17,8 +17,6 @@ public class Door : WorldTile
 
     public override bool CheckValidity(World world, Vector2Int position)
     {
-        // Cannot exist on the edge of the world
-        if (position.x <= 0 || position.y <= 0 || position.x >= world.Size.x - 1 || position.y >= world.Size.y - 1) return false;
         // Must be walls above and below or side to side, but no more than that
         WorldTile wallAbove = world.GetWorldTile(position + Vector2Int.up, WorldLayer.Structure);
         WorldTile wallBelow = world.GetWorldTile(position + Vector2Int.down, WorldLayer.Structure);
@@ -35,7 +33,7 @@ public class Door : WorldTile
         if((isWallAbove && isWallBelow) && (isWallLeft || isWallRight)) return false;
         // If left and right, but there are also above or below
         if ((isWallLeft && isWallRight) && (isWallAbove || isWallBelow)) return false;
-        // Check if we are building on water
+        // Check if we are building on allowable terrain
         WorldTile terrain = world.GetWorldTile(position, WorldLayer.Terrain);
         if (!terrain.BuildingAllowed) return false;
         // Check if another structure is present

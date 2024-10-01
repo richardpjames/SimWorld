@@ -16,7 +16,7 @@ public class Floor : WorldTile
     }
     public override bool CheckValidity(World world, Vector2Int position)
     {
-        // Check if we are building on water
+        // Check if we are building on allowable terrain
         WorldTile terrain = world.GetWorldTile(position, WorldLayer.Terrain);
         if (!terrain.BuildingAllowed) return false;
         // Check if another floor is present
