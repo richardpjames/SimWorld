@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Agent
@@ -7,10 +6,10 @@ public class Agent
     private float speed;
     private JobQueue jobQueue;
     private Job currentJob;
-    public Agent(float speed, JobQueue jobQueue)
+    public Agent(float speed, JobQueue jobQueue, Vector2 position)
     {
+        this.Position = position;
         this.jobQueue = jobQueue;
-        Position = Vector2.zero;
         this.speed = speed;
     }
 

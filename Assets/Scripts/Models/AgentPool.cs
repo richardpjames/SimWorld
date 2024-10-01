@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class AgentPool
 {
@@ -7,7 +8,7 @@ public class AgentPool
     public Action<Agent> OnAgentCreated;
     public Action<Agent> OnAgentUpdated;
 
-    public AgentPool(int size, float speed, JobQueue jobQueue)
+    public AgentPool(int size, float speed, JobQueue jobQueue, Vector2 position)
     {
         // Create a pool of the provided size
         Agents = new List<Agent>();
@@ -15,7 +16,7 @@ public class AgentPool
         for (int i = 0; i < size; i++)
         {
             // Create the agent and add to the list
-            Agent agent = new Agent(speed, jobQueue);
+            Agent agent = new Agent(speed, jobQueue, position);
             Agents.Add(agent);
             // Invoke the message to let others know the agent is created
             OnAgentCreated?.Invoke(agent);

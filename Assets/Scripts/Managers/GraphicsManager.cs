@@ -64,7 +64,7 @@ public class GraphicsManager : MonoBehaviour
     private void OnAgentCreated(Agent agent)
     {
         // Create a new game object and set this as the parent
-        GameObject newGameObject = Instantiate(_agentPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        GameObject newGameObject = Instantiate(_agentPrefab, agent.Position, Quaternion.identity);
         newGameObject.transform.SetParent(transform, true);
         // Add to the list of agents
         _agents.Add(agent, newGameObject);
