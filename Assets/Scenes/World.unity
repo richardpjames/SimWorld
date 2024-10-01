@@ -640,7 +640,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2619231999842583520, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: m_Name
-      value: GraphicsController
+      value: Graphics Manager
       objectReference: {fileID: 0}
     - target: {fileID: 3150298217586240274, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -835,50 +835,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: worldGrid
-      value: 
-      objectReference: {fileID: 290388371}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: jobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337208}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: floorTilemap
-      value: 
-      objectReference: {fileID: 626582002}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: demolisionTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: demolitionTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: terrainTilemap
-      value: 
-      objectReference: {fileID: 1128013506}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: floorJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337208}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: structureTilemap
-      value: 
-      objectReference: {fileID: 1021952713}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: structureJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337210}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: demolitionJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337209}
-    - target: {fileID: 2686415768853203168, guid: 6eae9dda654d887419af21737113a74d, type: 3}
-      propertyPath: terrainDataConfiguration
-      value: 
-      objectReference: {fileID: 11400000, guid: 88859a041de7f7d4cbff36fa8fcf09df, type: 2}
     - target: {fileID: 7020827817224751349, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -921,7 +877,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480091801784978437, guid: 6eae9dda654d887419af21737113a74d, type: 3}
       propertyPath: m_Name
-      value: WorldController
+      value: World Manager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -938,7 +894,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1398141156084647227, guid: 8ec387975b90f0d43b4658020c0fc629, type: 3}
       propertyPath: m_Name
-      value: GameController
+      value: Game Manager
       objectReference: {fileID: 0}
     - target: {fileID: 2471971087835147757, guid: 8ec387975b90f0d43b4658020c0fc629, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1035,7 +991,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7381068362108198207, guid: e9f0d53f5fb6f594a851e5691b388c43, type: 3}
       propertyPath: m_Name
-      value: JobController
+      value: Job Manager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1092,13 +1048,86 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8425025052307819978, guid: c2977f326b5c23249ad74c87347cc75a, type: 3}
       propertyPath: m_Name
-      value: ConstructionController
+      value: Construction Manager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2977f326b5c23249ad74c87347cc75a, type: 3}
+--- !u!1001 &6873044114759255075
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _sandTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 1533a8ec36545374c83007885d7074f8, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _grassTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 07daa403efc08d14b8261db2fd1169c9, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _waterTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 72e86cf5422cf9445be7ad4b500ecaff, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _woodenDoorTile
+      value: 
+      objectReference: {fileID: 11400000, guid: b7f2accc5dcbe05439649f3054f341e1, type: 2}
+    - target: {fileID: 7288487258587772240, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_Name
+      value: Prefab Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 574.0519
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 299.0535
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.20137236
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9119004170028926868, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 96f502190d94a4748845910551e88b5d, type: 3}
 --- !u!1001 &6939849764478102127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1157,7 +1186,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9058767187787386972, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
       propertyPath: m_Name
-      value: AgentController
+      value: Agent Manager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1178,7 +1207,7 @@ PrefabInstance:
       objectReference: {fileID: 1449776759}
     - target: {fileID: 5483494621219335564, guid: 191aa7c8d9065b84997f3ef2f7f17482, type: 3}
       propertyPath: m_Name
-      value: MouseController
+      value: Mouse Manager
       objectReference: {fileID: 0}
     - target: {fileID: 6281951023226319669, guid: 191aa7c8d9065b84997f3ef2f7f17482, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1229,14 +1258,15 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 519420032}
   - {fileID: 3091810418201221956}
   - {fileID: 2541952864893012155}
   - {fileID: 8507308567742406523}
   - {fileID: 3359582813764579080}
-  - {fileID: 1319448464548337207}
   - {fileID: 695952526754397103}
   - {fileID: 6939849764478102127}
   - {fileID: 3342718013175489189}
+  - {fileID: 6873044114759255075}
+  - {fileID: 1319448464548337207}
+  - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 540862250}

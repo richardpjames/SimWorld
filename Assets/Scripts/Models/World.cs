@@ -1,48 +1,39 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
+
 
 public class World
 {
     // This holds our world
-    private Dictionary<Vector2Int, TileType> _terrains;
-    private Dictionary<Vector2Int, TileType> _structures;
-    private Dictionary<Vector2Int, TileType> _floors;
-    // This holds all of our jobs
-    public Queue<Job> JobQueue;
+    private Dictionary<Vector3Int, WorldTile> _worldTiles;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
     // Lets others know that a tile at the specified position is updated
-    public Action<Vector2Int> OnSquareUpdated;
+    public Action<Vector2Int> OnTileUpdated;
 
-    public World(string name, Vector2Int size, TerrainDataConfiguration terrrainDataConfiguration)
+    private PrefabManager _prefab { get => PrefabManager.Instance; }
+
+    public World(string name, Vector2Int size)
     {
         // Store the name, width and height of the world
         this.Name = name;
         this.Size = size;
         // Initialise the array of tiles
-        _terrains = new Dictionary<Vector2Int, TileType>();
-        _structures = new Dictionary<Vector2Int, TileType>();
-        _floors = new Dictionary<Vector2Int, TileType>();
-        // Initialise the job queue
-        JobQueue = new Queue<Job>();
+        _worldTiles = new Dictionary<Vector3Int, WorldTile>();
         // Creates a world map with the height and width specified
         for (int x = 0; x < Size.x; x++)
         {
             for (int y = 0; y < Size.y; y++)
             {
+                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Terrain);
                 // Default each tile to be grass in the first instance
-                _terrains.Add(new Vector2Int(x, y), new Terrain(TerrainType.Grass, terrrainDataConfiguration.GetTile(TerrainType.Grass)));
+                _worldTiles.Add(lookup, _prefab.Grass);
             }
         }
     }
 
-    /// <summary>
-    /// Generates random biomes within the map
-    /// </summary>
-    public void GenerateBiomes(Wave[] waves, float scale, TerrainDataConfiguration terrainDataConfiguration)
+    public void GenerateBiomes(Wave[] waves, float scale)
     {
         // Generate a random offset
         Vector2 offset = new Vector2(UnityEngine.Random.Range(0, 500), UnityEngine.Random.Range(0, 500));
@@ -54,102 +45,67 @@ public class World
             // Then loop over the height
             for (int y = 0; y < Size.y; y++)
             {
+                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Terrain);
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
-                    terrain.SetType(TerrainType.Water, terrainDataConfiguration.GetTile(TerrainType.Water));
+                    _worldTiles[lookup] = _prefab.Water;
                 }
                 // Then sand as the height increases
                 else if (heightMap[x, y] < 0.3)
                 {
-                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
-                    terrain.SetType(TerrainType.Sand, terrainDataConfiguration.GetTile(TerrainType.Sand));
+                    _worldTiles[lookup] = _prefab.Sand;
                 }
                 // All remaining tiles are grass
                 else
                 {
-                    Terrain terrain = Get<Terrain>(new Vector2Int(x, y));
-                    terrain.SetType(TerrainType.Grass, terrainDataConfiguration.GetTile(TerrainType.Grass));
+                    _worldTiles[lookup] = _prefab.Grass;
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Get the floor, structure or terrain at a position
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="position"></param>
-    /// <returns></returns>
-    public T Get<T>(Vector2Int position) where T : TileType
+    public WorldTile GetWorldTile(Vector2Int position, WorldLayer layer)
     {
-        if (CheckBounds(position) && GetDictionary<T>().ContainsKey(position))
+        // Get the lookup by casting the layer as the z position
+        Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
+        // If the position is within the world and the lookup exists in the dictionary
+        if (CheckBounds(position) && _worldTiles.ContainsKey(lookup))
         {
-            return (T)GetDictionary<T>()[position];
+            // Return the world tile
+            return _worldTiles[lookup];
         }
+        // Otherwise null
         return null;
+
     }
 
-    /// <summary>
-    /// Places a floor or structure into the tile
-    /// </summary>
-    /// <param name="floor">The floor to be installed </param>
-    public void Install<T>(Vector2Int position, T item) where T : TileType, IBuildableObject
+    public void UpdateWorldTile(Vector2Int position, WorldTile worldTile)
     {
+        // Get the lookup by casting the layer as the z position
+        Vector3Int lookup = new Vector3Int(position.x, position.y, (int)worldTile.Layer);
         // Check if we are out of bounds or trying to build on water
-        if (CheckBounds(position) && Get<Terrain>(position).TerrainType != TerrainType.Water && !GetDictionary<T>().ContainsKey(position))
+        if (CheckBounds(position) && worldTile.CheckValidity(this, position))
         {
-            GetDictionary<T>().Add(position, item);
-            OnSquareUpdated?.Invoke(position);
+            _worldTiles.Add(lookup, worldTile);
+            OnTileUpdated?.Invoke(position);
         }
     }
 
-    /// <summary>
-    /// Removes any floor or structure installed on this tile
-    /// </summary>
-    public void Remove<T>(Vector2Int position) where T : TileType, IBuildableObject
+    public void RemoveWorldTile(Vector2Int position, WorldLayer layer)
     {
-        if (GetDictionary<T>().ContainsKey(position))
+        // Get the lookup by casting the layer as the z position
+        Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
+        if (_worldTiles.ContainsKey(lookup))
         {
-            GetDictionary<T>().Remove(position);
-            OnSquareUpdated?.Invoke(position);
+            _worldTiles.Remove(lookup);
+            OnTileUpdated?.Invoke(position);
         }
     }
 
-    /// <summary>
-    /// Returns false if the vector falls outside of the world
-    /// </summary>
-    /// <returns></returns>
-    private bool CheckBounds(Vector2Int position)
+    public bool CheckBounds(Vector2Int position)
     {
         return !(position.x < 0 || position.x >= Size.x || position.y < 0 || position.y >= Size.y);
     }
 
-    /// <summary>
-    /// Gets the appropriate dictionary based on the type passed in
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    private Dictionary<Vector2Int, TileType> GetDictionary<T>()
-    {
-        // Return the correct tilemap based on the type
-        if (typeof(T) == typeof(Structure)) return _structures;
-        if (typeof(T) == typeof(Floor)) return _floors;
-        if (typeof(T) == typeof(Terrain)) return _terrains;
-        // For all other types return null
-        return null;
-    }
-
-    /// <summary>
-    /// Convert types into job targets
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    private JobType GetJobTarget<T>()
-    {
-        if (typeof(T) == typeof(Structure)) return JobType.Structure;
-        if (typeof(T) == typeof(Floor)) return JobType.Floor;
-        return JobType.Demolish;
-    }
 }
