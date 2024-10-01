@@ -44,3 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11df678029059874181afac9c33ec055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _loadingScreen: {fileID: 2996721461363100698, guid: ecec64bd14655824e8c650fc610a5ac5, type: 3}
+  WorldName: Default
+  WorldWidth: 50
+  WorldHeight: 50

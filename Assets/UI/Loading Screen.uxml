@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(0, 0, 0); justify-content: space-around;">
+        <ui:VisualElement name="globe" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Assets/Graphics/Globe.png?fileID=21300000&amp;guid=2eda095ec66c8594ca7be451366517f8&amp;type=3#Globe&quot;); -unity-background-scale-mode: scale-to-fit;" />
+        <ui:Label tabindex="-1" text="Generating World and Recruiting Vikings!" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); align-self: center;" />
+    </ui:VisualElement>
+</ui:UXML>

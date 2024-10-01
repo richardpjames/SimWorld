@@ -1,9 +1,11 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private GameObject _loadingScreen;
     // Holds an instance of the game manager for us elsewhere
     public static GameManager Instance { get; private set; }
 
@@ -33,7 +35,22 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        // Create a loading screen and don't destory on the reload of the scene
+        GameObject loadingScreen = Instantiate(_loadingScreen, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        DontDestroyOnLoad(loadingScreen);
         SceneManager.LoadScene("World");
+        // After the scene has loaded, destroy the loading screen
+        StartCoroutine(CheckStart(loadingScreen));
+    }
+
+    private IEnumerator CheckStart(GameObject loadingScreen)
+    {
+        // Check for instances of the world manager being complete and then subscribe
+        while(WorldManager.Instance == null)
+        {
+            yield return null;
+        }
+        Destroy(loadingScreen);
     }
 
     /// <summary>
@@ -49,7 +66,6 @@ public class GameManager : MonoBehaviour
         Destroy(GameObject.Find("Agent Manager"));
         Destroy(GameObject.Find("Job Manager"));
         Destroy(GameObject.Find("Prefab Manager"));
-
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }
