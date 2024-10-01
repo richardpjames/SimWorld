@@ -62,3 +62,6 @@ TagManager:
   - name: Mouse Indicators
     uniqueID: 1140824287
     locked: 0
+  - name: Agents
+    uniqueID: 2272356059
+    locked: 0

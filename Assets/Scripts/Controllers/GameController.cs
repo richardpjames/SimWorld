@@ -46,6 +46,8 @@ public class GameController : MonoBehaviour
         Destroy(GameObject.Find("ConstructionController"));
         Destroy(GameObject.Find("GraphicsController"));
         Destroy(GameObject.Find("MouseController"));
+        Destroy(GameObject.Find("AgentController"));
+
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }

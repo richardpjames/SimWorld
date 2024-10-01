@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a716095dc6ec0b93e02fae
+  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a716095dc6ec0b93e02faedb667187
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -687,7 +687,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 290388371}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _worldGrid
+      value: 
+      objectReference: {fileID: 290388371}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _agentPrefab
+      value: 
+      objectReference: {fileID: 4870337195678135434, guid: e359cbd9e479f79449c218a46f0292d4, type: 3}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: floorTilemap
+      value: 
+      objectReference: {fileID: 626582002}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _floorTilemap
       value: 
       objectReference: {fileID: 626582002}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
@@ -699,7 +711,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1128013506}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _demolitionTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _terrainTilemap
+      value: 
+      objectReference: {fileID: 1128013506}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: floorJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337208}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _floorJobTilemap
       value: 
       objectReference: {fileID: 1319448464548337208}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
@@ -707,11 +731,23 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1021952713}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _structureTilemap
+      value: 
+      objectReference: {fileID: 1021952713}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: structureJobTilemap
       value: 
       objectReference: {fileID: 1319448464548337210}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _structureJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337210}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: demolitionJobTilemap
+      value: 
+      objectReference: {fileID: 1319448464548337209}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _demolitionJobTilemap
       value: 
       objectReference: {fileID: 1319448464548337209}
     m_RemovedComponents: []
@@ -1006,6 +1042,71 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2977f326b5c23249ad74c87347cc75a, type: 3}
+--- !u!1001 &6939849764478102127
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1022073523221190941, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: _agentSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1022073523221190941, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: _initialAgents
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9058767187787386972, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
+      propertyPath: m_Name
+      value: AgentController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
 --- !u!1001 &8507308567742406523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1078,5 +1179,6 @@ SceneRoots:
   - {fileID: 3359582813764579080}
   - {fileID: 1319448464548337207}
   - {fileID: 695952526754397103}
+  - {fileID: 6939849764478102127}
   - {fileID: 619394802}
   - {fileID: 540862250}

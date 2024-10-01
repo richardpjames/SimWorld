@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 using UnityEngine.WSA;
@@ -7,17 +9,22 @@ using UnityEngine.WSA;
 public class GraphicsController : MonoBehaviour
 {
     [Header("Tilemaps")]
-    [SerializeField] private Grid worldGrid;
-    [SerializeField] private Tilemap terrainTilemap;
-    [SerializeField] private Tilemap floorTilemap;
-    [SerializeField] private Tilemap structureTilemap;
-    [SerializeField] private Tilemap floorJobTilemap;
-    [SerializeField] private Tilemap structureJobTilemap;
-    [SerializeField] private Tilemap demolitionJobTilemap;
-    [SerializeField] private TileBase demolitionTile;
+    [SerializeField] private Grid _worldGrid;
+    [SerializeField] private Tilemap _terrainTilemap;
+    [SerializeField] private Tilemap _floorTilemap;
+    [SerializeField] private Tilemap _structureTilemap;
+    [SerializeField] private Tilemap _floorJobTilemap;
+    [SerializeField] private Tilemap _structureJobTilemap;
+    [SerializeField] private Tilemap _demolitionJobTilemap;
+    [SerializeField] private TileBase _demolitionTile;
+    [Header("Agents")]
+    [SerializeField] private GameObject _agentPrefab;
+    private Dictionary<Agent, GameObject> _agents;
 
     // Accessors for easier access to controllers etc.
     private World _world { get => WorldController.Instance.World; }
+    private AgentPool _agentPool { get => AgentController.Instance.AgentPool; }
+
 
     // Allow for a static instance and accessible variables
     public static GraphicsController Instance { get; private set; }
@@ -34,6 +41,8 @@ public class GraphicsController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        // Initialise the agents dictionary
+        _agents = new Dictionary<Agent, GameObject>();
     }
 
     private void Start()
@@ -42,8 +51,36 @@ public class GraphicsController : MonoBehaviour
         _world.OnSquareUpdated += OnSquareUpdated;
         _world.OnJobCreated += OnJobCreated;
         _world.OnJobCompleted += OnJobCompleted;
+        // Subscribe to any events about agents
+        _agentPool.OnAgentCreated += OnAgentCreated;
+        _agentPool.OnAgentUpdated += OnAgentUpdated;
         // Initial draw of all tiles
         RedrawTiles();
+        // Initial creation of all agents
+        RedrawAgents();
+    }
+
+    /// <summary>
+    /// Adds new agents to the world as game objects
+    /// </summary>
+    /// <param name="agent"></param>
+    private void OnAgentCreated(Agent agent)
+    {
+        // Create a new game object and set this as the parent
+        GameObject newGameObject = Instantiate(_agentPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        newGameObject.transform.SetParent(transform, true);
+        // Add to the list of agents
+        _agents.Add(agent, newGameObject);
+    }
+
+    /// <summary>
+    /// Called after any agent is updated
+    /// </summary>
+    /// <param name="agent"></param>
+    private void OnAgentUpdated(Agent agent)
+    {
+        // Update the lcoation of the game object based on the data
+        _agents[agent].transform.position = new Vector3(agent.Position.x, agent.Position.y, _agents[agent].transform.position.z);
     }
 
     /// <summary>
@@ -78,6 +115,37 @@ public class GraphicsController : MonoBehaviour
     }
 
     /// <summary>
+    /// Redraws all agents into the scene, used at initialisation
+    /// </summary>
+    public void RedrawAgents()
+    {
+        // Clear any existing agents
+        ClearAgents();
+        // Trigger the agent created
+        foreach (Agent agent in _agentPool.Agents)
+        {
+            OnAgentCreated(agent);
+        }
+    }
+
+    /// <summary>
+    /// Removes all agents from the scene
+    /// </summary>
+    public void ClearAgents()
+    {
+        if (_agents != null)
+        {
+            // Destroy all game objects in the dictionary
+            foreach (GameObject gameObject in _agents.Values)
+            {
+                Destroy(gameObject);
+            }
+            // Set to a new dictionary
+            _agents = new Dictionary<Agent, GameObject>();
+        }
+    }
+
+    /// <summary>
     /// Update the graphics whenever a job is created
     /// </summary>
     /// <param name="job"></param>
@@ -88,7 +156,7 @@ public class GraphicsController : MonoBehaviour
         // If there is a tilemap and tile then update 
         if (job.Target == JobTarget.Demolish && tilemap != null)
         {
-            tilemap.SetTile(new Vector3Int(job.Location.x, job.Location.y, 0), demolitionTile);
+            tilemap.SetTile(new Vector3Int(job.Location.x, job.Location.y, 0), _demolitionTile);
         }
         else if (tilemap != null && tile != null)
         {
@@ -141,12 +209,12 @@ public class GraphicsController : MonoBehaviour
     public Vector2Int GetSquarePosition(float x, float y)
     {
         // Check that the world is created
-        if (_world == null || worldGrid == null)
+        if (_world == null || _worldGrid == null)
         {
             return Vector2Int.zero;
         }
         // Get the correct position from the grid
-        Vector3 position = worldGrid.WorldToCell(new Vector3(x, y, 0));
+        Vector3 position = _worldGrid.WorldToCell(new Vector3(x, y, 0));
         // Clamp to the world bounds
         position.x = Mathf.Clamp(position.x, 0, _world.Size.x - 1);
         position.y = Mathf.Clamp(position.y, 0, _world.Size.y - 1);
@@ -161,9 +229,9 @@ public class GraphicsController : MonoBehaviour
     private Tilemap GetTilemap<T>()
     {
         // Return the correct tilemap based on the type
-        if (typeof(T) == typeof(Structure)) return structureTilemap.GetComponent<Tilemap>();
-        if (typeof(T) == typeof(Floor)) return floorTilemap.GetComponent<Tilemap>();
-        if (typeof(T) == typeof(Terrain)) return terrainTilemap.GetComponent<Tilemap>();
+        if (typeof(T) == typeof(Structure)) return _structureTilemap.GetComponent<Tilemap>();
+        if (typeof(T) == typeof(Floor)) return _floorTilemap.GetComponent<Tilemap>();
+        if (typeof(T) == typeof(Terrain)) return _terrainTilemap.GetComponent<Tilemap>();
         // For all other types return null
         return null;
     }
@@ -174,9 +242,9 @@ public class GraphicsController : MonoBehaviour
     /// <returns></returns>
     private Tilemap GetTilemap(JobTarget target)
     {
-        if (target == JobTarget.Structure) return structureJobTilemap.GetComponent<Tilemap>();
-        if (target == JobTarget.Floor) return floorJobTilemap.GetComponent<Tilemap>();
-        if (target == JobTarget.Demolish) return demolitionJobTilemap.GetComponent<Tilemap>();
+        if (target == JobTarget.Structure) return _structureJobTilemap.GetComponent<Tilemap>();
+        if (target == JobTarget.Floor) return _floorJobTilemap.GetComponent<Tilemap>();
+        if (target == JobTarget.Demolish) return _demolitionJobTilemap.GetComponent<Tilemap>();
         // For all other types return null
         return null;
     }

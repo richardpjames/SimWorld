@@ -11,8 +11,6 @@ public class WorldController : MonoBehaviour
 
     // All access to the world is through the controller (no direct references)
     public World World { get; private set; }
-    // Access to jobs
-    Job currentJob = null;
 
     // Accessor to make things easier
     private GameController _game { get => GameController.Instance; }
@@ -47,19 +45,5 @@ public class WorldController : MonoBehaviour
         World.GenerateBiomes(waves, scale, terrainDataConfiguration);
         // Set the camera to the center of the world
         Camera.main.transform.position = new Vector3(World.Size.x / 2, World.Size.y / 2, Camera.main.transform.position.z);
-    }
-
-    private void Update()
-    {
-        if ((World != null && World.JobQueue.Count > 0) && (currentJob == null || currentJob.Complete))
-        {
-            // Get the next job from the list
-            currentJob = World.JobQueue.Dequeue();
-        }
-        // Progress that job
-        if (currentJob != null)
-        {
-            currentJob.Work(Time.deltaTime * 4);
-        }
     }
 }
