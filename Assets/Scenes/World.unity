@@ -1090,6 +1090,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _bedTile
+      value: 
+      objectReference: {fileID: 11400000, guid: b97737f74aa28fe43a337f50b07071fa, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _rockTile
       value: 
       objectReference: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}

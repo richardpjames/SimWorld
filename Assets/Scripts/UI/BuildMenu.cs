@@ -18,7 +18,7 @@ public class BuildMenu : MonoBehaviour
         root.Q<Button>("quit-button").clicked += () => { _game.MainMenu(); };
         // Then each of the construction buttons
         root.Q<Button>("wooden-walls-button").clicked += () => _construction.SetStucture(_prefab.WoodenWall);
-        root.Q<Button>("tree-button").clicked += () => _construction.SetStucture(_prefab.Tree);
+        root.Q<Button>("bed-button").clicked += () => _construction.SetStucture(_prefab.Bed);
         root.Q<Button>("wooden-door-button").clicked += () => _construction.SetStucture(_prefab.WoodenDoor);
         root.Q<Button>("wooden-floor-button").clicked += () => _construction.SetStucture(_prefab.WoodenFloor);
         root.Q<Button>("footpath-button").clicked += () => _construction.SetStucture(_prefab.StoneFootpath);

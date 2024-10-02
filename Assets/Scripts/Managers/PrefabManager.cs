@@ -33,6 +33,9 @@ public class PrefabManager : MonoBehaviour
     public Wall WoodenWall { get => new Wall(name: "Wooden Wall", tile: _woodenWallTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1); }
     [SerializeField] private TileBase _woodenDoorTile;
     public Door WoodenDoor { get => new Door(name: "Wooden Door", tile: _woodenDoorTile, rotation: Quaternion.identity, movementCost: 1, buildCost: 1); }
+    [SerializeField] private TileBase _bedTile;
+    public Bed Bed { get => new Bed(name: "Wooden Bed", tile: _bedTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: -2, buildCost: 3); }
+
     [SerializeField] private TileBase _treeTile;
     public Tree Tree { get => new Tree(name: "Tree", tile: _treeTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: 2, buildCost: 1); }
     [SerializeField] private TileBase _rockTile;

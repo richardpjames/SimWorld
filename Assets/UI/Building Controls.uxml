@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/Style.uss?fileID=7433441132597879392&amp;guid=8eb73062173d43d4ba9453caa6143ccb&amp;type=3#Style" />
     <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse; flex-shrink: 1; max-height: 80px; justify-content: flex-start; position: absolute; bottom: 10px; left: 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; background-color: rgb(255, 255, 255);">
         <ui:VisualElement name="main-menu" style="flex-grow: 1; flex-direction: row; align-items: flex-end; align-self: auto; max-height: 40px;">
-            <ui:Button text="Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="walls-menu-button" class="btn-blue" />
+            <ui:Button text="Walls and Furniture" parse-escape-sequences="true" display-tooltip-when-elided="true" name="walls-menu-button" class="btn-blue" />
             <ui:Button text="Floors" parse-escape-sequences="true" display-tooltip-when-elided="true" name="floors-menu-button" class="btn-blue" />
             <ui:Button text="Tools" parse-escape-sequences="true" display-tooltip-when-elided="true" name="tools-menu-button" class="btn-blue" />
             <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="quit-button" class="btn-blue btn-red" />
@@ -14,7 +14,7 @@
         <ui:VisualElement name="walls-menu" style="flex-grow: 1; max-height: 40px; flex-direction: row;">
             <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-walls-button" class="btn-blue" style="flex-direction: row;" />
             <ui:Button text="Wooden Door" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-door-button" class="btn-blue" style="flex-direction: row;" />
-            <ui:Button text="Tree (Testing)" parse-escape-sequences="true" display-tooltip-when-elided="true" name="tree-button" class="btn-blue" style="flex-direction: row;" />
+            <ui:Button text="Bed" parse-escape-sequences="true" display-tooltip-when-elided="true" name="bed-button" class="btn-blue" style="flex-direction: row;" />
         </ui:VisualElement>
         <ui:VisualElement name="tools-menu" style="flex-grow: 1; max-height: 40px;">
             <ui:Button text="Demolish" parse-escape-sequences="true" display-tooltip-when-elided="true" name="demolish-button" class="btn-blue btn-red" />
