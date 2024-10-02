@@ -785,6 +785,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1096725004749799825, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+      propertyPath: m_SortOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7714919429926527523, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1086,9 +1090,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _rockTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _sandTile
       value: 
       objectReference: {fileID: 11400000, guid: 1533a8ec36545374c83007885d7074f8, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _treeTile
+      value: 
+      objectReference: {fileID: 11400000, guid: d0e3e41923e824748b9384d0b9b67ff9, type: 2}
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _grassTile
       value: 
@@ -1096,7 +1108,7 @@ PrefabInstance:
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _waterTile
       value: 
-      objectReference: {fileID: 11400000, guid: 8e91b419d056ce34fa7b9b6206ceee52, type: 2}
+      objectReference: {fileID: 11400000, guid: cc24aeacc831eec49bcf9b25d2ab148c, type: 2}
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _woodenDoorTile
       value: 
