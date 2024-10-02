@@ -1,2 +1,2 @@
 public enum BuildMode { Build, Demolish, None }
-public enum WorldLayer { Terrain, Floor, Structure }
+public enum WorldLayer { Grass, Sand, Water, Floor, Structure }

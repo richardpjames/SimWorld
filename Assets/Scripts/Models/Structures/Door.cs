@@ -34,8 +34,7 @@ public class Door : WorldTile
         // If left and right, but there are also above or below
         if ((isWallLeft && isWallRight) && (isWallAbove || isWallBelow)) return false;
         // Check if we are building on allowable terrain
-        WorldTile terrain = world.GetWorldTile(position, WorldLayer.Terrain);
-        if (!terrain.BuildingAllowed) return false;
+        if (!world.IsBuildable(position)) return false;
         // Check if another structure is present
         WorldTile structure = world.GetWorldTile(position, WorldLayer.Structure);
         if (structure != null) return false;

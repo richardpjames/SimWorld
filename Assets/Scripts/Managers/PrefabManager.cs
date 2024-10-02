@@ -22,11 +22,11 @@ public class PrefabManager : MonoBehaviour
     // These are all of the possible tiles and items in the game, available to instantiate to other classes
     [Header("Terrain")]
     [SerializeField] private TileBase _grassTile;
-    public Terrain Grass { get => new Terrain(name: "Grass", tile: _grassTile, movementCost: 1, width: 1, height: 1, buildCost: 0, buildingAllowed: true); }
+    public Terrain Grass { get => new Terrain(name: "Grass", tile: _grassTile, movementCost: 1, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Grass); }
     [SerializeField] private TileBase _sandTile;
-    public Terrain Sand { get => new Terrain(name: "Sand", tile: _sandTile, movementCost: 0.5f, width: 1, height: 1, buildCost: 0, buildingAllowed: false); }
+    public Terrain Sand { get => new Terrain(name: "Sand", tile: _sandTile, movementCost: 0.5f, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Sand); }
     [SerializeField] private TileBase _waterTile;
-    public Terrain Water { get => new Terrain(name: "Water", tile: _waterTile, movementCost: 0, width: 1, height: 1, buildCost: 0, buildingAllowed: false); }
+    public Terrain Water { get => new Terrain(name: "Water", tile: _waterTile, movementCost: 0, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Water, buildingAllowed: false); }
     // Structures start here
     [Header("Structures")]
     [SerializeField] private TileBase _woodenWallTile;

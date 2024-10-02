@@ -11,6 +11,7 @@ public abstract class WorldTile
     public float MovementCost { get; protected set; }
     public TileBase Tile { get; protected set; }
     public bool BuildingAllowed { get; protected set; }
+    public bool Walkable { get => MovementCost == 0; }
 
     public abstract bool CheckValidity(World world, Vector2Int position);
 }

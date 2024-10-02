@@ -26,7 +26,7 @@ public class World
         {
             for (int y = 0; y < Size.y; y++)
             {
-                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Terrain);
+                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Grass);
                 // Default each tile to be grass in the first instance
                 _worldTiles.Add(lookup, _prefab.Grass);
             }
@@ -45,21 +45,17 @@ public class World
             // Then loop over the height
             for (int y = 0; y < Size.y; y++)
             {
-                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Terrain);
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
+                    Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Water);
                     _worldTiles[lookup] = _prefab.Water;
                 }
                 // Then sand as the height increases
-                else if (heightMap[x, y] < 0.3)
+                if (heightMap[x, y] < 0.3)
                 {
+                    Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Sand);
                     _worldTiles[lookup] = _prefab.Sand;
-                }
-                // All remaining tiles are grass
-                else
-                {
-                    _worldTiles[lookup] = _prefab.Grass;
                 }
             }
         }
@@ -103,6 +99,50 @@ public class World
         }
     }
 
+    public float MovementCost(Vector2Int position)
+    {
+        float cost = 1f;
+        // Check all layers for tiles
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
+            // Check if there is a tile in the dictionary and take into account its movement cost
+            if (_worldTiles.ContainsKey(lookup))
+            {
+                cost *= _worldTiles[lookup].MovementCost;
+            }
+        }
+        return cost;
+    }
+    public bool IsBuildable(Vector2Int position)
+    {
+        // Check all layers for an item that is not buildable
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
+            // Check if there is a tile in the dictionary and it bans building
+            if(_worldTiles.ContainsKey(lookup) && _worldTiles[lookup].BuildingAllowed == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool IsWalkable(Vector2Int position)
+    {
+        // Check all layers for an item that is not walkable
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
+            // Check if there is a tile in the dictionary and it bans walking
+            if (_worldTiles.ContainsKey(lookup) && _worldTiles[lookup].Walkable == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     public bool CheckBounds(Vector2Int position)
     {
         return !(position.x < 0 || position.x >= Size.x || position.y < 0 || position.y >= Size.y);

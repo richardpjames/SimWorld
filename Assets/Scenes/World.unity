@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a716095dc6ec0b93e02faedb667187
+  m_ApplyToSortingLayers: 0000000079b88c6ddf98ff43cff46420db05cad723a716095dc6ec0b93e02faedb66718773feb932b750ec68
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -615,9 +615,19 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 1801089333274177562, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
   m_PrefabInstance: {fileID: 1319448464548337207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &665450372 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 3359948271056380356, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+  m_PrefabInstance: {fileID: 1319448464548337207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1839735485 &1021952713 stripped
 Tilemap:
   m_CorrespondingSourceObject: {fileID: 8616354616685230037, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
+  m_PrefabInstance: {fileID: 1319448464548337207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1026905076 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 3088178644414923962, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
   m_PrefabInstance: {fileID: 1319448464548337207}
   m_PrefabAsset: {fileID: 0}
 --- !u!1839735485 &1128013506 stripped
@@ -695,6 +705,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4870337195678135434, guid: e359cbd9e479f79449c218a46f0292d4, type: 3}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _sandTilemap
+      value: 
+      objectReference: {fileID: 1026905076}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: floorTilemap
       value: 
       objectReference: {fileID: 626582002}
@@ -702,6 +716,14 @@ PrefabInstance:
       propertyPath: _floorTilemap
       value: 
       objectReference: {fileID: 626582002}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _grassTilemap
+      value: 
+      objectReference: {fileID: 1128013506}
+    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
+      propertyPath: _waterTilemap
+      value: 
+      objectReference: {fileID: 665450372}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: demolitionTile
       value: 

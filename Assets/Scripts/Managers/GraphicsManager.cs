@@ -6,7 +6,9 @@ public class GraphicsManager : MonoBehaviour
 {
     [Header("Tilemaps")]
     [SerializeField] private Grid _worldGrid;
-    [SerializeField] private Tilemap _terrainTilemap;
+    [SerializeField] private Tilemap _grassTilemap;
+    [SerializeField] private Tilemap _sandTilemap;
+    [SerializeField] private Tilemap _waterTilemap;
     [SerializeField] private Tilemap _floorTilemap;
     [SerializeField] private Tilemap _structureTilemap;
     [SerializeField] private Tilemap _floorJobTilemap;
@@ -79,7 +81,9 @@ public class GraphicsManager : MonoBehaviour
     private void ClearTiles()
     {
         // Clear any tiles if there is a tilemap present
-        _terrainTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        _grassTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        _sandTilemap.GetComponent<Tilemap>().ClearAllTiles();
+        _waterTilemap.GetComponent<Tilemap>().ClearAllTiles();
         _floorTilemap.GetComponent<Tilemap>().ClearAllTiles();
         _structureTilemap.GetComponent<Tilemap>().ClearAllTiles();
         _floorJobTilemap.GetComponent<Tilemap>().ClearAllTiles();
@@ -163,12 +167,20 @@ public class GraphicsManager : MonoBehaviour
     private void OnTileUpdated(Vector2Int position)
     {
         // Get the terrain, floors and stuctures at the position
-        WorldTile terrain = _world.GetWorldTile(position, WorldLayer.Terrain);
+        WorldTile grass = _world.GetWorldTile(position, WorldLayer.Grass);
+        WorldTile sand = _world.GetWorldTile(position, WorldLayer.Sand);
+        WorldTile water = _world.GetWorldTile(position, WorldLayer.Water);
         WorldTile floor = _world.GetWorldTile(position, WorldLayer.Floor);
         WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
-        // If present - update the terrain otherwise set to null
-        if (terrain != null) GetTilemap(WorldLayer.Terrain).SetTile(new Vector3Int(position.x, position.y, 0), terrain.Tile);
-        else GetTilemap(WorldLayer.Terrain).SetTile(new Vector3Int(position.x, position.y, 0), null);
+        // If present - update the grass otherwise set to null
+        if (grass != null) GetTilemap(WorldLayer.Grass).SetTile(new Vector3Int(position.x, position.y, 0), grass.Tile);
+        else GetTilemap(WorldLayer.Grass).SetTile(new Vector3Int(position.x, position.y, 0), null);
+        // If present - update the sand otherwise set to null
+        if (sand != null) GetTilemap(WorldLayer.Sand).SetTile(new Vector3Int(position.x, position.y, 0), sand.Tile);
+        else GetTilemap(WorldLayer.Sand).SetTile(new Vector3Int(position.x, position.y, 0), null);
+        // If present - update the water otherwise set to null
+        if (water != null) GetTilemap(WorldLayer.Water).SetTile(new Vector3Int(position.x, position.y, 0), water.Tile);
+        else GetTilemap(WorldLayer.Water).SetTile(new Vector3Int(position.x, position.y, 0), null);
         // If present - update the floors otherwise set to null
         if (floor != null) GetTilemap(WorldLayer.Floor).SetTile(new Vector3Int(position.x, position.y, 0), floor.Tile);
         else GetTilemap(WorldLayer.Floor).SetTile(new Vector3Int(position.x, position.y, 0), null);
@@ -203,7 +215,10 @@ public class GraphicsManager : MonoBehaviour
     private Tilemap GetTilemap(WorldLayer layer)
     {
         // Get the correct tilemap based on the structures layer
-        if (layer == WorldLayer.Terrain) return _terrainTilemap.GetComponent<Tilemap>();
+        if (layer == WorldLayer.Grass) return _grassTilemap.GetComponent<Tilemap>();
+        if (layer == WorldLayer.Sand) return _sandTilemap.GetComponent<Tilemap>();
+        if (layer == WorldLayer.Water) return _waterTilemap.GetComponent<Tilemap>();
+
         if (layer == WorldLayer.Structure) return _structureTilemap.GetComponent<Tilemap>();
         if (layer == WorldLayer.Floor) return _floorTilemap.GetComponent<Tilemap>();
         // Otherwise return null

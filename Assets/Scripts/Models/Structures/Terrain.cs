@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 public class Terrain : WorldTile
 {
-    public Terrain(string name, float movementCost, TileBase tile, int width, int height, int buildCost, bool buildingAllowed = true)
+    public Terrain(string name, float movementCost, TileBase tile, int width, int height, int buildCost, WorldLayer layer, bool buildingAllowed = true)
     {
         this.Name = name;
         this.MovementCost = movementCost;
@@ -11,7 +11,7 @@ public class Terrain : WorldTile
         this.Width = width;
         this.Height = height;
         this.BuildCost = buildCost;
-        this.Layer = WorldLayer.Terrain;
+        this.Layer = layer;
         this.BuildingAllowed = buildingAllowed;
     }
 

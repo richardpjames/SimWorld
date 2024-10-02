@@ -41,27 +41,33 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Terrain
+  - name: Grass
+    uniqueID: 2272356059
+    locked: 0
+  - name: Sand
+    uniqueID: 851050099
+    locked: 0
+  - name: Water
     uniqueID: 1837938809
     locked: 0
-  - name: Floors
+  - name: Floor
     uniqueID: 3620341211
     locked: 0
-  - name: Structures
+  - name: Structure
     uniqueID: 543487183
     locked: 0
-  - name: Floor Job Indicators
+  - name: Floor Jobs
     uniqueID: 152479523
     locked: 0
-  - name: Structure Job Indicators
+  - name: Structure Jobs
     uniqueID: 200066653
     locked: 0
-  - name: Demolition Job Indicators
+  - name: Demolition Jobs
     uniqueID: 2922373267
     locked: 0
-  - name: Mouse Indicators
-    uniqueID: 1140824287
-    locked: 0
   - name: Agents
-    uniqueID: 2272356059
+    uniqueID: 1760317623
+    locked: 0
+  - name: Cursor
+    uniqueID: 1140824287
     locked: 0
