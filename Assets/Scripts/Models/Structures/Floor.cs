@@ -16,6 +16,8 @@ public class Floor : WorldTile
         this.Layer = WorldLayer.Floor;
         this.BuildingAllowed = true;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Drag;
+        this._canRotate = false;
     }
 
     public override WorldTile NewInstance()

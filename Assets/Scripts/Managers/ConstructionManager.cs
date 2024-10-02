@@ -59,7 +59,7 @@ public class ConstructionManager : MonoBehaviour
             for (int y = bottomRight.y; y >= topLeft.y; y--)
             {
                 Vector2Int position = new Vector2Int(x, y);
-                if (_currentBuildMode == BuildMode.Build)
+                if (_currentBuildMode != BuildMode.Demolish && _currentBuildMode != BuildMode.None)
                 {
                     // Place it into the world
                     if (_currentWorldTile.CheckValidity(_world, position))
@@ -93,7 +93,7 @@ public class ConstructionManager : MonoBehaviour
 
     public void SetStucture(WorldTile worldTile)
     {
-        _currentBuildMode = BuildMode.Build;
+        _currentBuildMode = worldTile.BuildMode;
         _currentWorldTile = worldTile;
         OnBuildingModeSet?.Invoke(worldTile.Tile, worldTile);
     }

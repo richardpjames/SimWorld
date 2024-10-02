@@ -52,7 +52,7 @@ public class World
                 }
                 // Random chance (2%) that a rock is placed here (and avoid trees)
                 int random = Random.Range(0, 100);
-                if (random > 98 && heightMap[x, y] <= 0.7)
+                if (random > 98)
                 {
                     // Place a tree structure
                     UpdateWorldTile(new Vector2Int(x, y), _prefab.Rock);

@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 
 public abstract class WorldTile
 {
+    public BuildMode BuildMode { get; protected set; }
     public Quaternion Rotation { get; protected set; }
     public WorldLayer Layer { get; protected set; }
     public int Width { get; protected set; }
@@ -15,6 +16,7 @@ public abstract class WorldTile
     public bool Walkable { get => MovementCost == 0; }
     public bool Reserved = false;
     public Vector2Int BasePosition;
+    protected bool _canRotate;
 
     // For calculating the extremes of the shape
     public int MinX { get { if (Width >= 0) { return 0; } else { return Width + 1; } } }
@@ -53,6 +55,7 @@ public abstract class WorldTile
 
     public virtual void Rotate()
     {
+        if (!_canRotate) return;
         // Rotate the item by 90 degrees
         Rotation *= Quaternion.Euler(0, 0, -90f);
 

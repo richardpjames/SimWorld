@@ -16,6 +16,8 @@ public class Terrain : WorldTile
         this.Layer = layer;
         this.BuildingAllowed = buildingAllowed;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Single;
+        this._canRotate = false;
     }
 
     // Terrain is valid in all positions, so always return true

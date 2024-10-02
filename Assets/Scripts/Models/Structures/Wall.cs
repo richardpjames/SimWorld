@@ -16,6 +16,8 @@ public class Wall : WorldTile
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Line;
+        this._canRotate = false;
     }
 
     public override WorldTile NewInstance()

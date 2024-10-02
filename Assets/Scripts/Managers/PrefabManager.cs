@@ -44,6 +44,6 @@ public class PrefabManager : MonoBehaviour
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     public Floor WoodenFloor { get => new Floor(name: "Wooden Floor", tile: _woodenFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1); }
-    [SerializeField] private TileBase _footpathTile;
-    public Floor StoneFootpath { get => new Floor(name: "Stone Footpath", tile: _footpathTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1); }
+    [SerializeField] private TileBase _stoneFloorTile;
+    public Floor StoneFloor { get => new Floor(name: "Stone Floor", tile: _stoneFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1); }
 }

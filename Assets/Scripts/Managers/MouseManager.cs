@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 public class MouseManager : MonoBehaviour
 {
@@ -63,6 +62,12 @@ public class MouseManager : MonoBehaviour
         // Capture the current mouse position
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0;
+        // Hide the cursor unless we are over the UI, or there is no explicit indicator
+        //Cursor.visible = false;
+        if (EventSystem.current.IsPointerOverGameObject() || _indicator == null)
+        {
+            Cursor.visible = true;
+        }
         // Check for UI Interaction
         if (!EventSystem.current.IsPointerOverGameObject())
         {
@@ -70,8 +75,21 @@ public class MouseManager : MonoBehaviour
             Scroll();
             // Handle zooming
             Zoom();
-            // Handle selection
-            Select();
+            // Handle dragging - as the default or where specified
+            if (_tile == null || _tile.BuildMode == BuildMode.Drag)
+            {
+                Drag();
+            }
+            // If we are not dragging - only single selection
+            if (_tile != null && _tile.BuildMode == BuildMode.Single)
+            {
+                Single();
+            }
+            // If we are not dragging - only single selection
+            if (_tile != null && _tile.BuildMode == BuildMode.Line)
+            {
+                Line();
+            }
             // Handle deselection
             Deselect();
             // Handle rotation
@@ -121,10 +139,23 @@ public class MouseManager : MonoBehaviour
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, maxZoom, minZoom);
     }
 
+    private void Single()
+    {
+        // To avoid any issues, set dragging to false
+        _dragging = false;
+        // Simply detect when the mouse button is up and send this as input complete
+        if (Input.GetMouseButtonUp(0))
+        {
+            // Convert the mouse position to world position
+            Vector2Int position = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
+            OnDragComplete?.Invoke(position, position);
+        }
+    }
+
     /// <summary>
     /// Deals with all selection, including single selection and dragging.
     /// </summary>
-    private void Select()
+    private void Drag()
     {
         // Get the start position for the drag
         if (Input.GetMouseButtonDown(0))
@@ -156,6 +187,81 @@ public class MouseManager : MonoBehaviour
             for (int x = (int)Mathf.Min(_dragStart.x, _dragEnd.x); x <= (int)Mathf.Max(_dragStart.x, _dragEnd.x); x++)
             {
                 for (int y = (int)Mathf.Min(_dragStart.y, _dragEnd.y); y <= (int)Mathf.Max(_dragStart.y, _dragEnd.y); y++)
+                {
+                    indicatorTilemap.SetTile(new Vector3Int(x, y, 0), _indicator);
+                    // Take the existing matrix for the tilemap
+                    if (_tile != null)
+                    {
+                        Matrix4x4 matrix = Matrix4x4.Rotate(_tile.Rotation);
+                        indicatorTilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    }
+                }
+            }
+        }
+    }
+
+    private void Line()
+    {
+        // Get the start position for the drag
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Get an X and y position bound by the world controller
+            _dragStart = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
+            _dragging = true;
+        }
+        // This is the end position for the drag
+        else if (Input.GetMouseButtonUp(0))
+        {
+            // Get an X and y position bound by the world controller
+            _dragEnd = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
+            // Work out the top left
+            Vector2Int topLeft = new Vector2Int(Mathf.Min(_dragStart.x, _dragEnd.x), Mathf.Min(_dragStart.y, _dragEnd.y));
+            // Work out the bottom right
+            Vector2Int bottomRight = new Vector2Int(Mathf.Max(_dragStart.x, _dragEnd.x), Mathf.Max(_dragStart.y, _dragEnd.y));
+            // If the X is longer
+            Vector2Int start = Vector2Int.zero;
+            Vector2Int end = Vector2Int.zero;
+            if (bottomRight.x - topLeft.x > bottomRight.y - topLeft.y)
+            {
+                start = new Vector2Int(Mathf.Min(_dragStart.x, _dragEnd.x), _dragStart.y);
+                end = new Vector2Int(Mathf.Max(_dragStart.x, _dragEnd.x), _dragStart.y);
+            }
+            else
+            {
+                start = new Vector2Int(_dragStart.x, Mathf.Min(_dragStart.y, _dragEnd.y));
+                end = new Vector2Int(_dragStart.x, Mathf.Max(_dragStart.y, _dragEnd.y));
+            }
+            // Let other components know that dragging is complete
+            OnDragComplete?.Invoke(start, end);
+            // Reset the dragging indicator
+            _dragging = false;
+        }
+        // This is while we are dragging
+        else if (Input.GetMouseButton(0))
+        {
+            // Get an X and y position bound by the world controller
+            _dragEnd = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
+            // Work out the top left
+            Vector2Int topLeft = new Vector2Int(Mathf.Min(_dragStart.x, _dragEnd.x), Mathf.Min(_dragStart.y, _dragEnd.y));
+            // Work out the bottom right
+            Vector2Int bottomRight = new Vector2Int(Mathf.Max(_dragStart.x, _dragEnd.x), Mathf.Max(_dragStart.y, _dragEnd.y));
+            // If the X is longer
+            Vector2Int start = Vector2Int.zero;
+            Vector2Int end = Vector2Int.zero;
+            if (bottomRight.x - topLeft.x > bottomRight.y - topLeft.y)
+            {
+                start = new Vector2Int(Mathf.Min(_dragStart.x, _dragEnd.x), _dragStart.y);
+                end = new Vector2Int(Mathf.Max(_dragStart.x, _dragEnd.x), _dragStart.y);
+            }
+            else
+            {
+                start = new Vector2Int(_dragStart.x, Mathf.Min(_dragStart.y, _dragEnd.y));
+                end = new Vector2Int(_dragStart.x, Mathf.Max(_dragStart.y, _dragEnd.y));
+            }
+            // Show the indicator over the area currently selected
+            for (int x = start.x; x <= end.x; x++)
+            {
+                for (int y = start.y; y <= end.y; y++)
                 {
                     indicatorTilemap.SetTile(new Vector3Int(x, y, 0), _indicator);
                     // Take the existing matrix for the tilemap

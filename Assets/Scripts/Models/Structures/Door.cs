@@ -16,6 +16,8 @@ public class Door : WorldTile
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Single;
+        this._canRotate = false;
     }
 
     public override WorldTile NewInstance()
@@ -43,6 +45,15 @@ public class Door : WorldTile
         if((isWallAbove && isWallBelow) && (isWallLeft || isWallRight)) return false;
         // If left and right, but there are also above or below
         if ((isWallLeft && isWallRight) && (isWallAbove || isWallBelow)) return false;
+        // Having checked the walls, rotate accordingly
+        if(isWallAbove)
+        {
+            Rotation = Quaternion.identity;
+        }
+        if(isWallLeft)
+        {
+            Rotation = Quaternion.Euler(0, 0, -90f);
+        }
         // Otherwise return true
         return true;
     }

@@ -1114,6 +1114,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: cc24aeacc831eec49bcf9b25d2ab148c, type: 2}
     - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
+      propertyPath: _stoneFloorTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}
+    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: _woodenDoorTile
       value: 
       objectReference: {fileID: 11400000, guid: b7f2accc5dcbe05439649f3054f341e1, type: 2}

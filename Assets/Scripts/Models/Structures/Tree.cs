@@ -16,6 +16,8 @@ public class Tree : WorldTile
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = false;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Single;
+        this._canRotate = false;
     }
 
     public override WorldTile NewInstance()

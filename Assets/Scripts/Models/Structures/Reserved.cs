@@ -15,6 +15,8 @@ public class Reserved : WorldTile
         this.Layer = layer;
         this.BuildingAllowed = true;
         this.Rotation = Quaternion.identity;
+        this.BuildMode = BuildMode.Single;
+        this._canRotate = false;
     }
 
     public override bool CheckValidity(World world, Vector2Int position)

@@ -9,7 +9,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="floors-menu" style="flex-grow: 1; flex-direction: row; max-height: 40px;">
             <ui:Button text="Wooden Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-floor-button" class="btn-blue" />
-            <ui:Button text="Footpath" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath-button" class="btn-blue" />
+            <ui:Button text="Stone Floor" parse-escape-sequences="true" display-tooltip-when-elided="true" name="footpath-button" class="btn-blue" />
         </ui:VisualElement>
         <ui:VisualElement name="walls-menu" style="flex-grow: 1; max-height: 40px; flex-direction: row;">
             <ui:Button text="Wooden Walls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="wooden-walls-button" class="btn-blue" style="flex-direction: row;" />

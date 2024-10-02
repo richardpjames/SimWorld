@@ -14,8 +14,10 @@ public class Bed : WorldTile
         this._originalWidth = Width;
         this.BuildCost = buildCost;
         this.Layer = WorldLayer.Structure;
-        this.BuildingAllowed = false;
+        this.BuildingAllowed = true;
         this.Rotation = rotation;
+        this.BuildMode = BuildMode.Single;
+        this._canRotate = true;
     }
 
     public override WorldTile NewInstance()

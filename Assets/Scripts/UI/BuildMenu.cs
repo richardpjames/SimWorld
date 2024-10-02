@@ -21,7 +21,7 @@ public class BuildMenu : MonoBehaviour
         root.Q<Button>("bed-button").clicked += () => _construction.SetStucture(_prefab.Bed);
         root.Q<Button>("wooden-door-button").clicked += () => _construction.SetStucture(_prefab.WoodenDoor);
         root.Q<Button>("wooden-floor-button").clicked += () => _construction.SetStucture(_prefab.WoodenFloor);
-        root.Q<Button>("footpath-button").clicked += () => _construction.SetStucture(_prefab.StoneFootpath);
+        root.Q<Button>("footpath-button").clicked += () => _construction.SetStucture(_prefab.StoneFloor);
         root.Q<Button>("demolish-button").clicked += () => _construction.SetDemolish();
         // Hide the sub menus by default
         HideMenus(root);
