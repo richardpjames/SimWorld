@@ -12,7 +12,7 @@ public class ConstructionManager : MonoBehaviour
     private BuildMode _currentBuildMode = BuildMode.None;
 
     // Actions
-    public Action<TileBase> OnBuildingModeSet;
+    public Action<TileBase, WorldTile> OnBuildingModeSet;
 
     // Accessors for easier access
     private World _world { get => WorldManager.Instance.World; }
@@ -38,10 +38,19 @@ public class ConstructionManager : MonoBehaviour
 
     private void Start()
     {
+        _mouse.OnRotationComplete += Rotate;
         _mouse.OnDragComplete += Build;
-        _mouse.OnDeselectComplete += () => { _currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null); };
+        _mouse.OnDeselectComplete += () => { _currentBuildMode = BuildMode.None; OnBuildingModeSet?.Invoke(null, null); };
     }
 
+    private void Rotate()
+    {
+        // If we have a world tile which we are using, then rotate it
+        if (_currentWorldTile != null)
+        {
+            _currentWorldTile.Rotate();
+        }
+    }
 
     private void Build(Vector2Int topLeft, Vector2Int bottomRight)
     {
@@ -55,7 +64,7 @@ public class ConstructionManager : MonoBehaviour
                     // Place it into the world
                     if (_currentWorldTile.CheckValidity(_world, position))
                     {
-                        _jobQueue.Add(new BuildJob(_world, position, _currentWorldTile));
+                        _jobQueue.Add(new BuildJob(_world, position, _currentWorldTile.NewInstance()));
                     }
                 }
                 else if (_currentBuildMode == BuildMode.Demolish)
@@ -63,11 +72,19 @@ public class ConstructionManager : MonoBehaviour
                     // During demolision we first look for any structures (and remove) and then next, any floors
                     if (_world.GetWorldTile(position, WorldLayer.Structure) != null)
                     {
-                        _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Structure));
+                        // If the tile is already reserved, then don't place the job
+                        if (!_world.GetWorldTile(position, WorldLayer.Structure).Reserved)
+                        {
+                            _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Structure));
+                        }
                     }
                     else if (_world.GetWorldTile(position, WorldLayer.Floor) != null)
                     {
-                        _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Floor));
+                        // If the tile is already reserved, then don't place the job
+                        if (!_world.GetWorldTile(position, WorldLayer.Floor).Reserved)
+                        {
+                            _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Floor));
+                        }
                     }
                 }
             }
@@ -78,13 +95,13 @@ public class ConstructionManager : MonoBehaviour
     {
         _currentBuildMode = BuildMode.Build;
         _currentWorldTile = worldTile;
-        OnBuildingModeSet?.Invoke(worldTile.Tile);
+        OnBuildingModeSet?.Invoke(worldTile.Tile, worldTile);
     }
 
 
     public void SetDemolish()
     {
         _currentBuildMode = BuildMode.Demolish;
-        OnBuildingModeSet?.Invoke(indicatorTile);
+        OnBuildingModeSet?.Invoke(indicatorTile, null);
     }
 }

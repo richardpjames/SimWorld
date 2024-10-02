@@ -134,16 +134,20 @@ public class GraphicsManager : MonoBehaviour
     {
         // Get the correct tilemap for this type of job
         Tilemap tilemap = GetJobTilemap(job.Layer);
+        // Create a vector 3 for use with the tilemap
+        Vector3Int jobPosition = new Vector3Int(job.Position.x, job.Position.y, 0);
         // If there is a tilemap and tile then update 
         if (job.GetType() == typeof(DemolishJob))
         {
             tilemap = _demolitionJobTilemap.GetComponent<Tilemap>();
-            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), _demolitionTile);
+            tilemap.SetTile(jobPosition, _demolitionTile);
         }
         //else 
         else if (tilemap != null && job.Indicator != null)
         {
-            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), job.Indicator);
+            tilemap.SetTile(jobPosition, job.Indicator);
+            Matrix4x4 matrix = Matrix4x4.Rotate(job.Rotation);
+            tilemap.SetTransformMatrix(jobPosition, matrix);
         }
     }
 
@@ -151,6 +155,8 @@ public class GraphicsManager : MonoBehaviour
     {
         // Get the correct tilemap for this type of job
         Tilemap tilemap = GetJobTilemap(job.Layer);
+        // Create a vector 3 for use with the tilemap
+        Vector3Int jobPosition = new Vector3Int(job.Position.x, job.Position.y, 0);
         // Check for demolition in particular
         if (job.GetType() == typeof(DemolishJob))
         {
@@ -160,7 +166,7 @@ public class GraphicsManager : MonoBehaviour
         if (tilemap != null)
         {
             // Remove the indicator
-            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), null);
+            tilemap.SetTile(jobPosition, null);
         }
     }
 
@@ -172,20 +178,45 @@ public class GraphicsManager : MonoBehaviour
         WorldTile water = _world.GetWorldTile(position, WorldLayer.Water);
         WorldTile floor = _world.GetWorldTile(position, WorldLayer.Floor);
         WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
-        // If present - update the grass otherwise set to null
-        if (grass != null) GetTilemap(WorldLayer.Grass).SetTile(new Vector3Int(position.x, position.y, 0), grass.Tile);
+        // If present and this is the base tile - update the grass otherwise set to null
+        if (grass != null && grass.BasePosition == position)
+        {
+            Matrix4x4 matrix = Matrix4x4.Rotate(grass.Rotation);
+            GetTilemap(WorldLayer.Grass).SetTile(new Vector3Int(position.x, position.y, 0), grass.Tile);
+            GetTilemap(WorldLayer.Grass).SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+        }
         else GetTilemap(WorldLayer.Grass).SetTile(new Vector3Int(position.x, position.y, 0), null);
-        // If present - update the sand otherwise set to null
-        if (sand != null) GetTilemap(WorldLayer.Sand).SetTile(new Vector3Int(position.x, position.y, 0), sand.Tile);
+        // If present and this is the base tile - update the sand otherwise set to null
+        if (sand != null && sand.BasePosition == position)
+        {
+            Matrix4x4 matrix = Matrix4x4.Rotate(sand.Rotation);
+            GetTilemap(WorldLayer.Sand).SetTile(new Vector3Int(position.x, position.y, 0), sand.Tile);
+            GetTilemap(WorldLayer.Sand).SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+        }
         else GetTilemap(WorldLayer.Sand).SetTile(new Vector3Int(position.x, position.y, 0), null);
-        // If present - update the water otherwise set to null
-        if (water != null) GetTilemap(WorldLayer.Water).SetTile(new Vector3Int(position.x, position.y, 0), water.Tile);
+        // If present and this is the base tile - update the water otherwise set to null
+        if (water != null && water.BasePosition == position)
+        {
+            Matrix4x4 matrix = Matrix4x4.Rotate(water.Rotation);
+            GetTilemap(WorldLayer.Water).SetTile(new Vector3Int(position.x, position.y, 0), water.Tile);
+            GetTilemap(WorldLayer.Water).SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+        }
         else GetTilemap(WorldLayer.Water).SetTile(new Vector3Int(position.x, position.y, 0), null);
-        // If present - update the floors otherwise set to null
-        if (floor != null) GetTilemap(WorldLayer.Floor).SetTile(new Vector3Int(position.x, position.y, 0), floor.Tile);
+        // If present and this is the base tile - update the floors otherwise set to null
+        if (floor != null && floor.BasePosition == position)
+        {
+            Matrix4x4 matrix = Matrix4x4.Rotate(floor.Rotation);
+            GetTilemap(WorldLayer.Floor).SetTile(new Vector3Int(position.x, position.y, 0), floor.Tile);
+            GetTilemap(WorldLayer.Floor).SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+        }
         else GetTilemap(WorldLayer.Floor).SetTile(new Vector3Int(position.x, position.y, 0), null);
-        // If present - update the structures otherwise set to null
-        if (structure != null) GetTilemap(WorldLayer.Structure).SetTile(new Vector3Int(position.x, position.y, 0), structure.Tile);
+        // If present and this is the base tile - update the structures otherwise set to null
+        if (structure != null && structure.BasePosition == position)
+        {
+            Matrix4x4 matrix = Matrix4x4.Rotate(structure.Rotation);
+            GetTilemap(WorldLayer.Structure).SetTile(new Vector3Int(position.x, position.y, 0), structure.Tile);
+            GetTilemap(WorldLayer.Structure).SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+        }
         else GetTilemap(WorldLayer.Structure).SetTile(new Vector3Int(position.x, position.y, 0), null);
     }
 

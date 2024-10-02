@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class MouseManager : MonoBehaviour
 {
@@ -18,12 +19,14 @@ public class MouseManager : MonoBehaviour
     private Vector3 _lastMousePosition = Vector3.zero;
     // For keeping track of dragging and selecting
     private TileBase _indicator;
+    private WorldTile _tile;
     private Vector2Int _dragStart = Vector2Int.zero;
     private Vector2Int _dragEnd = Vector2Int.zero;
     private bool _dragging = false;
     // To let others know when a selection is complete
     public Action<Vector2Int, Vector2Int> OnDragComplete;
     public Action OnDeselectComplete;
+    public Action OnRotationComplete;
 
     // Accessors for easier access to controllers etc.
     private World _world { get => WorldManager.Instance.World; }
@@ -50,7 +53,7 @@ public class MouseManager : MonoBehaviour
     private void Start()
     {
         // Subscribe to the construction controller action
-        _construction.OnBuildingModeSet += (TileBase tile) => { _indicator = tile; };
+        _construction.OnBuildingModeSet += (TileBase tile, WorldTile worldTile) => { _indicator = tile; _tile = worldTile; };
     }
 
     void Update()
@@ -71,12 +74,23 @@ public class MouseManager : MonoBehaviour
             Select();
             // Handle deselection
             Deselect();
+            // Handle rotation
+            Rotate();
             // Show the indicator
             SetIndicator();
         }
         //Capture the final mouse position
         _lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _lastMousePosition.z = 0;
+    }
+
+    private void Rotate()
+    {
+        // If the tab key is pressed then simply signal a rotation
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            OnRotationComplete?.Invoke();
+        }
     }
 
     /// <summary>
@@ -144,6 +158,12 @@ public class MouseManager : MonoBehaviour
                 for (int y = (int)Mathf.Min(_dragStart.y, _dragEnd.y); y <= (int)Mathf.Max(_dragStart.y, _dragEnd.y); y++)
                 {
                     indicatorTilemap.SetTile(new Vector3Int(x, y, 0), _indicator);
+                    // Take the existing matrix for the tilemap
+                    if (_tile != null)
+                    {
+                        Matrix4x4 matrix = Matrix4x4.Rotate(_tile.Rotation);
+                        indicatorTilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
+                    }
                 }
             }
         }
@@ -173,6 +193,13 @@ public class MouseManager : MonoBehaviour
             // Set the indicator on the tilemap based on current position
             Vector2Int position = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
             indicatorTilemap.SetTile(new Vector3Int(position.x, position.y, 0), _indicator);
+            // If we have been provided with a world tile then apply any rotation
+            if (_tile != null)
+            {
+                // Take the existing matrix for the tilemap
+                Matrix4x4 matrix = Matrix4x4.Rotate(_tile.Rotation);
+                indicatorTilemap.SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+            }
         }
     }
 }

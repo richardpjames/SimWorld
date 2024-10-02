@@ -11,5 +11,12 @@ public class DemolishJob : Job
         this.Layer = layer;
         this.Complete = false;
         this.OnJobComplete += (job) => { world.RemoveWorldTile(position, layer); };
+        this.Rotation = Quaternion.identity;
+
+        // Reserve the tile to stop other jobs
+        if (world.GetWorldTile(position, layer) != null)
+        {
+            world.GetWorldTile(position, layer).Reserved = true;
+        }
     }
 }

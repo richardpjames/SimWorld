@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using Unity.VisualScripting.IonicZip;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -22,16 +24,6 @@ public class World
         this.Size = size;
         // Initialise the array of tiles
         _worldTiles = new Dictionary<Vector3Int, WorldTile>();
-        // Creates a world map with the height and width specified
-        for (int x = 0; x < Size.x; x++)
-        {
-            for (int y = 0; y < Size.y; y++)
-            {
-                Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Grass);
-                // Default each tile to be grass in the first instance
-                _worldTiles.Add(lookup, _prefab.Grass);
-            }
-        }
     }
 
     public void GenerateBiomes(Wave[] waves, float scale)
@@ -46,6 +38,8 @@ public class World
             // Then loop over the height
             for (int y = 0; y < Size.y; y++)
             {
+                // Add grass to all tiles
+                UpdateWorldTile(new Vector2Int(x, y), _prefab.Grass);
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
@@ -96,12 +90,52 @@ public class World
 
     public void UpdateWorldTile(Vector2Int position, WorldTile worldTile)
     {
-        // Get the lookup by casting the layer as the z position
-        Vector3Int lookup = new Vector3Int(position.x, position.y, (int)worldTile.Layer);
-        // Check if we are out of bounds or trying to build on water
-        if (CheckBounds(position) && worldTile.CheckValidity(this, position))
+        // Create a new instance of the provided tile so as not to link together
+        WorldTile newInstance = worldTile.NewInstance();
+        // Find the min and max X and Y values to loop between
+        int minX = Mathf.Min(position.x, position.x + newInstance.MinX);
+        int maxX = Mathf.Max(position.x, position.x + newInstance.MaxX);
+        int minY = Mathf.Min(position.y, position.y + newInstance.MinY);
+        int maxY = Mathf.Max(position.y, position.y + newInstance.MaxY);
+        // Remove any reserved tiles
+        for (int x = minX; x < maxX; x++)
         {
-            _worldTiles.Add(lookup, worldTile);
+            // Remove any reserved tiles
+            for (int y = minY; y < maxY; y++)
+            {
+                // First remove any reserving tiles 
+                WorldTile existingTile = GetWorldTile(new Vector2Int(x, y), newInstance.Layer);
+                if (existingTile != null && existingTile.GetType() == typeof(Reserved))
+                {
+                    RemoveWorldTile(new Vector2Int(x, y), existingTile.Layer);
+                }
+            }
+        }
+        // Now check validity and build if possible
+        if (newInstance.CheckValidity(this, position))
+        {
+            // Loop through the width and height of the object from the start position
+            // Remove any reserved tiles
+            for (int x = minX; x < maxX; x++)
+            {
+                // Remove any reserved tiles
+                for (int y = minY; y < maxY; y++)
+                {
+                    // Get the lookup by casting the layer as the z position
+                    Vector3Int lookup = new Vector3Int(x, y, (int)newInstance.Layer);
+                    if (_worldTiles.ContainsKey(lookup))
+                    {
+                        _worldTiles[lookup] = newInstance;
+                    }
+                    else
+                    {
+                        // Then add the tile to the dictionary in each position
+                        _worldTiles.Add(lookup, newInstance);
+                    }
+                }
+            }
+            // Set the base position for only the requested position to help with graphics
+            newInstance.BasePosition = position;
             OnTileUpdated?.Invoke(position);
         }
     }
@@ -112,11 +146,28 @@ public class World
         Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
         if (_worldTiles.ContainsKey(lookup))
         {
-            _worldTiles.Remove(lookup);
-            OnTileUpdated?.Invoke(position);
+            WorldTile worldTile = GetWorldTile(position, layer);
+            // Find the min and max X and Y values to loop between
+            int minX = Mathf.Min(worldTile.BasePosition.x, worldTile.BasePosition.x + worldTile.MinX);
+            int maxX = Mathf.Max(worldTile.BasePosition.x, worldTile.BasePosition.x + worldTile.MaxX);
+            int minY = Mathf.Min(worldTile.BasePosition.y, worldTile.BasePosition.y + worldTile.MinY);
+            int maxY = Mathf.Max(worldTile.BasePosition.y, worldTile.BasePosition.y + worldTile.MaxY);
+            // Remove any associated tiles by looping over the x and y
+            for (int x = minX; x < maxX; x++)
+            {
+                for (int y = minY; y < maxY; y++)
+                {
+                    // Get the lookup by casting the layer as the z position
+                    lookup = new Vector3Int(x, y, (int)worldTile.Layer);
+                    if (_worldTiles.ContainsKey(lookup))
+                    {
+                        _worldTiles.Remove(lookup);
+                        OnTileUpdated?.Invoke(new Vector2Int(x, y));
+                    }
+                }
+            }
         }
     }
-
     public float MovementCost(Vector2Int position)
     {
         float cost = 1f;

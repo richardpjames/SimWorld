@@ -3,16 +3,25 @@ using UnityEngine.Tilemaps;
 
 public class Door : WorldTile
 {
-    public Door(string name, float movementCost, TileBase tile, int width, int height, int buildCost)
+    public Door(string name, float movementCost, TileBase tile, Quaternion rotation, int buildCost)
     {
         this.Name = name;
         this.MovementCost = movementCost;
         this.Tile = tile;
-        this.Width = width;
-        this.Height = height;
+        this.Width = 1;
+        this.Height = 1;
+        this._originalHeight = Height;
+        this._originalWidth = Width;
         this.BuildCost = buildCost;
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
+        this.Rotation = rotation;
+    }
+
+    public override WorldTile NewInstance()
+    {
+        // Return a copy of the object as a new instance
+        return new Door(Name, MovementCost, Tile, Rotation, BuildCost);
     }
 
     public override bool CheckValidity(World world, Vector2Int position)
