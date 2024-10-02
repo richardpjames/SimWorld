@@ -33,6 +33,10 @@ public class PrefabManager : MonoBehaviour
     public Wall WoodenWall { get => new Wall(name: "Wooden Wall", tile: _woodenWallTile, movementCost: 1, width: 1, height: 1, buildCost: 1); }
     [SerializeField] private TileBase _woodenDoorTile;
     public Door WoodenDoor { get => new Door(name: "Wooden Door", tile: _woodenDoorTile, movementCost: 1, width: 1, height: 1, buildCost: 1); }
+    [SerializeField] private TileBase _treeTile;
+    public Tree Tree { get => new Tree(name: "Tree", tile: _treeTile, movementCost: 0, width: 1, height: 2, buildCost: 1); }
+    [SerializeField] private TileBase _rockTile;
+    public Rock Rock { get => new Rock(name: "Tree", tile: _rockTile, movementCost: 0.5f, width: 1, height: 1, buildCost: 1); }
     // Floors start here
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;

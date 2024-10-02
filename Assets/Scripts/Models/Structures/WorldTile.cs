@@ -13,5 +13,14 @@ public abstract class WorldTile
     public bool BuildingAllowed { get; protected set; }
     public bool Walkable { get => MovementCost == 0; }
 
-    public abstract bool CheckValidity(World world, Vector2Int position);
+    public virtual bool CheckValidity(World world, Vector2Int position)
+    {
+        // Check if we are building on allowable terrain
+        if (!world.IsBuildable(position)) return false;
+        // Check if another tile is present on this layer
+        WorldTile worldTile = world.GetWorldTile(position, Layer);
+        if (worldTile != null) return false;
+        // Otherwise return true
+        return true;
+    }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class World
@@ -48,14 +49,31 @@ public class World
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Water);
-                    _worldTiles[lookup] = _prefab.Water;
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Water);
                 }
                 // Then sand as the height increases
                 if (heightMap[x, y] < 0.3)
                 {
-                    Vector3Int lookup = new Vector3Int(x, y, (int)WorldLayer.Sand);
-                    _worldTiles[lookup] = _prefab.Sand;
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Sand);
+                }
+                // Random chance (2%) that a rock is placed here (and avoid trees)
+                int random = Random.Range(0, 100);
+                if (random > 98 && heightMap[x, y] <= 0.7)
+                {
+                    // Place a tree structure
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Rock);
+                }
+                // Add trees to high land - at a 60% chance (makes them clump together)
+                if (heightMap[x, y] > 0.7)
+                {
+                    // Generate random number
+                    random = Random.Range(0, 100);
+                    // 40% chance that there are no trees (skip this)
+                    if (random > 39)
+                    {
+                        // Place a tree structure
+                        UpdateWorldTile(new Vector2Int(x, y), _prefab.Tree);
+                    }
                 }
             }
         }
@@ -121,7 +139,7 @@ public class World
         {
             Vector3Int lookup = new Vector3Int(position.x, position.y, (int)layer);
             // Check if there is a tile in the dictionary and it bans building
-            if(_worldTiles.ContainsKey(lookup) && _worldTiles[lookup].BuildingAllowed == false)
+            if (_worldTiles.ContainsKey(lookup) && _worldTiles[lookup].BuildingAllowed == false)
             {
                 return false;
             }

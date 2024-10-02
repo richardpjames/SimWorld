@@ -14,15 +14,4 @@ public class Wall : WorldTile
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
     }
-
-    public override bool CheckValidity(World world, Vector2Int position)
-    {
-        // Check if we are building on allowable terrain
-        if (!world.IsBuildable(position)) return false;
-        // Check if another structure is present
-        WorldTile structure = world.GetWorldTile(position,WorldLayer.Structure);
-        if (structure != null) return false;
-        // Otherwise return true
-        return true;
-    }
 }

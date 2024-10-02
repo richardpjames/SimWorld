@@ -17,6 +17,7 @@ public class Door : WorldTile
 
     public override bool CheckValidity(World world, Vector2Int position)
     {
+        if(!base.CheckValidity(world, position)) return false;
         // Must be walls above and below or side to side, but no more than that
         WorldTile wallAbove = world.GetWorldTile(position + Vector2Int.up, WorldLayer.Structure);
         WorldTile wallBelow = world.GetWorldTile(position + Vector2Int.down, WorldLayer.Structure);
@@ -33,11 +34,6 @@ public class Door : WorldTile
         if((isWallAbove && isWallBelow) && (isWallLeft || isWallRight)) return false;
         // If left and right, but there are also above or below
         if ((isWallLeft && isWallRight) && (isWallAbove || isWallBelow)) return false;
-        // Check if we are building on allowable terrain
-        if (!world.IsBuildable(position)) return false;
-        // Check if another structure is present
-        WorldTile structure = world.GetWorldTile(position, WorldLayer.Structure);
-        if (structure != null) return false;
         // Otherwise return true
         return true;
     }

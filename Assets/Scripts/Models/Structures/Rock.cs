@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Floor : WorldTile
+public class Rock : WorldTile
 {
-    public Floor(string name, float movementCost, TileBase tile, int width, int height, int buildCost)
+    public Rock(string name, float movementCost, TileBase tile, int width, int height, int buildCost)
     {
         this.Name = name;
         this.MovementCost = movementCost;
@@ -11,7 +11,7 @@ public class Floor : WorldTile
         this.Width = width;
         this.Height = height;
         this.BuildCost = buildCost;
-        this.Layer = WorldLayer.Floor;
-        this.BuildingAllowed = true;
+        this.Layer = WorldLayer.Structure;
+        this.BuildingAllowed = false;
     }
 }
