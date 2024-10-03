@@ -243,6 +243,12 @@ public class GraphicsManager : MonoBehaviour
         return null;
     }
 
+    public Sprite GetSprite(Vector2Int position, WorldLayer layer)
+    {
+        Tilemap tilemap = GetTilemap(layer);
+        return tilemap.GetSprite(new Vector3Int(position.x, position.y, 0));
+    }
+
     private Tilemap GetTilemap(WorldLayer layer)
     {
         // Get the correct tilemap based on the structures layer

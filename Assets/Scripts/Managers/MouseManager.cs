@@ -31,6 +31,7 @@ public class MouseManager : MonoBehaviour
     private World _world { get => WorldManager.Instance.World; }
     private GraphicsManager _graphics { get => GraphicsManager.Instance; }
     private ConstructionManager _construction { get => ConstructionManager.Instance; }
+    private HUDManager _hud { get => HUDManager.Instance; }
 
     // Allow for singleton pattern
     public static MouseManager Instance { get; private set; }
@@ -76,19 +77,23 @@ public class MouseManager : MonoBehaviour
             // Handle zooming
             Zoom();
             // Handle dragging - as the default or where specified
-            if (_tile == null || _tile.BuildMode == BuildMode.Drag)
+            if (_tile != null && _tile.BuildMode == BuildMode.Drag)
             {
                 Drag();
             }
             // If we are not dragging - only single selection
-            if (_tile != null && _tile.BuildMode == BuildMode.Single)
+            else if (_tile != null && _tile.BuildMode == BuildMode.Single)
             {
                 Single();
             }
             // If we are not dragging - only single selection
-            if (_tile != null && _tile.BuildMode == BuildMode.Line)
+            else if (_tile != null && _tile.BuildMode == BuildMode.Line)
             {
                 Line();
+            }
+            else
+            {
+                Query();
             }
             // Handle deselection
             Deselect();
@@ -149,6 +154,19 @@ public class MouseManager : MonoBehaviour
             // Convert the mouse position to world position
             Vector2Int position = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
             OnDragComplete?.Invoke(position, position);
+        }
+    }
+
+    private void Query()
+    {
+        // To avoid any issues, set dragging to false
+        _dragging = false;
+        // Simply detect when the mouse button is up and send this as input complete
+        if (Input.GetMouseButtonUp(0))
+        {
+            // Convert the mouse position to world position
+            Vector2Int position = _graphics.GetTilePosition(_mousePosition.x, _mousePosition.y);
+            _hud.ShowTileInformation(position);
         }
     }
 

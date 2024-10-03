@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
         Destroy(GameObject.Find("Agent Manager"));
         Destroy(GameObject.Find("Job Manager"));
         Destroy(GameObject.Find("Prefab Manager"));
+        Destroy(GameObject.Find("HUD Manager"));
+
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }
