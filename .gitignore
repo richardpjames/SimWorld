@@ -76,9 +76,4 @@ crashlytics-build.properties
 Assets/TopDownEngine.meta
 /Assets/LeanTween
 Assets/LeanTween.meta
-/Assets/TextMesh Pro
-Assets/TextMesh Pro.meta
-/Assets/Plugins
-Assets/Plugins.meta
-Assets/Resources/DOTweenSettings.asset
-Assets/Resources/DOTweenSettings.asset.meta
+
