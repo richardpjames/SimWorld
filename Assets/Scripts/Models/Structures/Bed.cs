@@ -20,6 +20,16 @@ public class Bed : WorldTile
         this._canRotate = true;
     }
 
+    public override bool CheckValidity(World world, Vector2Int position)
+    {
+        // Check the base validity checks
+        if (!base.CheckValidity(world, position)) return false;
+        // This must be placed inside
+        if (!world.IsInside(position)) return false;
+        // Otherwise return true
+        return true;
+    }
+
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance

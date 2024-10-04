@@ -16,6 +16,7 @@ public class TileInformation : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _terrainText;
     [SerializeField] private TextMeshProUGUI _floorText;
     [SerializeField] private TextMeshProUGUI _structureText;
+    [SerializeField] private TextMeshProUGUI _debugText;
     // Each of the images for setting sprites
     [SerializeField] private Image _terrainImage;
     [SerializeField] private Image _floorImage;
@@ -124,6 +125,8 @@ public class TileInformation : MonoBehaviour
             _structureText.text = $"{structure.Name}";
             _structureImage.sprite = _graphics.GetSprite(structure.BasePosition, structure.Layer);
         }
+        // Further debug information
+        _debugText.text = $"Buildable: {_world.IsBuildable(_position)}, Movement Cost: {_world.MovementCost(_position)}, Walkable: {_world.IsWalkable(_position)}, Inside: {_world.IsInside(_position)}";
     }
 
 }

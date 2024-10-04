@@ -13,7 +13,7 @@ public abstract class WorldTile
     public float MovementCost { get; protected set; }
     public TileBase Tile { get; protected set; }
     public bool BuildingAllowed { get; protected set; }
-    public bool Walkable { get => MovementCost == 0; }
+    public bool Walkable { get => MovementCost != 0; }
     public bool Reserved = false;
     public Vector2Int BasePosition;
     protected bool _canRotate;

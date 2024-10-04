@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Plastic.Antlr3.Runtime;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -206,6 +207,38 @@ public class World
             {
                 return false;
             }
+        }
+        return true;
+    }
+
+    public bool IsInside(Vector2Int position)
+    {
+        // Start a queue with the current positition
+        Queue<Vector2Int> nodes = new Queue<Vector2Int>();
+        nodes.Enqueue(position);
+        // Keep a list of nodes which have been checked to avoid duplication
+        List<Vector2Int> checkedNodes = new List<Vector2Int>();
+        // Keep looping while we have nodes to check
+        while (nodes.Count > 0)
+        {
+            Vector2Int currentNode = nodes.Dequeue();
+            checkedNodes.Add(currentNode);
+            // Check conditions for if this node is inside
+            bool inBounds = CheckBounds(currentNode);
+            WorldTile floor = GetWorldTile(currentNode, WorldLayer.Floor);
+            WorldTile structure = GetWorldTile(currentNode, WorldLayer.Structure);
+
+            // If we hit a wall or a door, then we continue to the next loop iteration and don't add more tiles to check
+            if (structure != null && (structure.GetType() == typeof(Wall) || structure.GetType() == typeof(Door))) continue;
+            // If we are out of bounds then return false
+            if (!inBounds) return false;
+            // If there is no floor then we are outside so return false
+            if (floor == null) return false;
+            // Otherwise we are inside and must check the neighbours
+            if (!checkedNodes.Contains(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
         }
         return true;
     }
