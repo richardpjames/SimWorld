@@ -6,7 +6,7 @@ public class DemolishJob : Job
     {
         WorldTile worldTile = world.GetWorldTile(position, layer);
         this.Position = position;
-        this.JobCost = worldTile.BuildCost;
+        this.JobCost = worldTile.BuildTime;
         this.Indicator = worldTile.Tile;
         this.Layer = layer;
         this.Complete = false;

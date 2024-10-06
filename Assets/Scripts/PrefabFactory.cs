@@ -26,25 +26,42 @@ public class PrefabFactory : MonoBehaviour
         _prefabs = new Dictionary<string, WorldTile>();
         // WorldTile reference to re-use
         WorldTile tile;
+
         tile = new Terrain(name: "Grass", tile: _grassTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Grass);
         _prefabs.Add(tile.Name, tile);
+
         tile = new Terrain(name: "Sand", tile: _sandTile, rotation: Quaternion.identity, movementCost: 0.5f, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Sand);
         _prefabs.Add(tile.Name, tile);
+
         tile = new Terrain(name: "Water", tile: _waterTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: 1, buildCost: 0, layer: WorldLayer.Water, buildingAllowed: false);
         _prefabs.Add(tile.Name, tile);
-        tile = new Wall(name: "Wooden Wall", tile: _woodenWallTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1);
+
+        Dictionary<InventoryItem, int> woodenWallCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2 } };
+        tile = new Wall(name: "Wooden Wall", tile: _woodenWallTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1, cost: woodenWallCost);
         _prefabs.Add(tile.Name, tile);
-        tile = new Door(name: "Wooden Door", tile: _woodenDoorTile, rotation: Quaternion.identity, movementCost: 1, buildCost: 1);
+
+        Dictionary<InventoryItem, int> woodenDoorCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 3 } };
+        tile = new Door(name: "Wooden Door", tile: _woodenDoorTile, rotation: Quaternion.identity, movementCost: 1, buildCost: 1, cost: woodenDoorCost);
         _prefabs.Add(tile.Name, tile);
-        tile = new Bed(name: "Wooden Bed", tile: _bedTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: -2, buildCost: 3);
+
+        Dictionary<InventoryItem, int> woodenBedCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
+        tile = new Bed(name: "Wooden Bed", tile: _bedTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: -2, buildTime: 3, cost: woodenBedCost);
         _prefabs.Add(tile.Name, tile);
-        tile = new Tree(name: "Tree", tile: _treeTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: 2, buildCost: 1);
+
+        Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2} };
+        tile = new Tree(name: "Tree", tile: _treeTile, rotation: Quaternion.identity, movementCost: 0, width: 1, height: 2, buildCost: 1, yield: treeYield);
         _prefabs.Add(tile.Name, tile);
-        tile = new Rock(name: "Rock", tile: _rockTile, rotation: Quaternion.identity, movementCost: 0.5f, width: 1, height: 1, buildCost: 1);
+
+        Dictionary<InventoryItem, int> rockYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Stone, 2 } };
+        tile = new Rock(name: "Rock", tile: _rockTile, rotation: Quaternion.identity, movementCost: 0.5f, width: 1, height: 1, buildCost: 1, yield: rockYield);
         _prefabs.Add(tile.Name, tile);
-        tile = new Floor(name: "Wooden Floor", tile: _woodenFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1);
+
+        Dictionary<InventoryItem, int> woodenFloorCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2 } };
+        tile = new Floor(name: "Wooden Floor", tile: _woodenFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1, cost: woodenFloorCost);
         _prefabs.Add(tile.Name, tile);
-        tile = new Floor(name: "Stone Floor", tile: _stoneFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1);
+
+        Dictionary<InventoryItem, int> stoneFloorCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Stone, 2 } };
+        tile = new Floor(name: "Stone Floor", tile: _stoneFloorTile, rotation: Quaternion.identity, movementCost: 1, width: 1, height: 1, buildCost: 1, cost: stoneFloorCost);
         _prefabs.Add(tile.Name, tile);
     }
 

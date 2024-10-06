@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Bed : WorldTile
 {
-    public Bed(string name, float movementCost, TileBase tile, Quaternion rotation, int width, int height, int buildCost)
+    public Bed(string name, float movementCost, TileBase tile, Quaternion rotation, int width, int height, int buildTime, Dictionary<InventoryItem, int> cost)
     {
         this.Name = name;
         this.MovementCost = movementCost;
@@ -12,12 +13,13 @@ public class Bed : WorldTile
         this.Height = height;
         this._originalHeight = Height;
         this._originalWidth = Width;
-        this.BuildCost = buildCost;
+        this.BuildTime = buildTime;
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
         this.Rotation = rotation;
         this.BuildMode = BuildMode.Single;
         this._canRotate = true;
+        this.Cost = cost;
     }
 
     public override bool CheckValidity(World world, Vector2Int position)
@@ -33,6 +35,6 @@ public class Bed : WorldTile
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance
-        return new Bed(Name, MovementCost, Tile, Rotation, Width, Height, BuildCost);
+        return new Bed(Name, MovementCost, Tile, Rotation, Width, Height, BuildTime, Cost);
     }
 }

@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Door : WorldTile
 {
-    public Door(string name, float movementCost, TileBase tile, Quaternion rotation, int buildCost)
+    public Door(string name, float movementCost, TileBase tile, Quaternion rotation, int buildCost, Dictionary<InventoryItem, int> cost)
     {
         this.Name = name;
         this.MovementCost = movementCost;
@@ -12,18 +13,19 @@ public class Door : WorldTile
         this.Height = 1;
         this._originalHeight = Height;
         this._originalWidth = Width;
-        this.BuildCost = buildCost;
+        this.BuildTime = buildCost;
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
         this.Rotation = rotation;
         this.BuildMode = BuildMode.Single;
         this._canRotate = false;
+        this.Cost = cost;
     }
 
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance
-        return new Door(Name, MovementCost, Tile, Rotation, BuildCost);
+        return new Door(Name, MovementCost, Tile, Rotation, BuildTime, Cost);
     }
 
     public override bool CheckValidity(World world, Vector2Int position)

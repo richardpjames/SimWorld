@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 
 public abstract class Job
 {
+    public WorldTile WorldTile { get; protected set; }
     public Vector2Int Position { get; protected set; }
     public float JobCost { get; protected set; }
     public bool Complete { get; protected set; }

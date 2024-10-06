@@ -11,7 +11,7 @@ public class Reserved : WorldTile
         this.Height = 1;
         this._originalHeight = Height;
         this._originalWidth = Width;
-        this.BuildCost = 0;
+        this.BuildTime = 0;
         this.Layer = layer;
         this.BuildingAllowed = true;
         this.Rotation = Quaternion.identity;

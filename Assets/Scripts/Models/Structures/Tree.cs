@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Tree : WorldTile
 {
-    public Tree(string name, float movementCost, TileBase tile, Quaternion rotation, int width, int height, int buildCost)
+    public Tree(string name, float movementCost, TileBase tile, Quaternion rotation, int width, int height, int buildCost, Dictionary<InventoryItem, int> yield)
     {
         this.Name = name;
         this.MovementCost = movementCost;
@@ -12,17 +13,18 @@ public class Tree : WorldTile
         this.Height = height;
         this._originalHeight = Height;
         this._originalWidth = Width;
-        this.BuildCost = buildCost;
+        this.BuildTime = buildCost;
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = false;
         this.Rotation = rotation;
         this.BuildMode = BuildMode.Single;
         this._canRotate = false;
+        this.Yield = yield;
     }
 
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance
-        return new Tree(Name, MovementCost, Tile, Rotation, Width, Height, BuildCost);
+        return new Tree(Name, MovementCost, Tile, Rotation, Width, Height, BuildTime, Yield);
     }
 }

@@ -12,7 +12,7 @@ public class Terrain : WorldTile
         this.Height = height;
         this._originalHeight = Height;
         this._originalWidth = Width;
-        this.BuildCost = buildCost;
+        this.BuildTime = buildCost;
         this.Layer = layer;
         this.BuildingAllowed = buildingAllowed;
         this.Rotation = rotation;
@@ -29,7 +29,7 @@ public class Terrain : WorldTile
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance
-        return new Terrain(Name, MovementCost, Tile, Rotation, Width, Height, BuildCost, Layer, BuildingAllowed);
+        return new Terrain(Name, MovementCost, Tile, Rotation, Width, Height, BuildTime, Layer, BuildingAllowed);
     }
 
 }

@@ -1,5 +1,5 @@
-using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public string WorldName = "Default";
     public int WorldWidth = 50;
     public int WorldHeight = 50;
+    public Dictionary<InventoryItem, int> StartingResources;
 
     public int StartingAgents = 5;
 
@@ -33,6 +34,11 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        StartingResources = new Dictionary<InventoryItem, int>();
+        StartingResources.Add(InventoryItem.Wood, 20);
+        StartingResources.Add(InventoryItem.Stone, 20);
+        StartingResources.Add(InventoryItem.Planks, 20);
+        StartingResources.Add(InventoryItem.Blocks, 20);
     }
 
     public void StartGame()

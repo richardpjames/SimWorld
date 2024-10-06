@@ -8,6 +8,7 @@ using UnityEngine.Tilemaps;
 public class JobQueue : MonoBehaviour
 {
     [SerializeField] private World _world;
+    [SerializeField] private Inventory _inventory;
     [SerializeField] private Grid _grid;
     [SerializeField] private TileBase _demolitionTile;
     [SerializeField] private Color _baseColour;
@@ -89,7 +90,25 @@ public class JobQueue : MonoBehaviour
     {
         if (_queue.Count > 0)
         {
-            return _queue.Dequeue();
+            Job selectedJob = _queue.Dequeue();
+            // If this is a building job, then ensure we can afford it
+            if (selectedJob.GetType() == typeof(BuildJob))
+            {
+                // If we can afford it, then take the resources from the inventory now
+                if (_inventory.Check(selectedJob.WorldTile.Cost))
+                {
+                    _inventory.Spend(selectedJob.WorldTile.Cost);
+                    return selectedJob;
+                }
+                // Otherwise put back on the bottom of the queue and return null (agent to check again on next frame)
+                else
+                {
+                    _queue.Enqueue(selectedJob);
+                    return null;
+                }
+
+            }
+            return selectedJob;
         }
         return null;
     }

@@ -2,17 +2,16 @@ using UnityEngine;
 
 public class BuildJob : Job
 {
-    WorldTile worldTile;
-
     public BuildJob(World world, Vector2Int position, WorldTile worldTile)
     {
         this.Position = position;
-        this.JobCost = worldTile.BuildCost;
+        this.JobCost = worldTile.BuildTime;
         this.Indicator = worldTile.Tile;
         this.Layer = worldTile.Layer;
         this.Complete = false;
         this.OnJobComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
         this.Rotation = worldTile.Rotation;
+        this.WorldTile = worldTile;
 
         // If this isn't valid, then immediately complete the job and exit
         if (worldTile.CheckValidity(world, position) == false)

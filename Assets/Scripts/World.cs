@@ -15,6 +15,8 @@ public class World : MonoBehaviour
     [SerializeField] private Grid _grid;
     [Header("Prefabs")]
     [SerializeField] private PrefabFactory _prefab;
+    [Header("Inventory")]
+    [SerializeField] private Inventory _inventory;
 
     // This holds our world
     private Dictionary<Vector3Int, WorldTile> _worldTiles;
@@ -195,10 +197,15 @@ public class World : MonoBehaviour
                     lookup = new Vector3Int(x, y, (int)worldTile.Layer);
                     if (_worldTiles.ContainsKey(lookup))
                     {
+                        // If this is the base of the object, then collect any yield from it
+                        if (_worldTiles[lookup].BasePosition == new Vector2Int(x, y))
+                        {
+                            _inventory.Add(_worldTiles[lookup].Yield);
+                        }
                         _worldTiles.Remove(lookup);
                         OnTileUpdated?.Invoke(new Vector2Int(x, y));
                         // Remove from the tilemap
-                        _tilemaps[worldTile.Layer].SetTile(new Vector3Int(x,y,0), null);
+                        _tilemaps[worldTile.Layer].SetTile(new Vector3Int(x, y, 0), null);
 
                     }
                 }

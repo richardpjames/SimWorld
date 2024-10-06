@@ -5,6 +5,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public Dictionary<InventoryItem, int> Items;
+    public Action OnInventoryUpdated;
 
     private void Start()
     {
@@ -14,21 +15,26 @@ public class Inventory : MonoBehaviour
         {
            Items.Add(item, 0);
         }
+        // Add starting resources
+        Add(GameManager.Instance.StartingResources);
+        OnInventoryUpdated?.Invoke();
     }
 
     // Check whether the provided inventory can be "afforded"
     public bool Check(Dictionary<InventoryItem, int> inventory)
     {
+        if (inventory == null) return true;
         // Loop through each item in the inventory and see if it can be afforded
         foreach (InventoryItem item in inventory.Keys)
         {
-            if (Items[item] > inventory[item]) return false;
+            if (Items[item] < inventory[item]) return false;
         }
         return true;
     }
 
     public void Spend(Dictionary<InventoryItem, int> inventory)
     {
+        if (inventory == null) return;
         // If this can be afforded
         if (Check(inventory))
         {
@@ -38,10 +44,16 @@ public class Inventory : MonoBehaviour
                 Items[item] -= inventory[item];
             }
         }
+        OnInventoryUpdated?.Invoke();
     }
-    public void Add(InventoryItem item, int amount)
+    public void Add(Dictionary<InventoryItem, int> inventory)
     {
-        // Add the provided amount to an item
-        Items[item] += amount;
+        if (inventory == null) return;
+        // Loop through each item in the inventory and add
+        foreach (InventoryItem item in inventory.Keys)
+        {
+            Items[item] += inventory[item];
+        }
+        OnInventoryUpdated?.Invoke();
     }
 }
