@@ -1,30 +1,63 @@
+using Codice.CM.Client.Differences;
 using System;
 using System.Collections.Generic;
-using Unity.Plastic.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class World
+public class World : MonoBehaviour
 {
+    [Header("Biome Generation")]
+    [SerializeField] private Wave[] _waves;
+    [SerializeField] private float _scale;
+    [SerializeField] private Vector2 _offset;
+    [Header("Graphics Display")]
+    [SerializeField] private Grid _grid;
+    [Header("Prefabs")]
+    [SerializeField] private PrefabFactory _prefab;
+
     // This holds our world
     private Dictionary<Vector3Int, WorldTile> _worldTiles;
+    private Dictionary<WorldLayer, Tilemap> _tilemaps;
+
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
     // Lets others know that a tile at the specified position is updated
     public Action<Vector2Int> OnTileUpdated;
 
-    private PrefabManager _prefab { get => PrefabManager.Instance; }
-
-    public World(string name, Vector2Int size)
+    private GameManager _game { get => GameManager.Instance; }
+    private void Start()
     {
         // Store the name, width and height of the world
-        this.Name = name;
-        this.Size = size;
+        this.Name = _game.WorldName;
+        this.Size = new Vector2Int(_game.WorldWidth, _game.WorldHeight);
         // Initialise the array of tiles
         _worldTiles = new Dictionary<Vector3Int, WorldTile>();
+        // Initialise the list of tilemaps
+        _tilemaps = new Dictionary<WorldLayer, Tilemap>();
+        // Generate all required tilemaps
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            // Create a game object with a tilemap and a tilemap renderer
+            GameObject tilemap_go = new GameObject($"Tilemap for {layer.ToString()}");
+            Tilemap tilemap = tilemap_go.AddComponent<Tilemap>();
+            TilemapRenderer tilemapRenderer = tilemap_go.AddComponent<TilemapRenderer>();
+            // Add the game object to the grid
+            tilemap_go.transform.SetParent(_grid.transform);
+            // Set the sorting layer for the tilemap renderer
+            tilemapRenderer.sortingLayerName = layer.ToString();
+            // Set the sort order to allow for Y sorting
+            tilemapRenderer.sortOrder = TilemapRenderer.SortOrder.TopRight;
+            // Hold a reference to the tilemap in the dictionary
+            _tilemaps.Add(layer, tilemap);
+        }
+        // Generate random biomes
+        GenerateBiomes(_waves, _scale);
+        // Set the camera to the center of the world
+        Camera.main.transform.position = new Vector3(Size.x / 2, Size.y / 2, Camera.main.transform.position.z);
     }
 
-    public void GenerateBiomes(Wave[] waves, float scale)
+    private void GenerateBiomes(Wave[] waves, float scale)
     {
         // Generate a random offset
         Vector2 offset = new Vector2(UnityEngine.Random.Range(0, 500), UnityEngine.Random.Range(0, 500));
@@ -37,23 +70,23 @@ public class World
             for (int y = 0; y < Size.y; y++)
             {
                 // Add grass to all tiles
-                UpdateWorldTile(new Vector2Int(x, y), _prefab.Grass);
+                UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Grass"));
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Water);
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Water"));
                 }
                 // Then sand as the height increases
                 if (heightMap[x, y] < 0.3)
                 {
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Sand);
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Sand"));
                 }
                 // Random chance (2%) that a rock is placed here (and avoid trees)
                 int random = Random.Range(0, 100);
                 if (random > 98)
                 {
                     // Place a tree structure
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Rock);
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Rock"));
                 }
                 // Add trees to high land - at a 60% chance (makes them clump together)
                 if (heightMap[x, y] > 0.7)
@@ -64,7 +97,7 @@ public class World
                     if (random > 39)
                     {
                         // Place a tree structure
-                        UpdateWorldTile(new Vector2Int(x, y), _prefab.Tree);
+                        UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Tree"));
                     }
                 }
             }
@@ -83,7 +116,6 @@ public class World
         }
         // Otherwise null
         return null;
-
     }
 
     public void UpdateWorldTile(Vector2Int position, WorldTile worldTile)
@@ -135,6 +167,10 @@ public class World
             // Set the base position for only the requested position to help with graphics
             newInstance.BasePosition = position;
             OnTileUpdated?.Invoke(position);
+            // Update the correct tilemap
+            Matrix4x4 matrix = Matrix4x4.Rotate(newInstance.Rotation);
+            _tilemaps[newInstance.Layer].SetTile(new Vector3Int(position.x, position.y, 0), newInstance.Tile);
+            _tilemaps[newInstance.Layer].SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
         }
     }
 
@@ -161,6 +197,9 @@ public class World
                     {
                         _worldTiles.Remove(lookup);
                         OnTileUpdated?.Invoke(new Vector2Int(x, y));
+                        // Remove from the tilemap
+                        _tilemaps[worldTile.Layer].SetTile(new Vector3Int(x,y,0), null);
+
                     }
                 }
             }
@@ -245,6 +284,21 @@ public class World
     public bool CheckBounds(Vector2Int position)
     {
         return !(position.x < 0 || position.x >= Size.x || position.y < 0 || position.y >= Size.y);
+    }
+
+    public Sprite GetSprite(Vector2Int position, WorldLayer layer)
+    {
+        return _tilemaps[layer].GetSprite(new Vector3Int(position.x, position.y, 0));
+    }
+
+    public Vector2Int GetTilePosition(float x, float y)
+    {
+        // Get the correct position from the grid
+        Vector3 position = _grid.WorldToCell(new Vector3(x, y, 0));
+        // Clamp to the world bounds
+        position.x = Mathf.Clamp(position.x, 0, Size.x - 1);
+        position.y = Mathf.Clamp(position.y, 0, Size.y - 1);
+        return new Vector2Int((int)position.x, (int)position.y);
     }
 
 }

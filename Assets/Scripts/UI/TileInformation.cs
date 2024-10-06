@@ -24,18 +24,18 @@ public class TileInformation : MonoBehaviour
 
     // Hold the position
     private Vector2Int _position;
-
-    // Get the world controller
-    private World _world { get => WorldManager.Instance.World; }
-    // Get the job queue (for demlition)
-    private JobQueue _jobQueue { get => JobManager.Instance.JobQueue; }
-
-    private GraphicsManager _graphics { get => GraphicsManager.Instance; }
-
+    // Get a reference to the world
+    private World _world;
+    // Get the job queue (for demolition)
+    private JobQueue _jobQueue;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        // Find a reference to the world
+        _world = GameObject.FindAnyObjectByType<World>();
+        // Find a reference to the job queue
+        _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
         // Hide the panel, then scale it in
         _panel.transform.localScale = Vector3.zero;
         _closeButton.SetActive(false);
@@ -96,19 +96,19 @@ public class TileInformation : MonoBehaviour
         {
             _terrainSection.SetActive(true);
             _terrainText.text = $"{water.Name}";
-            _terrainImage.sprite = _graphics.GetSprite(water.BasePosition, water.Layer);
+            _terrainImage.sprite = _world.GetSprite(water.BasePosition, water.Layer);
         }
         else if (sand != null)
         {
             _terrainSection.SetActive(true);
             _terrainText.text = $"{sand.Name}";
-            _terrainImage.sprite = _graphics.GetSprite(sand.BasePosition, sand.Layer);
+            _terrainImage.sprite = _world.GetSprite(sand.BasePosition, sand.Layer);
         }
         else if (grass != null)
         {
             _terrainSection.SetActive(true);
             _terrainText.text = $"{grass.Name}";
-            _terrainImage.sprite = _graphics.GetSprite(grass.BasePosition, grass.Layer);
+            _terrainImage.sprite = _world.GetSprite(grass.BasePosition, grass.Layer);
         }
 
         // If there is a floor then display its information
@@ -116,14 +116,14 @@ public class TileInformation : MonoBehaviour
         {
             _floorSection.SetActive(true);
             _floorText.text = $"{floor.Name}";
-            _floorImage.sprite = _graphics.GetSprite(floor.BasePosition, floor.Layer);
+            _floorImage.sprite = _world.GetSprite(floor.BasePosition, floor.Layer);
         }
         // If there is a structure then display its information
         if (structure != null)
         {
             _structureSection.SetActive(true);
             _structureText.text = $"{structure.Name}";
-            _structureImage.sprite = _graphics.GetSprite(structure.BasePosition, structure.Layer);
+            _structureImage.sprite = _world.GetSprite(structure.BasePosition, structure.Layer);
         }
         // Further debug information
         _debugText.text = $"Buildable: {_world.IsBuildable(_position)}, Movement Cost: {_world.MovementCost(_position)}, Walkable: {_world.IsWalkable(_position)}, Inside: {_world.IsInside(_position)}";

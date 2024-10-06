@@ -2,13 +2,17 @@ using UnityEngine;
 using UnityEngine.UIElements;
 public class BuildMenu : MonoBehaviour
 {
-    private ConstructionManager _construction { get => ConstructionManager.Instance; }
-    private PrefabManager _prefab { get => PrefabManager.Instance; }
+    private Builder _builder;
+    private PrefabFactory _prefab;
     private GameManager _game { get => GameManager.Instance; }
 
     // Start is called before the first frame update
     void Start()
     {
+        // Find the prefab factory
+        _prefab = GameObject.FindAnyObjectByType<PrefabFactory>();
+        _builder = GameObject.FindAnyObjectByType<Builder>();
+
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         // Get each of the buttons and set their actions - with the main menu first
@@ -16,11 +20,13 @@ public class BuildMenu : MonoBehaviour
         root.Q<Button>("floors-menu-button").clicked += () => { ShowMenu(root, "floors-menu"); };
         root.Q<Button>("quit-button").clicked += () => { _game.MainMenu(); };
         // Then each of the construction buttons
-        root.Q<Button>("wooden-walls-button").clicked += () => _construction.SetStucture(_prefab.WoodenWall);
-        root.Q<Button>("bed-button").clicked += () => _construction.SetStucture(_prefab.Bed);
-        root.Q<Button>("wooden-door-button").clicked += () => _construction.SetStucture(_prefab.WoodenDoor);
-        root.Q<Button>("wooden-floor-button").clicked += () => _construction.SetStucture(_prefab.WoodenFloor);
-        root.Q<Button>("footpath-button").clicked += () => _construction.SetStucture(_prefab.StoneFloor);
+        root.Q<Button>("wooden-walls-button").clicked += () => _builder.SetBuild("Wooden Wall");
+        root.Q<Button>("bed-button").clicked += () => _builder.SetBuild("Wooden Bed");
+        root.Q<Button>("wooden-door-button").clicked += () => _builder.SetBuild("Wooden Door");
+        root.Q<Button>("wooden-floor-button").clicked += () => _builder.SetBuild("Wooden Floor");
+        root.Q<Button>("footpath-button").clicked += () => _builder.SetBuild("Stone Floor");
+        root.Q<Button>("demolish-button").clicked += () => _builder.SetDemolish();
+
         // Hide the sub menus by default
         HideMenus(root);
     }

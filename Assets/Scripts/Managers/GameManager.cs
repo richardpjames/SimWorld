@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public int WorldWidth = 50;
     public int WorldHeight = 50;
 
+    public int StartingAgents = 5;
+
     private void Awake()
     {
         // Ensure that this is the only instance
@@ -46,7 +48,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator CheckStart(GameObject loadingScreen)
     {
         // Check for instances of the world manager being complete and then subscribe
-        while(WorldManager.Instance == null)
+        while(GameObject.FindAnyObjectByType<World>() == null)
         {
             yield return null;
         }

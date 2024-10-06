@@ -57,6 +57,18 @@ TagManager:
   - name: Structure
     uniqueID: 543487183
     locked: 0
+  - name: Demolition
+    uniqueID: 3666567045
+    locked: 0
+  - name: Grass Jobs
+    uniqueID: 1098699833
+    locked: 0
+  - name: Sand Jobs
+    uniqueID: 2352349891
+    locked: 0
+  - name: Water Jobs
+    uniqueID: 3171431891
+    locked: 0
   - name: Floor Jobs
     uniqueID: 152479523
     locked: 0

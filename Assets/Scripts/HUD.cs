@@ -2,28 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class HUDManager : MonoBehaviour
+public class HUD : MonoBehaviour
 {
+    [SerializeField] private World _world;
+
     [SerializeField] private TileInformation _tileInformationPrefab;
     private TileInformation _tileInformation;
     private Vector2Int _tileInformationPosition;
-    public static HUDManager Instance { get; private set; }
-
-    private World _world { get => WorldManager.Instance.World; }
-
-    private void Awake()
-    {
-        // Ensure that this is the only instance
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {
