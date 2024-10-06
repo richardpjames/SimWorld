@@ -60,16 +60,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void MainMenu()
     {
-        // Kill any game objects tagged as managers
-        GameObject[] toKill = GameObject.FindGameObjectsWithTag("Manager");
-        foreach (GameObject gameObject in toKill)
-        {
-            // ...other than the game manager
-            if (gameObject.name != "Game Manager")
-            {
-                Destroy(gameObject);
-            }
-        }
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }
