@@ -693,25 +693,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: worldGrid
-      value: 
-      objectReference: {fileID: 290388371}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _worldGrid
       value: 
       objectReference: {fileID: 290388371}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: _agentPrefab
-      value: 
-      objectReference: {fileID: 4870337195678135434, guid: e359cbd9e479f79449c218a46f0292d4, type: 3}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _sandTilemap
       value: 
       objectReference: {fileID: 1026905076}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: floorTilemap
-      value: 
-      objectReference: {fileID: 626582002}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _floorTilemap
       value: 
@@ -725,49 +713,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 665450372}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: demolitionTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: terrainTilemap
-      value: 
-      objectReference: {fileID: 1128013506}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: _demolitionTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: _terrainTilemap
-      value: 
-      objectReference: {fileID: 1128013506}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: floorJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337208}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _floorJobTilemap
       value: 
       objectReference: {fileID: 1319448464548337208}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: structureTilemap
-      value: 
-      objectReference: {fileID: 1021952713}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _structureTilemap
       value: 
       objectReference: {fileID: 1021952713}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: structureJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337210}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _structureJobTilemap
       value: 
       objectReference: {fileID: 1319448464548337210}
-    - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
-      propertyPath: demolitionJobTilemap
-      value: 
-      objectReference: {fileID: 1319448464548337209}
     - target: {fileID: 6700521351579499479, guid: 17240a77f0e6d554190f79fda5131bdb, type: 3}
       propertyPath: _demolitionJobTilemap
       value: 
@@ -853,6 +809,63 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 5956724843726353477, guid: c2a909b20439a954695aff8d64f871dd, type: 3}
   m_PrefabInstance: {fileID: 1319448464548337207}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2436395551282019506
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4983100956233932905, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_Name
+      value: Inventory Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 721.1974
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 266.51852
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8171763
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6281950448108878557, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7b264b47e6497b74fbef660819a4c54e, type: 3}
 --- !u!1001 &2541952864893012155
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1133,10 +1146,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD Manager
       objectReference: {fileID: 0}
-    - target: {fileID: 8914597732381160185, guid: 4630e772a6d6673459ddc96cc0dbcb0c, type: 3}
-      propertyPath: _tileInformationPrefab
-      value: 
-      objectReference: {fileID: 3618506480453389596, guid: 6d881ac76f6988248a11a42f69b587e8, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1150,38 +1159,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _bedTile
-      value: 
-      objectReference: {fileID: 11400000, guid: b97737f74aa28fe43a337f50b07071fa, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _rockTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _sandTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 1533a8ec36545374c83007885d7074f8, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _treeTile
-      value: 
-      objectReference: {fileID: 11400000, guid: d0e3e41923e824748b9384d0b9b67ff9, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _grassTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 07daa403efc08d14b8261db2fd1169c9, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _waterTile
-      value: 
-      objectReference: {fileID: 11400000, guid: cc24aeacc831eec49bcf9b25d2ab148c, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _stoneFloorTile
-      value: 
-      objectReference: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}
-    - target: {fileID: 2975360737728660895, guid: 96f502190d94a4748845910551e88b5d, type: 3}
-      propertyPath: _woodenDoorTile
-      value: 
-      objectReference: {fileID: 11400000, guid: b7f2accc5dcbe05439649f3054f341e1, type: 2}
     - target: {fileID: 7288487258587772240, guid: 96f502190d94a4748845910551e88b5d, type: 3}
       propertyPath: m_Name
       value: Prefab Manager
@@ -1239,14 +1216,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1022073523221190941, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
-      propertyPath: _agentSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1022073523221190941, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
-      propertyPath: _initialAgents
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 1241250078844913348, guid: 12fc3ef34b55d124290836ea9ece3bc6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1369,6 +1338,7 @@ SceneRoots:
   - {fileID: 6939849764478102127}
   - {fileID: 3342718013175489189}
   - {fileID: 6873044114759255075}
+  - {fileID: 2436395551282019506}
   - {fileID: 5335249222004009935}
   - {fileID: 1319448464548337207}
   - {fileID: 519420032}

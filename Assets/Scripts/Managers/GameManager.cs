@@ -58,16 +58,16 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void MainMenu()
     {
-        // Remove any unneeded managers to reset the game
-        Destroy(GameObject.Find("World Manager"));
-        Destroy(GameObject.Find("Construction Manager"));
-        Destroy(GameObject.Find("Graphics Manager"));
-        Destroy(GameObject.Find("Mouse Manager"));
-        Destroy(GameObject.Find("Agent Manager"));
-        Destroy(GameObject.Find("Job Manager"));
-        Destroy(GameObject.Find("Prefab Manager"));
-        Destroy(GameObject.Find("HUD Manager"));
-
+        // Kill any game objects tagged as managers
+        GameObject[] toKill = GameObject.FindGameObjectsWithTag("Manager");
+        foreach (GameObject gameObject in toKill)
+        {
+            // ...other than the game manager
+            if (gameObject.name != "Game Manager")
+            {
+                Destroy(gameObject);
+            }
+        }
         // Load the main menu
         SceneManager.LoadScene("MainMenu");
     }

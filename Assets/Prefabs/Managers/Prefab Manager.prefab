@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2975360737728660895}
   m_Layer: 0
   m_Name: Prefab Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f792b130f2542ce41b0ac1eda0e76fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grassTile: {fileID: 11400000, guid: 07daa403efc08d14b8261db2fd1169c9, type: 2}
+  _sandTile: {fileID: 11400000, guid: 1533a8ec36545374c83007885d7074f8, type: 2}
+  _waterTile: {fileID: 11400000, guid: cc24aeacc831eec49bcf9b25d2ab148c, type: 2}
   _woodenWallTile: {fileID: 11400000, guid: 7b3d0af9c91d36440a43e955dfd63eb5, type: 2}
+  _woodenDoorTile: {fileID: 11400000, guid: b7f2accc5dcbe05439649f3054f341e1, type: 2}
+  _bedTile: {fileID: 11400000, guid: b97737f74aa28fe43a337f50b07071fa, type: 2}
+  _treeTile: {fileID: 11400000, guid: d0e3e41923e824748b9384d0b9b67ff9, type: 2}
+  _rockTile: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}
   _woodenFloorTile: {fileID: 11400000, guid: 601ab8f0adc00ca4ab3bf1de4489ffee, type: 2}
-  _footpathTile: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}
+  _stoneFloorTile: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}

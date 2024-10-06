@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1022073523221190941}
   m_Layer: 0
   m_Name: Agent Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553975893b9c00942b74303c30613d8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialAgents: 0
+  _initialAgents: 15
+  _agentSpeed: 10

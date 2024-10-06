@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 258179101196732257}
   m_Layer: 0
   m_Name: World Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67c2c9c516785e34684905ec4b89eae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainDataConfiguration: {fileID: 11400000, guid: 88859a041de7f7d4cbff36fa8fcf09df, type: 2}
   waves:
   - seed: 1
     frequency: 50

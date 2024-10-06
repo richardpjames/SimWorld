@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6700521351579499479}
   m_Layer: 0
   m_Name: Graphics Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,3 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 227a39f2e6405de4481dec36183fb474, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _worldGrid: {fileID: 0}
+  _grassTilemap: {fileID: 0}
+  _sandTilemap: {fileID: 0}
+  _waterTilemap: {fileID: 0}
+  _floorTilemap: {fileID: 0}
+  _structureTilemap: {fileID: 0}
+  _floorJobTilemap: {fileID: 0}
+  _structureJobTilemap: {fileID: 0}
+  _demolitionJobTilemap: {fileID: 0}
+  _demolitionTile: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
+  _agentPrefab: {fileID: 4870337195678135434, guid: e359cbd9e479f79449c218a46f0292d4, type: 3}
