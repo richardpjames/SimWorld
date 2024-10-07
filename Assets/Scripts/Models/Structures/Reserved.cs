@@ -9,14 +9,12 @@ public class Reserved : WorldTile
         this.Tile = null;
         this.Width = 1;
         this.Height = 1;
-        this._originalHeight = Height;
-        this._originalWidth = Width;
         this.BuildTime = 0;
         this.Layer = layer;
         this.BuildingAllowed = true;
-        this.Rotation = Quaternion.identity;
+        this.Rotations = 0;
         this.BuildMode = BuildMode.Single;
-        this._canRotate = false;
+        this.CanRotate = false;
     }
 
     public override bool CheckValidity(World world, Vector2Int position)

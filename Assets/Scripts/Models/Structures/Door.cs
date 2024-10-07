@@ -4,28 +4,26 @@ using UnityEngine.Tilemaps;
 
 public class Door : WorldTile
 {
-    public Door(string name, float movementCost, TileBase tile, Quaternion rotation, int buildCost, Dictionary<InventoryItem, int> cost)
+    public Door(string name, float movementCost, TileBase tile, int rotations, int buildCost, Dictionary<InventoryItem, int> cost)
     {
         this.Name = name;
         this.MovementCost = movementCost;
         this.Tile = tile;
         this.Width = 1;
         this.Height = 1;
-        this._originalHeight = Height;
-        this._originalWidth = Width;
         this.BuildTime = buildCost;
         this.Layer = WorldLayer.Structure;
         this.BuildingAllowed = true;
-        this.Rotation = rotation;
+        this.Rotations = rotations;
         this.BuildMode = BuildMode.Single;
-        this._canRotate = false;
+        this.CanRotate = false;
         this.Cost = cost;
     }
 
     public override WorldTile NewInstance()
     {
         // Return a copy of the object as a new instance
-        return new Door(Name, MovementCost, Tile, Rotation, BuildTime, Cost);
+        return new Door(Name, MovementCost, Tile, Rotations, BuildTime, Cost);
     }
 
     public override bool CheckValidity(World world, Vector2Int position)
@@ -50,11 +48,11 @@ public class Door : WorldTile
         // Having checked the walls, rotate accordingly
         if(isWallAbove)
         {
-            Rotation = Quaternion.identity;
+            Rotations = 0;
         }
         if(isWallLeft)
         {
-            Rotation = Quaternion.Euler(0, 0, -90f);
+            Rotations = 1;
         }
         // Otherwise return true
         return true;
