@@ -265,7 +265,7 @@ public class Builder : MonoBehaviour
                     // Place it into the world
                     if (_tile.CheckValidity(_world, position))
                     {
-                        _jobQueue.Add(new BuildJob(_world, position, _tile.NewInstance(), _prefabFactory));
+                        _jobQueue.Add(Job.BuildJob(_world, position, _tile.NewInstance(), _prefabFactory));
                     }
                 }
                 else if (BuildMode == BuildMode.Demolish)
@@ -276,7 +276,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Structure).Reserved)
                         {
-                            _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Structure));
+                            _jobQueue.Add(Job.DemolishJob(_world, position, WorldLayer.Structure));
                         }
                     }
                     if (_world.GetWorldTile(position, WorldLayer.Floor) != null)
@@ -284,7 +284,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Floor).Reserved)
                         {
-                            _jobQueue.Add(new DemolishJob(_world, position, WorldLayer.Floor));
+                            _jobQueue.Add(Job.DemolishJob(_world, position, WorldLayer.Floor));
                         }
                     }
                 }

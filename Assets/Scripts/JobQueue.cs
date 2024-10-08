@@ -47,7 +47,7 @@ public class JobQueue : MonoBehaviour
     public bool Add(Job job)
     {
         // Check if any jobs of the same type already exist at this position
-        if (_queue.Any<Job>((queuedJob) => queuedJob.Position == job.Position && queuedJob.Layer == job.Layer))
+        if (_queue.Any<Job>((queuedJob) => queuedJob.Position == job.Position && queuedJob.WorldTile.Layer == job.WorldTile.Layer))
         {
             return false;
         }
@@ -58,7 +58,7 @@ public class JobQueue : MonoBehaviour
         // Update the tilemaps
         Tilemap tilemap = null;
         // If there is a tilemap and tile then update 
-        if (job.GetType() == typeof(DemolishJob))
+        if (job.Type == JobType.Demolish)
         {
             tilemap = _tilemaps[WorldLayer.Demolition];
             tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), _demolitionTile);
@@ -67,9 +67,9 @@ public class JobQueue : MonoBehaviour
         else if (job.Indicator != null)
         {
             // Set the tilemap tile accordingly
-            _tilemaps[job.Layer].SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), job.Indicator);
+            _tilemaps[job.WorldTile.Layer].SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), job.Indicator);
             Matrix4x4 matrix = Matrix4x4.Rotate(job.Rotation);
-            _tilemaps[job.Layer].SetTransformMatrix(new Vector3Int(job.Position.x, job.Position.y, 0), matrix);
+            _tilemaps[job.WorldTile.Layer].SetTransformMatrix(new Vector3Int(job.Position.x, job.Position.y, 0), matrix);
         }
         // Return true to notify complete
         return true;
@@ -80,8 +80,8 @@ public class JobQueue : MonoBehaviour
     {
         Tilemap tilemap;
         // Find the correct tilemap for the job
-        if (job.GetType() == typeof(DemolishJob)) tilemap = _tilemaps[WorldLayer.Demolition];
-        else tilemap = _tilemaps[job.Layer];
+        if (job.Type == JobType.Demolish) tilemap = _tilemaps[WorldLayer.Demolition];
+        else tilemap = _tilemaps[job.WorldTile.Layer];
         // Remove the tile from the map
         tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), null);
     }
@@ -92,7 +92,7 @@ public class JobQueue : MonoBehaviour
         {
             Job selectedJob = _queue.Dequeue();
             // If this is a building job, then ensure we can afford it
-            if (selectedJob.GetType() == typeof(BuildJob))
+            if (selectedJob.Type == JobType.Build)
             {
                 // If we can afford it, then take the resources from the inventory now
                 if (_inventory.Check(selectedJob.WorldTile.Cost))
