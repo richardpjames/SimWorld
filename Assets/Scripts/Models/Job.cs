@@ -1,48 +1,48 @@
-using Codice.Client.Common;
-using Codice.CM.Client.Differences;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 public class Job
 {
-    public JobType Type { get; protected set; }
-    public WorldTile WorldTile { get; protected set; }
-    public Vector2Int Position { get; protected set; }
-    public float JobCost { get; protected set; }
+    public Queue<JobStep> JobSteps { get; protected set; }
     public bool Complete { get; protected set; }
-    public TileBase Indicator { get; protected set; }
-    public Quaternion Rotation { get; protected set; }
+    public JobStep CurrentJobStep { get; protected set; }
+    public Vector2Int Position { get => CurrentJobStep.Position; }
+    public WorldTile WorldTile { get => CurrentJobStep.WorldTile; }
+    public JobType Type { get => CurrentJobStep.Type; }
+    public TileBase Indicator { get => CurrentJobStep.Indicator; }
+    public Quaternion Rotation { get => CurrentJobStep.Rotation; }
 
     public Action<Job> OnJobComplete;
+    public Action<JobStep> OnJobStepComplete;
 
     public Job(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
     {
-        this.Type = type;
-        this.WorldTile = worldTile;
-        this.Position = position;
-        this.JobCost = jobCost;
-        this.Complete = complete;
-        this.Indicator = indicator;
-        this.Rotation = rotation;
+        // Initialize the queue and variables
+        JobSteps = new Queue<JobStep>();
+        Complete = complete;
+        CurrentJobStep = null;
 
         // For building
-        if (Type == JobType.Build)
+        if (type == JobType.Build)
         {
-            InitializeBuild(world, position, worldTile, prefab);
+            InitializeBuild(type, world, worldTile, position, jobCost, complete, indicator, rotation, prefab);
         }
 
         // For demolition
-        if (Type == JobType.Demolish)
+        if (type == JobType.Demolish)
         {
-            InitializeDemolition(world, position);
+            InitializeDemolition(type, world, worldTile, position, jobCost, complete, indicator, rotation, prefab);
         }
     }
 
-    private void InitializeBuild(World world, Vector2Int position, WorldTile worldTile, PrefabFactory prefab)
+    private void InitializeBuild(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
     {
-        this.OnJobComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
+        // Create a new job step
+        JobStep step = new JobStep(type, world, worldTile, position, jobCost, complete, indicator, rotation);
+        step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
+        step.OnJobStepComplete += OnJobStepComplete;
         // If this isn't valid, then immediately complete the job and exit
         if (worldTile.CheckValidity(world, position) == false)
         {
@@ -64,15 +64,35 @@ public class Job
                 world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(worldTile.Layer));
             }
         }
+        // Set as current job
+        AddStep(step);
     }
 
-    private void InitializeDemolition(World world, Vector2Int position)
+    private void InitializeDemolition(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
     {
-        this.OnJobComplete += (job) => { world.RemoveWorldTile(position, WorldTile.Layer); };
+        // Create a new job step
+        JobStep step = new JobStep(type, world, worldTile, position, jobCost, complete, indicator, rotation);
+        // When complete, this is the work to be done
+        step.OnJobStepComplete += (job) => { world.RemoveWorldTile(position, worldTile.Layer); };
+        step.OnJobStepComplete += OnJobStepComplete;
         // Reserve tiles for the job
-        if (world.GetWorldTile(position, WorldTile.Layer) != null)
+        if (world.GetWorldTile(position, worldTile.Layer) != null)
         {
-            world.GetWorldTile(position, WorldTile.Layer).Reserved = true;
+            world.GetWorldTile(position, worldTile.Layer).Reserved = true;
+        }
+        // Add to the queue
+        AddStep(step);
+    }
+
+    public void AddStep(JobStep step)
+    {
+        if (CurrentJobStep == null)
+        { 
+            CurrentJobStep = step; 
+        }
+        else
+        {
+            JobSteps.Enqueue(step);
         }
     }
 
@@ -90,17 +110,20 @@ public class Job
 
     public virtual void Work(float points)
     {
-        // If the job is not already complete
-        if (JobCost > 0)
+        if (Complete) return;
+        if (CurrentJobStep == null || CurrentJobStep.Complete)
         {
-            // Subtract the points provided
-            JobCost -= points;
-            // Check again and invoke if complete
-            if (JobCost < 0)
+            if (JobSteps.Count == 0)
             {
                 Complete = true;
                 OnJobComplete?.Invoke(this);
+                return;
+            }
+            else
+            {
+                CurrentJobStep = JobSteps.Dequeue();
             }
         }
+        CurrentJobStep.Work(points);
     }
 }
