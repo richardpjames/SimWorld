@@ -3,6 +3,7 @@ using Codice.CM.Client.Differences;
 using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Job
 {
@@ -29,39 +30,49 @@ public class Job
         // For building
         if (Type == JobType.Build)
         {
-            this.OnJobComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
-            // If this isn't valid, then immediately complete the job and exit
-            if (worldTile.CheckValidity(world, position) == false)
-            {
-                Complete = true;
-                return;
-            }
-            // Find the min and max X and Y values to loop between
-            int minX = Mathf.Min(position.x, position.x + worldTile.MinX);
-            int maxX = Mathf.Max(position.x, position.x + worldTile.MaxX);
-            int minY = Mathf.Min(position.y, position.y + worldTile.MinY);
-            int maxY = Mathf.Max(position.y, position.y + worldTile.MaxY);
-            // Create a number of reserved tiles
-            for (int x = minX; x < maxX; x++)
-            {
-                // Create a number of reserved tiles
-                for (int y = minY; y < maxY; y++)
-                {
-                    // Update the world with a reserved tile
-                    world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(worldTile.Layer));
-                }
-            }
+            InitializeBuild(world, position, worldTile, prefab);
         }
 
         // For demolition
         if (Type == JobType.Demolish)
         {
-            this.OnJobComplete += (job) => { world.RemoveWorldTile(position, WorldTile.Layer); };
-            // Reserve tiles for the job
-            if (world.GetWorldTile(position, WorldTile.Layer) != null)
+            InitializeDemolition(world, position);
+        }
+    }
+
+    private void InitializeBuild(World world, Vector2Int position, WorldTile worldTile, PrefabFactory prefab)
+    {
+        this.OnJobComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
+        // If this isn't valid, then immediately complete the job and exit
+        if (worldTile.CheckValidity(world, position) == false)
+        {
+            Complete = true;
+            return;
+        }
+        // Find the min and max X and Y values to loop between
+        int minX = Mathf.Min(position.x, position.x + worldTile.MinX);
+        int maxX = Mathf.Max(position.x, position.x + worldTile.MaxX);
+        int minY = Mathf.Min(position.y, position.y + worldTile.MinY);
+        int maxY = Mathf.Max(position.y, position.y + worldTile.MaxY);
+        // Create a number of reserved tiles
+        for (int x = minX; x < maxX; x++)
+        {
+            // Create a number of reserved tiles
+            for (int y = minY; y < maxY; y++)
             {
-                world.GetWorldTile(position, WorldTile.Layer).Reserved = true;
+                // Update the world with a reserved tile
+                world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(worldTile.Layer));
             }
+        }
+    }
+
+    private void InitializeDemolition(World world, Vector2Int position)
+    {
+        this.OnJobComplete += (job) => { world.RemoveWorldTile(position, WorldTile.Layer); };
+        // Reserve tiles for the job
+        if (world.GetWorldTile(position, WorldTile.Layer) != null)
+        {
+            world.GetWorldTile(position, WorldTile.Layer).Reserved = true;
         }
     }
 
