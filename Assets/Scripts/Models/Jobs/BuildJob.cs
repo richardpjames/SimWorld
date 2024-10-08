@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BuildJob : Job
 {
-    public BuildJob(World world, Vector2Int position, WorldTile worldTile)
+    public BuildJob(World world, Vector2Int position, WorldTile worldTile, PrefabFactory prefab)
     {
         this.Position = position;
         this.JobCost = worldTile.BuildTime;
@@ -30,7 +30,8 @@ public class BuildJob : Job
             // Create a number of reserved tiles
             for (int y = minY; y < maxY; y++)
             {
-                world.UpdateWorldTile(new Vector2Int(x, y), new Reserved(worldTile.Layer));
+                // Update the world with a reserved tile
+                world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(worldTile.Layer));
             }
         }
     }

@@ -137,7 +137,7 @@ public class World : MonoBehaviour
             {
                 // First remove any reserving tiles 
                 WorldTile existingTile = GetWorldTile(new Vector2Int(x, y), newInstance.Layer);
-                if (existingTile != null && existingTile.GetType() == typeof(Reserved))
+                if (existingTile != null && existingTile.Type == TileType.Reserved)
                 {
                     RemoveWorldTile(new Vector2Int(x, y), existingTile.Layer);
                 }
@@ -275,7 +275,7 @@ public class World : MonoBehaviour
             WorldTile structure = GetWorldTile(currentNode, WorldLayer.Structure);
 
             // If we hit a wall or a door, then we continue to the next loop iteration and don't add more tiles to check
-            if (structure != null && (structure.GetType() == typeof(Wall) || structure.GetType() == typeof(Door))) continue;
+            if (structure != null && (structure.Type == TileType.Wall || structure.Type == TileType.Door)) continue;
             // If we are out of bounds then return false
             if (!inBounds) return false;
             // If there is no floor then we are outside so return false

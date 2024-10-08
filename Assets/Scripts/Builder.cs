@@ -265,7 +265,7 @@ public class Builder : MonoBehaviour
                     // Place it into the world
                     if (_tile.CheckValidity(_world, position))
                     {
-                        _jobQueue.Add(new BuildJob(_world, position, _tile.NewInstance()));
+                        _jobQueue.Add(new BuildJob(_world, position, _tile.NewInstance(), _prefabFactory));
                     }
                 }
                 else if (BuildMode == BuildMode.Demolish)
