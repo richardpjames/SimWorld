@@ -11,27 +11,31 @@ public class Job
     public bool Complete { get; protected set; }
     public JobStep CurrentJobStep { get; protected set; }
     public Vector2Int Position { get => CurrentJobStep.Position; }
+    public Vector2Int JobPosition { get; protected set; }
     public WorldTile WorldTile { get => CurrentJobStep.WorldTile; }
     public JobType Type { get => CurrentJobStep.Type; }
+    public JobType JobType { get; set; }
     public TileBase Indicator { get => CurrentJobStep.Indicator; }
     public Quaternion Rotation { get => CurrentJobStep.Rotation; }
 
     public Action<Job> OnJobComplete;
     public Action<JobStep> OnJobStepComplete;
 
-    public Job(bool complete = false)
+    public Job(Vector2Int position, JobType type, bool complete = false)
     {
         // Initialize the queue and variables
         JobSteps = new Queue<JobStep>();
         Complete = complete;
         CurrentJobStep = null;
+        JobPosition = position;
+        JobType = type;
     }
 
     public void AddStep(JobStep step)
     {
         if (CurrentJobStep == null)
-        { 
-            CurrentJobStep = step; 
+        {
+            CurrentJobStep = step;
         }
         else
         {
@@ -43,7 +47,7 @@ public class Job
     {
         WorldTile tile = world.GetWorldTile(position, layer);
         if (tile == null) return null;
-        Job job = new Job();
+        Job job = new Job(position, JobType.Demolish);
         // Create a new job step
         JobStep step = new JobStep(JobType.Demolish, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
         // When complete, this is the work to be done
@@ -62,7 +66,7 @@ public class Job
 
     public static Job BuildJob(World world, Vector2Int position, WorldTile tile, PrefabFactory prefab)
     {
-        Job job = new Job();
+        Job job = new Job(position, JobType.Build);
         // Create a new job step
         JobStep step = new JobStep(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
         step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, tile); };
@@ -96,9 +100,9 @@ public class Job
 
     public static Job HarvestJob(World world, Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile)
     {
-        Job job = new Job();
+        Job job = new Job(endPosition, JobType.Demolish);
         // First we visit the table
-        JobStep visitTable = new JobStep(JobType.Harvest,world,startTile,startPosition,2,false,null,Quaternion.identity);
+        JobStep visitTable = new JobStep(JobType.Harvest, world, startTile, startPosition, 2, false, null, Quaternion.identity);
         visitTable.OnJobStepComplete += job.OnJobStepComplete;
         // Then find the item to be harvested
         WorldTile tile = world.GetWorldTile(endPosition, WorldLayer.Structure);
@@ -113,8 +117,8 @@ public class Job
         {
             world.GetWorldTile(endPosition, tile.Layer).Reserved = true;
         }
-        job.AddStep(visitTable);
         job.AddStep(harvest);
+        job.AddStep(visitTable);
         return job;
     }
 

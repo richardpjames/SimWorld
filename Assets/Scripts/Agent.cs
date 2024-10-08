@@ -1,14 +1,20 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
     [SerializeField] private float _speed;
     private JobQueue _jobQueue;
+    private Inventory _inventory;
     private Job _currentJob;
+    private Dictionary<InventoryItem, int> _localInventory;
 
     private void Start()
     {
         _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
+        _localInventory = new Dictionary<InventoryItem, int>();
+
     }
 
     // Called through a controller to update each agent

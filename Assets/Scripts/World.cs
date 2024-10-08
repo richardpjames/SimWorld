@@ -255,6 +255,7 @@ public class World : MonoBehaviour
                         OnTileUpdated?.Invoke(new Vector2Int(x, y));
                         // Remove from the tilemap
                         _tilemaps[worldTile.Layer].SetTile(new Vector3Int(x, y, 0), null);
+                        _tilemaps[WorldLayer.Demolition].SetTile(new Vector3Int(x, y, 0), null);
 
                     }
                 }

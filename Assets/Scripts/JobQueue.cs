@@ -80,10 +80,10 @@ public class JobQueue : MonoBehaviour
     {
         Tilemap tilemap;
         // Find the correct tilemap for the job
-        if (job.Type == JobType.Demolish) tilemap = _tilemaps[WorldLayer.Demolition];
+        if (job.JobType == JobType.Demolish) tilemap = _tilemaps[WorldLayer.Demolition];
         else tilemap = _tilemaps[job.WorldTile.Layer];
         // Remove the tile from the map
-        tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), null);
+        tilemap.SetTile(new Vector3Int(job.JobPosition.x, job.JobPosition.y, 0), null);
     }
 
     public Job GetNext()
@@ -92,7 +92,7 @@ public class JobQueue : MonoBehaviour
         {
             Job selectedJob = _queue.Dequeue();
             // If this is a building job, then ensure we can afford it
-            if (selectedJob.Type == JobType.Build)
+            if (selectedJob.JobType == JobType.Build)
             {
                 // If we can afford it, then take the resources from the inventory now
                 if (_inventory.Check(selectedJob.WorldTile.Cost))
