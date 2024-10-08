@@ -318,10 +318,9 @@ public class World : MonoBehaviour
         while (nodes.Count > 0)
         {
             Vector2Int currentNode = nodes.Dequeue();
-            if (!checkedNodes.ContainsKey(currentNode))
-            {
-                checkedNodes.Add(currentNode, true);
-            }
+            // Don't continue if we have already checked this node
+            if (checkedNodes.ContainsKey(currentNode)) continue;
+            checkedNodes.Add(currentNode, true);
             // Check conditions for if this node is inside
             bool inBounds = CheckBounds(currentNode);
             WorldTile floor = GetWorldTile(currentNode, WorldLayer.Floor);
@@ -332,13 +331,14 @@ public class World : MonoBehaviour
             // If we are out of bounds then return false
             if (!inBounds) return false;
             // If there is no floor then we are outside so return false
-            if (floor == null) return false;
+            if (floor == null || floor.Type == TileType.Reserved) return false;
             // Otherwise we are inside and must check the neighbours
             if (!checkedNodes.ContainsKey(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
             if (!checkedNodes.ContainsKey(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
             if (!checkedNodes.ContainsKey(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
             if (!checkedNodes.ContainsKey(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
         }
+
         return true;
     }
     public bool CheckBounds(Vector2Int position)

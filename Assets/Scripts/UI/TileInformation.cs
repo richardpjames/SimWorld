@@ -112,14 +112,14 @@ public class TileInformation : MonoBehaviour
         }
 
         // If there is a floor then display its information
-        if (floor != null)
+        if (floor != null && floor.Type != TileType.Reserved)
         {
             _floorSection.SetActive(true);
             _floorText.text = $"{floor.Name}";
             _floorImage.sprite = _world.GetSprite(floor.BasePosition, floor.Layer);
         }
         // If there is a structure then display its information
-        if (structure != null)
+        if (structure != null && structure.Type != TileType.Reserved)
         {
             _structureSection.SetActive(true);
             _structureText.text = $"{structure.Name}";

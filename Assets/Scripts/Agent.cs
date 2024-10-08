@@ -14,7 +14,6 @@ public class Agent : MonoBehaviour
         _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
         _inventory = GameObject.FindAnyObjectByType<Inventory>();
         _localInventory = new Dictionary<InventoryItem, int>();
-
     }
 
     // Called through a controller to update each agent
