@@ -37,7 +37,7 @@ public class WorldTile
         get
         {
             if (Rotations == 1) return Height;
-            else if (Rotations == 2) return Width;
+            else if (Rotations == 2) return -Width;
             else if (Rotations == 3) return -Height;
             else return Width;
         }
@@ -46,7 +46,7 @@ public class WorldTile
     {
         get
         {
-            if (Rotations == 1) return Width;
+            if (Rotations == 1) return -Width;
             else if (Rotations == 2) return -Height;
             else if (Rotations == 3) return Width;
             else return Height;
@@ -88,7 +88,10 @@ public class WorldTile
             BuildTime, Name, MovementCost, Tile, BuildingAllowed, Rotations, 
             Cost, Yield, Reserved, CanRotate, RequiresUpdate);
     }
-
+    public void Update(float delta)
+    {
+        if (!RequiresUpdate) return;
+    }
     public bool CheckValidity(World world, Vector2Int position)
     {
         if (Type == TileType.Terrain) return true;

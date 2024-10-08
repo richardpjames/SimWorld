@@ -14,6 +14,7 @@ public class PrefabFactory : MonoBehaviour
     [SerializeField] private TileBase _bedTile;
     [SerializeField] private TileBase _treeTile;
     [SerializeField] private TileBase _rockTile;
+    [SerializeField] private TileBase _woodcuttersTile;
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     [SerializeField] private TileBase _stoneFloorTile;
@@ -64,6 +65,13 @@ public class PrefabFactory : MonoBehaviour
             width: 1, height: -2, buildTime: 3, name: "Wooden Bed", movementCost: 0, tile: _bedTile,
             buildingAllowed: true, rotations: 0, cost: woodenBedCost, yield: woodenBedCost,
             reserved: false, canRotate: true, requiresUpdate: false);
+        _prefabs.Add(tile.Name, tile);
+
+        Dictionary<InventoryItem, int> woodcuttersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
+        tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
+            width: 3, height: -2, buildTime: 3, name: "Woodcutters Table", movementCost: 0, tile: _woodcuttersTile,
+            buildingAllowed: true, rotations: 0, cost: woodcuttersTableCost, yield: woodcuttersTableCost,
+            reserved: false, canRotate: true, requiresUpdate: true);
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2 } };

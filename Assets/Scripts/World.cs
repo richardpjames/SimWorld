@@ -21,7 +21,7 @@ public class World : MonoBehaviour
     // This holds our world
     private Dictionary<Vector3Int, WorldTile> _worldTiles;
     private Dictionary<WorldLayer, Tilemap> _tilemaps;
-
+    private List<WorldTile> _needsUpdate;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
     // Lets others know that a tile at the specified position is updated
@@ -37,6 +37,8 @@ public class World : MonoBehaviour
         _worldTiles = new Dictionary<Vector3Int, WorldTile>();
         // Initialise the list of tilemaps
         _tilemaps = new Dictionary<WorldLayer, Tilemap>();
+        // Initialise the updates list
+        _needsUpdate = new List<WorldTile>();
         // Generate all required tilemaps
         foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
         {
@@ -58,7 +60,13 @@ public class World : MonoBehaviour
         // Set the camera to the center of the world
         Camera.main.transform.position = new Vector3(Size.x / 2, Size.y / 2, Camera.main.transform.position.z);
     }
-
+    private void Update()
+    {
+        foreach(WorldTile tile in _needsUpdate)
+        {
+            tile.Update(Time.deltaTime);
+        }
+    }
     private void GenerateBiomes(Wave[] waves, float scale)
     {
         // Generate a random offset
@@ -157,6 +165,12 @@ public class World : MonoBehaviour
                     Vector3Int lookup = new Vector3Int(x, y, (int)newInstance.Layer);
                     if (_worldTiles.ContainsKey(lookup))
                     {
+                        // If the previous tile needed updates, then remove it
+                        if (_worldTiles[lookup].RequiresUpdate)
+                        {
+                            _needsUpdate.Remove(_worldTiles[lookup]);
+                        }
+                        // Set the new tile
                         _worldTiles[lookup] = newInstance;
                     }
                     else
@@ -168,6 +182,11 @@ public class World : MonoBehaviour
             }
             // Set the base position for only the requested position to help with graphics
             newInstance.BasePosition = position;
+            // If the new tile needs updates then add it to the list
+            if (newInstance.RequiresUpdate)
+            {
+                _needsUpdate.Add(newInstance);
+            }
             OnTileUpdated?.Invoke(position);
             // Update the correct tilemap
             Matrix4x4 matrix = Matrix4x4.Rotate(newInstance.Rotation);
