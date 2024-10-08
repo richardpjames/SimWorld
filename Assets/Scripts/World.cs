@@ -62,11 +62,36 @@ public class World : MonoBehaviour
     }
     private void Update()
     {
-        foreach(WorldTile tile in _needsUpdate)
+        foreach (WorldTile tile in _needsUpdate)
         {
             tile.Update(Time.deltaTime);
         }
     }
+
+    public Vector2Int GetNearestStructure(Vector2Int position, TileType type)
+    {
+        float minDistance = float.MaxValue;
+        Vector2Int result = Vector2Int.zero;
+
+        for (int x = 0; x < Size.x; x++)
+        {
+            for (int y = 0; y < Size.y; y++)
+            {
+                WorldTile tile = GetWorldTile(new Vector2Int(x, y), WorldLayer.Structure);
+                if (tile != null && tile.Type == type && tile.BasePosition == new Vector2Int(x,y) && tile.Reserved == false )
+                {
+                    float distance = Vector2Int.Distance(position, new Vector2Int(x, y));
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        result = new Vector2Int(x, y);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     private void GenerateBiomes(Wave[] waves, float scale)
     {
         // Generate a random offset
@@ -220,6 +245,11 @@ public class World : MonoBehaviour
                         if (_worldTiles[lookup].BasePosition == new Vector2Int(x, y))
                         {
                             _inventory.Add(_worldTiles[lookup].Yield);
+                            // If it requires update then remove from the list
+                            if (_worldTiles[lookup].RequiresUpdate)
+                            {
+                                _needsUpdate.Remove(_worldTiles[lookup]);
+                            }
                         }
                         _worldTiles.Remove(lookup);
                         OnTileUpdated?.Invoke(new Vector2Int(x, y));
@@ -282,12 +312,15 @@ public class World : MonoBehaviour
         Queue<Vector2Int> nodes = new Queue<Vector2Int>();
         nodes.Enqueue(position);
         // Keep a list of nodes which have been checked to avoid duplication
-        List<Vector2Int> checkedNodes = new List<Vector2Int>();
+        Dictionary<Vector2Int, bool> checkedNodes = new Dictionary<Vector2Int, bool>();
         // Keep looping while we have nodes to check
         while (nodes.Count > 0)
         {
             Vector2Int currentNode = nodes.Dequeue();
-            checkedNodes.Add(currentNode);
+            if (!checkedNodes.ContainsKey(currentNode))
+            {
+                checkedNodes.Add(currentNode, true);
+            }
             // Check conditions for if this node is inside
             bool inBounds = CheckBounds(currentNode);
             WorldTile floor = GetWorldTile(currentNode, WorldLayer.Floor);
@@ -300,10 +333,10 @@ public class World : MonoBehaviour
             // If there is no floor then we are outside so return false
             if (floor == null) return false;
             // Otherwise we are inside and must check the neighbours
-            if (!checkedNodes.Contains(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
-            if (!checkedNodes.Contains(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
-            if (!checkedNodes.Contains(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
-            if (!checkedNodes.Contains(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
+            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
+            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
+            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
+            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
         }
         return true;
     }

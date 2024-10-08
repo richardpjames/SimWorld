@@ -22,6 +22,10 @@ public class WorldTile
     public Vector2Int BasePosition { get; set; }
     public bool CanRotate { get; protected set; }
     public bool RequiresUpdate { get; protected set; }
+    public TileType HarvestType { get; protected set; }
+    public JobQueue JobQueue { get; protected set; }
+    public Job CurrentJob { get; protected set; }
+    public World World { get; protected set; }
     public Quaternion Rotation
     {
         get
@@ -57,12 +61,13 @@ public class WorldTile
     public int MaxX { get { if (RotationAdjustedWidth <= 0) { return 1; } else { return RotationAdjustedWidth; } } }
     public int MaxY { get { if (RotationAdjustedHeight <= 0) { return 1; } else { return RotationAdjustedHeight; } } }
 
-    public WorldTile(TileType type, BuildMode buildMode, WorldLayer layer, 
-        int width, int height, int buildTime, 
-        string name, float movementCost, TileBase tile, 
-        bool buildingAllowed, int rotations, Dictionary<InventoryItem, int> cost, 
-        Dictionary<InventoryItem, int> yield, bool reserved, bool canRotate,
-        bool requiresUpdate)
+    public WorldTile(TileType type, BuildMode buildMode, WorldLayer layer,
+        int width, int height, int buildTime,
+        string name, float movementCost, TileBase tile,
+        bool buildingAllowed = true, int rotations = 0, Dictionary<InventoryItem, int> cost = null,
+        Dictionary<InventoryItem, int> yield = null, bool reserved = false, bool canRotate = true,
+        bool requiresUpdate = false, TileType harvestType = TileType.Tree, JobQueue jobQueue = null,
+        Job currentJob = null, World world = null)
     {
         this.Type = type;
         this.BuildMode = buildMode;
@@ -80,17 +85,42 @@ public class WorldTile
         this.Reserved = reserved;
         this.CanRotate = canRotate;
         this.RequiresUpdate = requiresUpdate;
+        this.HarvestType = harvestType;
+        this.JobQueue = jobQueue;
+        this.CurrentJob = currentJob;
+        this.World = world;
     }
 
     public WorldTile NewInstance()
     {
-        return new WorldTile(Type, BuildMode, Layer, Width, Height, 
-            BuildTime, Name, MovementCost, Tile, BuildingAllowed, Rotations, 
-            Cost, Yield, Reserved, CanRotate, RequiresUpdate);
+        return new WorldTile(Type, BuildMode, Layer, Width, Height,
+            BuildTime, Name, MovementCost, Tile, BuildingAllowed, Rotations,
+            Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
+            JobQueue, CurrentJob, World);
     }
     public void Update(float delta)
     {
         if (!RequiresUpdate) return;
+        // For harvesters like the woodcutters table
+        if (Type == TileType.HarvestersTable)
+        {
+            // If no jobs have been created, or the current job is complete
+            if (CurrentJob == null || CurrentJob.Complete)
+            {
+                // Get the nearest structure we want to harvest but return if there are none
+                Vector2Int resourcePosition = World.GetNearestStructure(BasePosition, HarvestType);
+                if (resourcePosition == null) return;
+                // Otherwise get the tile
+                WorldTile resourceTile = World.GetWorldTile(resourcePosition, WorldLayer.Structure);
+                if (resourceTile == null) return;
+                // Create a new job to harvest the resource
+                CurrentJob = Job.HarvestJob(World, BasePosition, this, resourcePosition, resourceTile);
+                if (CurrentJob != null)
+                {
+                    JobQueue.Add(CurrentJob);
+                }
+            }
+        }
     }
     public bool CheckValidity(World world, Vector2Int position)
     {
@@ -142,7 +172,7 @@ public class WorldTile
                 Rotations = 1;
             }
         }
-        if(Type == TileType.Bed)
+        if (Type == TileType.Bed)
         {
             // This must be placed inside
             if (!world.IsInside(position)) return false;

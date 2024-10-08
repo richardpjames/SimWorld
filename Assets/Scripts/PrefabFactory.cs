@@ -15,9 +15,14 @@ public class PrefabFactory : MonoBehaviour
     [SerializeField] private TileBase _treeTile;
     [SerializeField] private TileBase _rockTile;
     [SerializeField] private TileBase _woodcuttersTile;
+    [SerializeField] private TileBase _stonecuttersTile;
+
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     [SerializeField] private TileBase _stoneFloorTile;
+    [Header("Job Queue")]
+    [SerializeField] private JobQueue _queue;
+    [SerializeField] private World _world;
 
     private Dictionary<string, WorldTile> _prefabs;
 
@@ -71,12 +76,21 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 3, name: "Woodcutters Table", movementCost: 0, tile: _woodcuttersTile,
             buildingAllowed: true, rotations: 0, cost: woodcuttersTableCost, yield: woodcuttersTableCost,
-            reserved: false, canRotate: true, requiresUpdate: true);
+            reserved: false, canRotate: true, requiresUpdate: true, harvestType: TileType.Tree, jobQueue: _queue, 
+            currentJob: null, world: _world);
         _prefabs.Add(tile.Name, tile);
 
-        Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2 } };
+        Dictionary<InventoryItem, int> stonecuttersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
+        tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
+            width: 3, height: -2, buildTime: 3, name: "Stonecutters Table", movementCost: 0, tile: _stonecuttersTile,
+            buildingAllowed: true, rotations: 0, cost: stonecuttersTableCost, yield: stonecuttersTableCost,
+            reserved: false, canRotate: true, requiresUpdate: true, harvestType: TileType.Rock, jobQueue: _queue,
+            currentJob: null, world: _world);
+        _prefabs.Add(tile.Name, tile);
+
+        Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
         tile = new WorldTile(type: TileType.Tree, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
-            width: 1, height: 2, buildTime: 1, name: "Tree", movementCost: 0, tile: _treeTile,
+            width: 1, height: 2, buildTime: 5, name: "Tree", movementCost: 0, tile: _treeTile,
             buildingAllowed: false, rotations: 0, cost: null, yield: treeYield,
             reserved: false, canRotate: false, requiresUpdate: false);
         _prefabs.Add(tile.Name, tile);
@@ -90,7 +104,7 @@ public class PrefabFactory : MonoBehaviour
 
         Dictionary<InventoryItem, int> woodenFloorCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 2 } };
         tile = new WorldTile(type: TileType.Floor, buildMode: BuildMode.Drag, layer: WorldLayer.Floor,
-            width: 1, height: 1, buildTime: 1, name: "Wooden Floor", movementCost:1, tile: _woodenFloorTile,
+            width: 1, height: 1, buildTime: 1, name: "Wooden Floor", movementCost: 1, tile: _woodenFloorTile,
             buildingAllowed: true, rotations: 0, cost: woodenFloorCost, yield: woodenFloorCost,
             reserved: false, canRotate: false, requiresUpdate: false);
         _prefabs.Add(tile.Name, tile);

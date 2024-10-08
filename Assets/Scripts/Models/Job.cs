@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
+using UnityEngine.WSA;
 
 public class Job
 {
@@ -17,71 +19,12 @@ public class Job
     public Action<Job> OnJobComplete;
     public Action<JobStep> OnJobStepComplete;
 
-    public Job(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
+    public Job(bool complete = false)
     {
         // Initialize the queue and variables
         JobSteps = new Queue<JobStep>();
         Complete = complete;
         CurrentJobStep = null;
-
-        // For building
-        if (type == JobType.Build)
-        {
-            InitializeBuild(type, world, worldTile, position, jobCost, complete, indicator, rotation, prefab);
-        }
-
-        // For demolition
-        if (type == JobType.Demolish)
-        {
-            InitializeDemolition(type, world, worldTile, position, jobCost, complete, indicator, rotation, prefab);
-        }
-    }
-
-    private void InitializeBuild(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
-    {
-        // Create a new job step
-        JobStep step = new JobStep(type, world, worldTile, position, jobCost, complete, indicator, rotation);
-        step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, worldTile); };
-        step.OnJobStepComplete += OnJobStepComplete;
-        // If this isn't valid, then immediately complete the job and exit
-        if (worldTile.CheckValidity(world, position) == false)
-        {
-            Complete = true;
-            return;
-        }
-        // Find the min and max X and Y values to loop between
-        int minX = Mathf.Min(position.x, position.x + worldTile.MinX);
-        int maxX = Mathf.Max(position.x, position.x + worldTile.MaxX);
-        int minY = Mathf.Min(position.y, position.y + worldTile.MinY);
-        int maxY = Mathf.Max(position.y, position.y + worldTile.MaxY);
-        // Create a number of reserved tiles
-        for (int x = minX; x < maxX; x++)
-        {
-            // Create a number of reserved tiles
-            for (int y = minY; y < maxY; y++)
-            {
-                // Update the world with a reserved tile
-                world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(worldTile.Layer));
-            }
-        }
-        // Set as current job
-        AddStep(step);
-    }
-
-    private void InitializeDemolition(JobType type, World world, WorldTile worldTile, Vector2Int position, float jobCost, bool complete, TileBase indicator, Quaternion rotation, PrefabFactory prefab)
-    {
-        // Create a new job step
-        JobStep step = new JobStep(type, world, worldTile, position, jobCost, complete, indicator, rotation);
-        // When complete, this is the work to be done
-        step.OnJobStepComplete += (job) => { world.RemoveWorldTile(position, worldTile.Layer); };
-        step.OnJobStepComplete += OnJobStepComplete;
-        // Reserve tiles for the job
-        if (world.GetWorldTile(position, worldTile.Layer) != null)
-        {
-            world.GetWorldTile(position, worldTile.Layer).Reserved = true;
-        }
-        // Add to the queue
-        AddStep(step);
     }
 
     public void AddStep(JobStep step)
@@ -100,12 +43,79 @@ public class Job
     {
         WorldTile tile = world.GetWorldTile(position, layer);
         if (tile == null) return null;
-        return new Job(JobType.Demolish, world, tile, position, tile.BuildTime, false, tile.Tile, Quaternion.identity, null);
+        Job job = new Job();
+        // Create a new job step
+        JobStep step = new JobStep(JobType.Demolish, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
+        // When complete, this is the work to be done
+        step.OnJobStepComplete += (job) => { world.RemoveWorldTile(position, tile.Layer); };
+        step.OnJobStepComplete += job.OnJobStepComplete;
+        // Reserve tiles for the job
+        if (world.GetWorldTile(position, tile.Layer) != null)
+        {
+            world.GetWorldTile(position, tile.Layer).Reserved = true;
+        }
+        // Add to the queue
+        job.AddStep(step);
+        // Return the job
+        return job;
     }
 
     public static Job BuildJob(World world, Vector2Int position, WorldTile tile, PrefabFactory prefab)
     {
-        return new Job(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation, prefab);
+        Job job = new Job();
+        // Create a new job step
+        JobStep step = new JobStep(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
+        step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, tile); };
+        step.OnJobStepComplete += job.OnJobStepComplete;
+        // If this isn't valid, then immediately complete the job and exit
+        if (tile.CheckValidity(world, position) == false)
+        {
+            job.Complete = true;
+            return job;
+        }
+        // Find the min and max X and Y values to loop between
+        int minX = Mathf.Min(position.x, position.x + tile.MinX);
+        int maxX = Mathf.Max(position.x, position.x + tile.MaxX);
+        int minY = Mathf.Min(position.y, position.y + tile.MinY);
+        int maxY = Mathf.Max(position.y, position.y + tile.MaxY);
+        // Create a number of reserved tiles
+        for (int x = minX; x < maxX; x++)
+        {
+            // Create a number of reserved tiles
+            for (int y = minY; y < maxY; y++)
+            {
+                // Update the world with a reserved tile
+                world.UpdateWorldTile(new Vector2Int(x, y), prefab.GetReserved(tile.Layer));
+            }
+        }
+        // Set as current job step
+        job.AddStep(step);
+        // Return the job
+        return job;
+    }
+
+    public static Job HarvestJob(World world, Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile)
+    {
+        Job job = new Job();
+        // First we visit the table
+        JobStep visitTable = new JobStep(JobType.Harvest,world,startTile,startPosition,2,false,null,Quaternion.identity);
+        visitTable.OnJobStepComplete += job.OnJobStepComplete;
+        // Then find the item to be harvested
+        WorldTile tile = world.GetWorldTile(endPosition, WorldLayer.Structure);
+        if (tile == null) return null;
+        // Create the job to harvest (demolish) the item
+        JobStep harvest = new JobStep(JobType.Demolish, world, tile, endPosition, tile.BuildTime, false, tile.Tile, tile.Rotation);
+        // When complete, this is the work to be done
+        harvest.OnJobStepComplete += (job) => { world.RemoveWorldTile(endPosition, tile.Layer); };
+        harvest.OnJobStepComplete += job.OnJobStepComplete;
+        // Reserve tiles for the job
+        if (world.GetWorldTile(endPosition, tile.Layer) != null)
+        {
+            world.GetWorldTile(endPosition, tile.Layer).Reserved = true;
+        }
+        job.AddStep(visitTable);
+        job.AddStep(harvest);
+        return job;
     }
 
     public virtual void Work(float points)

@@ -29,12 +29,12 @@ public class JobStep
     public virtual void Work(float points)
     {
         // If the job is not already complete
-        if (Cost > 0)
+        if (Cost >= 0)
         {
             // Subtract the points provided
             Cost -= points;
             // Check again and invoke if complete
-            if (Cost < 0)
+            if (Cost <= 0)
             {
                 Complete = true;
                 OnJobStepComplete?.Invoke(this);

@@ -1154,8 +1154,11 @@ MonoBehaviour:
   _bedTile: {fileID: 11400000, guid: b97737f74aa28fe43a337f50b07071fa, type: 2}
   _treeTile: {fileID: 11400000, guid: d0e3e41923e824748b9384d0b9b67ff9, type: 2}
   _rockTile: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}
+  _woodcuttersTile: {fileID: 11400000, guid: ab936fd3ac5da664f9fdb8d60e6d77ef, type: 2}
   _woodenFloorTile: {fileID: 11400000, guid: 601ab8f0adc00ca4ab3bf1de4489ffee, type: 2}
   _stoneFloorTile: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}
+  _queue: {fileID: 125663961}
+  _world: {fileID: 344687586}
 --- !u!4 &1080139164
 Transform:
   m_ObjectHideFlags: 0
