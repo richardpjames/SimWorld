@@ -125,15 +125,15 @@ public class PrefabFactory : MonoBehaviour
         _prefabs.Add(tile.Name, tile);
     }
 
-    public WorldTile GetByName(string name)
+    public WorldTile Create(string name)
     {
         // If not in the dictionary return null
         if (!_prefabs.ContainsKey(name)) return null;
         // Otherwise return the prefab
-        return _prefabs[name];
+        return _prefabs[name].NewInstance();
     }
 
-    public WorldTile GetReserved(WorldLayer layer)
+    public WorldTile CreateReserved(WorldLayer layer)
     {
         return new WorldTile(type: TileType.Reserved, buildMode: BuildMode.Single, layer: layer,
             width: 1, height: 1, buildTime: 0, name: "Reserved", movementCost: 1, tile: null,

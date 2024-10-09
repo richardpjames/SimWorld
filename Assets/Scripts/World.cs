@@ -105,23 +105,23 @@ public class World : MonoBehaviour
             for (int y = 0; y < Size.y; y++)
             {
                 // Add grass to all tiles
-                UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Grass"));
+                UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Grass"));
                 // At the lowest levels we add water
                 if (heightMap[x, y] < 0.2)
                 {
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Water"));
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Water"));
                 }
                 // Then sand as the height increases
                 if (heightMap[x, y] < 0.3)
                 {
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Sand"));
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Sand"));
                 }
                 // Random chance (2%) that a rock is placed here (and avoid trees)
                 int random = Random.Range(0, 100);
                 if (random > 98)
                 {
                     // Place a tree structure
-                    UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Rock"));
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Rock"));
                 }
                 // Add trees to high land - at a 60% chance (makes them clump together)
                 if (heightMap[x, y] > 0.7)
@@ -132,7 +132,7 @@ public class World : MonoBehaviour
                     if (random > 39)
                     {
                         // Place a tree structure
-                        UpdateWorldTile(new Vector2Int(x, y), _prefab.GetByName("Tree"));
+                        UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Tree"));
                     }
                 }
             }

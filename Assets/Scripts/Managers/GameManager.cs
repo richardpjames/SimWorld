@@ -35,10 +35,10 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         StartingResources = new Dictionary<InventoryItem, int>();
-        StartingResources.Add(InventoryItem.Wood, 200);
-        StartingResources.Add(InventoryItem.Stone, 200);
-        StartingResources.Add(InventoryItem.Planks, 0);
-        StartingResources.Add(InventoryItem.Blocks, 0);
+        StartingResources.Add(InventoryItem.Wood, 50);
+        StartingResources.Add(InventoryItem.Stone, 50);
+        StartingResources.Add(InventoryItem.Planks, 20);
+        StartingResources.Add(InventoryItem.Blocks, 20);
     }
 
     public void StartGame()

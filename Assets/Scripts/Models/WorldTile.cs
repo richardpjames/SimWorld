@@ -155,11 +155,11 @@ public class WorldTile
                     // Otherwise get the tile
                     WorldTile resourceTile = World.GetWorldTile(resourcePosition, WorldLayer.Structure);
                     if (resourceTile == null) return;
-                    CurrentJob = Job.HarvestJob(World, BasePosition, this, resourcePosition, resourceTile);
+                    CurrentJob = HarvestJobFactory.Create(World, BasePosition, this, resourcePosition, resourceTile);
                 }
                 else if (Type == TileType.CraftersTable)
                 {
-                    CurrentJob = Job.CraftJob(World, BasePosition, this, Inventory);
+                    CurrentJob = CraftJobFactory.Create(World, BasePosition, this, Inventory);
                 }
                 // If we have been able to create a new job
                 if (CurrentJob != null)
