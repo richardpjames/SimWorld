@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class Builder : MonoBehaviour
 {
@@ -49,6 +50,7 @@ public class Builder : MonoBehaviour
     {
         // Clear any temporary indicators which are shown
         _tilemap.ClearAllTiles();
+        _tilemap.color = _baseColour;
         // Capture the current mouse position
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0;
@@ -62,7 +64,7 @@ public class Builder : MonoBehaviour
                 ClearBuildMode();
             }
             // Rotate if allowed
-            if (Input.GetKeyUp(KeyCode.Tab))
+            if (Input.GetKeyUp(KeyCode.Tab) && _tile != null)
             {
                 _tile.Rotate();
             }
@@ -102,7 +104,14 @@ public class Builder : MonoBehaviour
             else
             {
                 _tilemap.SetTile(new Vector3Int(position.x, position.y, 0), _tile.Tile);
-
+                if (_tile.CheckValidity(_world, new Vector2Int(position.x, position.y)))
+                {
+                    _tilemap.color = _successColour;
+                }
+                else
+                {
+                    _tilemap.color = _failureColour;
+                }
             }
             // If we have been provided with a world tile then apply any rotation
             if (_tile != null)
@@ -163,6 +172,14 @@ public class Builder : MonoBehaviour
                     if (_tile != null)
                     {
                         _tilemap.SetTile(new Vector3Int(x, y, 0), _tile.Tile);
+                        if (_tile.CheckValidity(_world, new Vector2Int(x, y)))
+                        {
+                            _tilemap.SetColor(new Vector3Int(x, y, 0), _successColour);
+                        }
+                        else
+                        {
+                            _tilemap.SetColor(new Vector3Int(x, y, 0), _failureColour);
+                        }
                         Matrix4x4 matrix = Matrix4x4.Rotate(_tile.Rotation);
                         _tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
                     }
@@ -242,6 +259,14 @@ public class Builder : MonoBehaviour
                     if (_tile != null)
                     {
                         _tilemap.SetTile(new Vector3Int(x, y, 0), _tile.Tile);
+                        if (_tile.CheckValidity(_world, new Vector2Int(x, y)))
+                        {
+                            _tilemap.SetColor(new Vector3Int(x, y, 0), _successColour);
+                        }
+                        else
+                        {
+                            _tilemap.SetColor(new Vector3Int(x, y, 0), _failureColour);
+                        }
                         Matrix4x4 matrix = Matrix4x4.Rotate(_tile.Rotation);
                         _tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), matrix);
                     }

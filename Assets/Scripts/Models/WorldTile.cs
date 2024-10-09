@@ -33,6 +33,8 @@ public class WorldTile
     public bool Continuous { get; protected set; }
     public World World { get; protected set; }
     public Inventory Inventory { get; protected set; }
+    public float GrowthTime { get; protected set; }
+    public WorldTile AdultTile { get; protected set; }
     public Quaternion Rotation
     {
         get
@@ -78,7 +80,7 @@ public class WorldTile
         bool requiresUpdate = false, TileType harvestType = TileType.Tree, JobQueue jobQueue = null,
         Job currentJob = null, World world = null, Dictionary<InventoryItem, int> craftCost = null,
         Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0, Inventory inventory = null,
-        int jobCount = 0, bool continuous = false)
+        int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null)
     {
         //********************************************************************
         // Whenever adding a new field, be sure to update the NewInstance too!
@@ -109,6 +111,8 @@ public class WorldTile
         this.Inventory = inventory;
         this.JobCount = jobCount;
         this.Continuous = continuous;
+        this.GrowthTime = growthTime;
+        this.AdultTile = adultTile;
     }
 
     public WorldTile NewInstance()
@@ -117,11 +121,25 @@ public class WorldTile
             BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
             JobQueue, CurrentJob, World, CraftCost, CraftYield, CraftTime, Inventory,
-            JobCount, Continuous);
+            JobCount, Continuous, GrowthTime, AdultTile);
     }
     public void Update(float delta)
     {
         if (!RequiresUpdate) return;
+        // For saplings etc. which will grow into full grown plants/trees
+        if(Type == TileType.Sapling)
+        {
+            // Count down until the end of the growth lifetime
+            GrowthTime = GrowthTime -delta;
+            // When the time is up, we destory this tile and create an adult version
+            if(GrowthTime < 0)
+            {
+                // Remove this tile from the world
+                World.RemoveWorldTile(BasePosition, Layer);
+                // Add the adult tile to the world
+                World.UpdateWorldTile(BasePosition, AdultTile);
+            }
+        }
         // For harvesters like the woodcutters table
         if (Type == TileType.HarvestersTable || Type == TileType.CraftersTable)
         {

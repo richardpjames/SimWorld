@@ -62,9 +62,10 @@ public class World : MonoBehaviour
     }
     private void Update()
     {
-        foreach (WorldTile tile in _needsUpdate)
+        // Loop through all of the items which require update
+        for (int i = 0; i < _needsUpdate.Count; i++)
         {
-            tile.Update(Time.deltaTime);
+            _needsUpdate[i].Update(Time.deltaTime);
         }
     }
 
@@ -78,7 +79,7 @@ public class World : MonoBehaviour
             for (int y = 0; y < Size.y; y++)
             {
                 WorldTile tile = GetWorldTile(new Vector2Int(x, y), WorldLayer.Structure);
-                if (tile != null && tile.Type == type && tile.BasePosition == new Vector2Int(x,y) && tile.Reserved == false )
+                if (tile != null && tile.Type == type && tile.BasePosition == new Vector2Int(x, y) && tile.Reserved == false)
                 {
                     float distance = Vector2Int.Distance(position, new Vector2Int(x, y));
                     if (distance < minDistance)

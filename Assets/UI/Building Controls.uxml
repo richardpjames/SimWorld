@@ -19,6 +19,7 @@
             <ui:Button text="Stonecutters Table" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stonecutters-button" class="btn-blue" style="flex-direction: row;" />
             <ui:Button text="Carpenters Table" parse-escape-sequences="true" display-tooltip-when-elided="true" name="carpenters-button" class="btn-blue" style="flex-direction: row;" />
             <ui:Button text="Stonemasons Table" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stonemasons-button" class="btn-blue" style="flex-direction: row;" />
+            <ui:Button text="Sapling" parse-escape-sequences="true" display-tooltip-when-elided="true" name="sapling-button" class="btn-blue" style="flex-direction: row;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

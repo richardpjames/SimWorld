@@ -7,6 +7,7 @@ public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private Inventory _inventory;
 
+    [SerializeField] private TextMeshProUGUI _seedsText;
     [SerializeField] private TextMeshProUGUI _woodText;
     [SerializeField] private TextMeshProUGUI _stoneText;
     [SerializeField] private TextMeshProUGUI _planksText;
@@ -21,6 +22,7 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateDisplay()
     {
+        _seedsText.text = $"Seeds: {_inventory.Items[InventoryItem.Seeds]}";
         _woodText.text = $"Wood: {_inventory.Items[InventoryItem.Wood]}";
         _stoneText.text = $"Stone: {_inventory.Items[InventoryItem.Stone]}";
         _planksText.text = $"Planks: {_inventory.Items[InventoryItem.Planks]}";

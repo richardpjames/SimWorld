@@ -12,6 +12,7 @@ public class PrefabFactory : MonoBehaviour
     [SerializeField] private TileBase _woodenWallTile;
     [SerializeField] private TileBase _woodenDoorTile;
     [SerializeField] private TileBase _bedTile;
+    [SerializeField] private TileBase _saplingTile;
     [SerializeField] private TileBase _treeTile;
     [SerializeField] private TileBase _rockTile;
     [SerializeField] private TileBase _woodcuttersTile;
@@ -96,11 +97,17 @@ public class PrefabFactory : MonoBehaviour
         _prefabs.Add(tile.Name, tile);
 
 
-        Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
+        Dictionary<InventoryItem, int> treeYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 }, { InventoryItem.Seeds, 5 } };
         tile = new WorldTile(type: TileType.Tree, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 1, height: 2, buildTime: 5, name: "Tree", movementCost: 0, tile: _treeTile,
             buildingAllowed: false, yield: treeYield);
         _prefabs.Add(tile.Name, tile);
+
+        Dictionary<InventoryItem, int> saplingCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Seeds, 1 } };
+        WorldTile sapling = new WorldTile(type: TileType.Sapling, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
+            width: 1, height: 2, buildTime: 1, name: "Sapling", movementCost: 0, tile: _saplingTile, requiresUpdate: true,
+            buildingAllowed: false, cost: saplingCost, growthTime: 25, adultTile: tile, world: _world);
+        _prefabs.Add(sapling.Name, sapling);
 
         Dictionary<InventoryItem, int> rockYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Stone, 2 } };
         tile = new WorldTile(type: TileType.Rock, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
