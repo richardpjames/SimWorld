@@ -7,8 +7,10 @@ public class HUD : MonoBehaviour
     [SerializeField] private World _world;
 
     [SerializeField] private TileInformation _tileInformationPrefab;
+    [SerializeField] private CraftMenu _craftingMenuPrefab;
+    private CraftMenu _craftMenu;
     private TileInformation _tileInformation;
-    private Vector2Int _tileInformationPosition;
+    private Vector2Int _position;
 
     private void Start()
     {
@@ -16,26 +18,37 @@ public class HUD : MonoBehaviour
         _world.OnTileUpdated += CheckTileUpdated;
     }
 
-    // Determine whether a change to a tile has any effect
-    private void CheckTileUpdated(Vector2Int position)
+    public void HandleClick(Vector2Int position)
     {
-        // If the tile information dialog is open and looking at the updated position
-        if (position == _tileInformationPosition && _tileInformation != null)
+        WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
+        if (structure != null &&(structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
         {
-            // Setting the position again will force a refresh
-            _tileInformation.SetPosition(position);
+            // If a dialog is already open then we just update, otherwise create a new one
+            if (_craftMenu == null)
+            {
+                _craftMenu = Instantiate(_craftingMenuPrefab, transform.position, Quaternion.identity);
+            }
+            // Refresh with the tile information
+            _craftMenu.Initialize(structure);
         }
-    }
-
-    public void ShowTileInformation(Vector2Int position)
-    {
         // If a dialog is already open then we just update, otherwise create a new one
         if (_tileInformation == null)
         {
             _tileInformation = Instantiate(_tileInformationPrefab, transform.position, Quaternion.identity);
         }
         // Set the position, which forces the dialog to show the tile information
-        _tileInformationPosition = position;
+        _position = position;
         _tileInformation.SetPosition(position);
+    }
+
+    // Determine whether a change to a tile has any effect
+    private void CheckTileUpdated(Vector2Int position)
+    {
+        // If the tile information dialog is open and looking at the updated position
+        if (position == _position && _tileInformation != null)
+        {
+            // Setting the position again will force a refresh
+            _tileInformation.SetPosition(position);
+        }
     }
 }

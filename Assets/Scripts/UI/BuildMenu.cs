@@ -23,6 +23,8 @@ public class BuildMenu : MonoBehaviour
         root.Q<Button>("wooden-walls-button").clicked += () => _builder.SetBuild("Wooden Wall");
         root.Q<Button>("woodcutters-button").clicked += () => _builder.SetBuild("Woodcutters Table");
         root.Q<Button>("stonecutters-button").clicked += () => _builder.SetBuild("Stonecutters Table");
+        root.Q<Button>("stonemasons-button").clicked += () => _builder.SetBuild("Stonemasons Table");
+        root.Q<Button>("carpenters-button").clicked += () => _builder.SetBuild("Carpenters Table");
         root.Q<Button>("bed-button").clicked += () => _builder.SetBuild("Wooden Bed");
         root.Q<Button>("wooden-door-button").clicked += () => _builder.SetBuild("Wooden Door");
         root.Q<Button>("wooden-floor-button").clicked += () => _builder.SetBuild("Wooden Floor");

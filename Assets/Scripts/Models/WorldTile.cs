@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -10,6 +11,7 @@ public class WorldTile
     public int Width { get; protected set; }
     public int Height { get; protected set; }
     public int BuildTime { get; protected set; }
+    public int CraftTime { get; protected set; }
     public string Name { get; protected set; }
     public float MovementCost { get; protected set; }
     public TileBase Tile { get; protected set; }
@@ -17,6 +19,8 @@ public class WorldTile
     public int Rotations { get; protected set; } = 0;
     public Dictionary<InventoryItem, int> Cost { get; protected set; }
     public Dictionary<InventoryItem, int> Yield { get; protected set; }
+    public Dictionary<InventoryItem, int> CraftCost { get; protected set; }
+    public Dictionary<InventoryItem, int> CraftYield { get; protected set; }
     public bool Walkable { get => MovementCost != 0; }
     public bool Reserved { get; set; } = false;
     public Vector2Int BasePosition { get; set; }
@@ -25,7 +29,10 @@ public class WorldTile
     public TileType HarvestType { get; protected set; }
     public JobQueue JobQueue { get; protected set; }
     public Job CurrentJob { get; protected set; }
+    public int JobCount { get; protected set; }
+    public bool Continuous { get; protected set; }
     public World World { get; protected set; }
+    public Inventory Inventory { get; protected set; }
     public Quaternion Rotation
     {
         get
@@ -61,14 +68,21 @@ public class WorldTile
     public int MaxX { get { if (RotationAdjustedWidth <= 0) { return 1; } else { return RotationAdjustedWidth; } } }
     public int MaxY { get { if (RotationAdjustedHeight <= 0) { return 1; } else { return RotationAdjustedHeight; } } }
 
+    public Action<WorldTile> OnWorldTileUpdated;
+
     public WorldTile(TileType type, BuildMode buildMode, WorldLayer layer,
-        int width, int height, int buildTime,
-        string name, float movementCost, TileBase tile,
+        TileBase tile, int width = 1, int height = 1, int buildTime = 0,
+        string name = "", float movementCost = 1,
         bool buildingAllowed = true, int rotations = 0, Dictionary<InventoryItem, int> cost = null,
-        Dictionary<InventoryItem, int> yield = null, bool reserved = false, bool canRotate = true,
+        Dictionary<InventoryItem, int> yield = null, bool reserved = false, bool canRotate = false,
         bool requiresUpdate = false, TileType harvestType = TileType.Tree, JobQueue jobQueue = null,
-        Job currentJob = null, World world = null)
+        Job currentJob = null, World world = null, Dictionary<InventoryItem, int> craftCost = null,
+        Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0, Inventory inventory = null,
+        int jobCount = 0, bool continuous = false)
     {
+        //********************************************************************
+        // Whenever adding a new field, be sure to update the NewInstance too!
+        //********************************************************************
         this.Type = type;
         this.BuildMode = buildMode;
         this.Layer = layer;
@@ -89,35 +103,52 @@ public class WorldTile
         this.JobQueue = jobQueue;
         this.CurrentJob = currentJob;
         this.World = world;
+        this.CraftCost = craftCost;
+        this.CraftYield = craftYield;
+        this.CraftTime = craftTime;
+        this.Inventory = inventory;
+        this.JobCount = jobCount;
+        this.Continuous = continuous;
     }
 
     public WorldTile NewInstance()
     {
-        return new WorldTile(Type, BuildMode, Layer, Width, Height,
-            BuildTime, Name, MovementCost, Tile, BuildingAllowed, Rotations,
+        return new WorldTile(Type, BuildMode, Layer, Tile, Width, Height,
+            BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
-            JobQueue, CurrentJob, World);
+            JobQueue, CurrentJob, World, CraftCost, CraftYield, CraftTime, Inventory,
+            JobCount, Continuous);
     }
     public void Update(float delta)
     {
         if (!RequiresUpdate) return;
         // For harvesters like the woodcutters table
-        if (Type == TileType.HarvestersTable)
+        if (Type == TileType.HarvestersTable || Type == TileType.CraftersTable)
         {
             // If no jobs have been created, or the current job is complete
-            if (CurrentJob == null || CurrentJob.Complete)
+            if ((CurrentJob == null || CurrentJob.Complete) && (JobCount > 0 || Continuous))
             {
-                // Get the nearest structure we want to harvest but return if there are none
-                Vector2Int resourcePosition = World.GetNearestStructure(BasePosition, HarvestType);
-                if (resourcePosition == null) return;
-                // Otherwise get the tile
-                WorldTile resourceTile = World.GetWorldTile(resourcePosition, WorldLayer.Structure);
-                if (resourceTile == null) return;
                 // Create a new job to harvest the resource
-                CurrentJob = Job.HarvestJob(World, BasePosition, this, resourcePosition, resourceTile);
+                if (Type == TileType.HarvestersTable)
+                {
+                    // Get the nearest structure we want to harvest but return if there are none
+                    Vector2Int resourcePosition = World.GetNearestStructure(BasePosition, HarvestType);
+                    if (resourcePosition == null) return;
+                    // Otherwise get the tile
+                    WorldTile resourceTile = World.GetWorldTile(resourcePosition, WorldLayer.Structure);
+                    if (resourceTile == null) return;
+                    CurrentJob = Job.HarvestJob(World, BasePosition, this, resourcePosition, resourceTile);
+                }
+                else if (Type == TileType.CraftersTable)
+                {
+                    CurrentJob = Job.CraftJob(World, BasePosition, this, Inventory);
+                }
+                // If we have been able to create a new job
                 if (CurrentJob != null)
                 {
+                    if(!Continuous) JobCount--;
                     JobQueue.Add(CurrentJob);
+                    OnWorldTileUpdated?.Invoke(this);
                 }
             }
         }
@@ -172,7 +203,7 @@ public class WorldTile
                 Rotations = 1;
             }
         }
-        if (Type == TileType.Bed)
+        if (Type == TileType.Bed || Type == TileType.Chair || Type == TileType.Table)
         {
             // This must be placed inside
             if (!world.IsInside(position)) return false;
@@ -189,6 +220,20 @@ public class WorldTile
         Rotations++;
         // If we have already rotated three times then return to the original
         if (Rotations > 3) Rotations = 0;
+    }
+
+    // For updating the job count through the UI
+    public void SetJobCount(int count)
+    {
+        JobCount = count;
+        OnWorldTileUpdated?.Invoke(this);
+    }
+
+    // For toggling whether the tile is continuous
+    public void SetContinuous(bool value)
+    {
+        Continuous = value;
+        OnWorldTileUpdated?.Invoke(this);
     }
 
 }

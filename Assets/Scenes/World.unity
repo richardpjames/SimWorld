@@ -1156,10 +1156,13 @@ MonoBehaviour:
   _rockTile: {fileID: 11400000, guid: 8a5f6e6c14184ca4cad656d2fd98156d, type: 2}
   _woodcuttersTile: {fileID: 11400000, guid: ab936fd3ac5da664f9fdb8d60e6d77ef, type: 2}
   _stonecuttersTile: {fileID: 11400000, guid: 307919039e833b04aab82dd22077898e, type: 2}
+  _carpentersTile: {fileID: 11400000, guid: 5b55bc85d1370234e9bc0f560ce27bea, type: 2}
+  _stonemasonsTile: {fileID: 11400000, guid: 182f2cbce6994fe4dbfbfeb5174fc4c0, type: 2}
   _woodenFloorTile: {fileID: 11400000, guid: 601ab8f0adc00ca4ab3bf1de4489ffee, type: 2}
   _stoneFloorTile: {fileID: 11400000, guid: 7e27953ea0db5f948a4f565fd67204fa, type: 2}
   _queue: {fileID: 125663961}
   _world: {fileID: 344687586}
+  _inventory: {fileID: 1349283576}
 --- !u!4 &1080139164
 Transform:
   m_ObjectHideFlags: 0
@@ -1704,6 +1707,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _world: {fileID: 344687586}
   _tileInformationPrefab: {fileID: 3618506480453389596, guid: 6d881ac76f6988248a11a42f69b587e8, type: 3}
+  _craftingMenuPrefab: {fileID: 8657300247337389248, guid: 50fb4a2221afeb84cacf0cf0a3621c5f, type: 3}
 --- !u!4 &2078921257
 Transform:
   m_ObjectHideFlags: 0

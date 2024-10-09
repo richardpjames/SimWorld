@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Job
 {
@@ -9,7 +8,6 @@ public class Job
     public bool Complete { get; protected set; }
     public JobStep CurrentJobStep { get; protected set; }
     public Dictionary<InventoryItem, int> Cost { get; protected set; }
-
     public Action<JobStep> OnJobStepComplete;
     public Action<JobStep> OnNextJobStep;
 
@@ -32,7 +30,10 @@ public class Job
             JobSteps.Enqueue(step);
         }
     }
-
+    private void TriggerOnJobStepComplete(JobStep jobStep)
+    {
+        OnJobStepComplete?.Invoke(jobStep);
+    }
     public static Job DemolishJob(World world, Vector2Int position, WorldLayer layer)
     {
         WorldTile tile = world.GetWorldTile(position, layer);
@@ -54,20 +55,28 @@ public class Job
         // Return the job
         return job;
     }
-
-    private void TriggerOnJobStepComplete(JobStep jobStep)
+    public static Job CraftJob(World world, Vector2Int position, WorldTile tile, Inventory inventory)
     {
-        OnJobStepComplete?.Invoke(jobStep);
+        if (world == null || position == null || tile == null || inventory == null) return null;
+        // Create the job and set the cost to the craft cost
+        Job job = new Job(position, JobType.Craft);
+        job.Cost = tile.CraftCost;
+        // Create the actual step to craft the item and hook up the triggers
+        JobStep step = new JobStep(JobType.Craft, world, tile, position, tile.CraftTime, false, null, Quaternion.identity);
+        step.OnJobStepComplete += (jobStep) => { inventory.Add(tile.CraftYield); };
+        step.OnJobStepComplete += job.TriggerOnJobStepComplete;
+        // Add the step to the job and return
+        job.AddStep(step);
+        return job;
     }
-        
-
     public static Job BuildJob(World world, Vector2Int position, WorldTile tile, PrefabFactory prefab)
     {
+        if (world == null || position == null || tile == null || prefab == null) return null;
         Job job = new Job(position, JobType.Build);
         job.Cost = tile.Cost;
         // Create a new job step
         JobStep step = new JobStep(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
-        step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, tile); };
+        step.OnJobStepComplete += (jobStep) => { world.UpdateWorldTile(position, tile); };
         step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // If this isn't valid, then immediately complete the job and exit
         if (tile.CheckValidity(world, position) == false)
@@ -95,9 +104,9 @@ public class Job
         // Return the job
         return job;
     }
-
     public static Job HarvestJob(World world, Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile)
     {
+        if (world == null || startPosition == null || startTile == null || endPosition == null || harvestTile == null) return null;
         Job job = new Job(endPosition, JobType.Demolish);
         job.Cost = null;
         // First we visit the table
@@ -109,7 +118,7 @@ public class Job
         // Create the job to harvest (demolish) the item
         JobStep harvest = new JobStep(JobType.Demolish, world, tile, endPosition, tile.BuildTime, false, tile.Tile, tile.Rotation);
         // When complete, this is the work to be done
-        harvest.OnJobStepComplete += (job) => { world.RemoveWorldTile(endPosition, tile.Layer); };
+        harvest.OnJobStepComplete += (jobStep) => { world.RemoveWorldTile(endPosition, tile.Layer); };
         harvest.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Reserve tiles for the job
         if (world.GetWorldTile(endPosition, tile.Layer) != null)

@@ -69,7 +69,7 @@ public class MouseController : MonoBehaviour
         {
             // Convert the mouse position to world position
             Vector2Int position = _world.GetTilePosition(_mousePosition.x, _mousePosition.y);
-            _hud.ShowTileInformation(position);
+            _hud.HandleClick(position);
         }
     }
 }
