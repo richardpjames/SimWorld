@@ -19,7 +19,7 @@ public static class CraftingUpdater
                     // Otherwise get the tile
                     WorldTile resourceTile = world.GetWorldTile(resourcePosition, WorldLayer.Structure);
                     if (resourceTile == null) return;
-                    tile.CurrentJob = HarvestJobFactory.Create(world, tile.BasePosition, tile, resourcePosition, resourceTile);
+                    tile.CurrentJob = HarvestJobFactory.Create(world, tile.BasePosition, tile, resourcePosition, resourceTile, inventory);
                 }
                 else if (tile.Type == TileType.CraftersTable)
                 {

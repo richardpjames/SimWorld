@@ -28,6 +28,8 @@ public class TileInformation : MonoBehaviour
     private World _world;
     // Get the job queue (for demolition)
     private JobQueue _jobQueue;
+    // Get the inventory
+    private Inventory _inventory;
 
     // Start is called before the first frame update
     void Awake()
@@ -36,6 +38,8 @@ public class TileInformation : MonoBehaviour
         _world = GameObject.FindAnyObjectByType<World>();
         // Find a reference to the job queue
         _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
+        // Find a reference to the inventory
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
         // Hide the panel, then scale it in
         _panel.transform.localScale = Vector3.zero;
         _closeButton.SetActive(false);
@@ -62,7 +66,7 @@ public class TileInformation : MonoBehaviour
         // Check that we have a position and that the floor is not already being demolished/used
         if (_position != null && !_world.GetWorldTile(_position, WorldLayer.Floor).Reserved)
         {
-            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Floor));
+            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Floor, _inventory));
         }
     }
     public void DemolishStructure()
@@ -70,7 +74,7 @@ public class TileInformation : MonoBehaviour
         // Check that we have a position and that the structure is not already being demolished/used
         if (_position != null && !_world.GetWorldTile(_position, WorldLayer.Structure).Reserved)
         {
-            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Structure));
+            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Structure, _inventory));
         }
     }
 

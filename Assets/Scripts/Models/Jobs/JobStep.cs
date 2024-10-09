@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.WSA;
 
 public class JobStep
 {
@@ -12,9 +13,12 @@ public class JobStep
     public bool Complete { get; protected set; }
     public TileBase Indicator { get; protected set; }
     public Quaternion Rotation { get; protected set; }
+    public Inventory Inventory { get; protected set; }
+
     public Action<JobStep> OnJobStepComplete;
 
-    public JobStep(JobType type, World world, WorldTile worldTile, Vector2Int position, float cost, bool complete, TileBase indicator, Quaternion rotation)
+    // FIXME: Doesn't always need the inventory, so add a check and remove unneeded references
+    public JobStep(JobType type, World world, WorldTile worldTile, Inventory inventory, Vector2Int position, float cost, bool complete, TileBase indicator, Quaternion rotation)
     {
         World = world;
         Type = type;
@@ -24,6 +28,12 @@ public class JobStep
         Complete = complete;
         Indicator = indicator;
         Rotation = rotation;
+        Inventory = inventory;
+
+        if(Type == JobType.Build) OnJobStepComplete += (JobStep) => { world.UpdateWorldTile(Position, WorldTile); };
+        if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { world.RemoveWorldTile(Position, WorldTile.Layer); };
+        if (Type == JobType.Craft) OnJobStepComplete += (JobStep) => { Inventory.Add(WorldTile.CraftYield); };
+
     }
 
     public virtual void Work(float points)

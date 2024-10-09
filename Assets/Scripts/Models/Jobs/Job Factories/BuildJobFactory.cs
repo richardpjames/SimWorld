@@ -2,14 +2,13 @@ using UnityEngine;
 
 public static class BuildJobFactory
 {
-    public static Job Create(World world, Vector2Int position, WorldTile tile, PrefabFactory prefab)
+    public static Job Create(World world, Vector2Int position, WorldTile tile, Inventory inventory, PrefabFactory prefab)
     {
         if (world == null || position == null || tile == null || prefab == null) return null;
         Job job = new Job(position, JobType.Build);
         job.Cost = tile.Cost;
         // Create a new job step
-        JobStep step = new JobStep(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
-        step.OnJobStepComplete += (jobStep) => { world.UpdateWorldTile(position, tile); };
+        JobStep step = new JobStep(JobType.Build, world, tile, inventory, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
         step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // If this isn't valid, then immediately complete the job and exit
         if (tile.CheckValidity(world, position) == false)

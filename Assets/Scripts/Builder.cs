@@ -9,6 +9,7 @@ public class Builder : MonoBehaviour
     [SerializeField] private TileBase _indicatorTile;
     [SerializeField] private World _world;
     [SerializeField] private JobQueue _jobQueue;
+    [SerializeField] private Inventory _inventory;
     [SerializeField] private PrefabFactory _prefabFactory;
     [SerializeField] private Grid _grid;
     [SerializeField] private Color _baseColour;
@@ -290,7 +291,7 @@ public class Builder : MonoBehaviour
                     // Place it into the world
                     if (_tile.CheckValidity(_world, position))
                     {
-                        _jobQueue.Add(BuildJobFactory.Create(_world, position, _tile.NewInstance(), _prefabFactory));
+                        _jobQueue.Add(BuildJobFactory.Create(_world, position, _tile.NewInstance(), _inventory, _prefabFactory));
                     }
                 }
                 else if (BuildMode == BuildMode.Demolish)
@@ -301,7 +302,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Structure).Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Structure));
+                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Structure, _inventory));
                         }
                     }
                     if (_world.GetWorldTile(position, WorldLayer.Floor) != null)
@@ -309,7 +310,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Floor).Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Floor));
+                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Floor, _inventory));
                         }
                     }
                 }
