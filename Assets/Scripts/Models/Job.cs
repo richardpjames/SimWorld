@@ -8,16 +8,10 @@ public class Job
     public Queue<JobStep> JobSteps { get; protected set; }
     public bool Complete { get; protected set; }
     public JobStep CurrentJobStep { get; protected set; }
-    public Vector2Int Position { get => CurrentJobStep.Position; }
-    public Vector2Int JobPosition { get; protected set; }
-    public WorldTile WorldTile { get => CurrentJobStep.WorldTile; }
-    public JobType Type { get => CurrentJobStep.Type; }
-    public JobType JobType { get; set; }
-    public TileBase Indicator { get => CurrentJobStep.Indicator; }
-    public Quaternion Rotation { get => CurrentJobStep.Rotation; }
+    public Dictionary<InventoryItem, int> Cost { get; protected set; }
 
-    public Action<Job> OnJobComplete;
     public Action<JobStep> OnJobStepComplete;
+    public Action<JobStep> OnNextJobStep;
 
     public Job(Vector2Int position, JobType type, bool complete = false)
     {
@@ -25,8 +19,6 @@ public class Job
         JobSteps = new Queue<JobStep>();
         Complete = complete;
         CurrentJobStep = null;
-        JobPosition = position;
-        JobType = type;
     }
 
     public void AddStep(JobStep step)
@@ -46,11 +38,12 @@ public class Job
         WorldTile tile = world.GetWorldTile(position, layer);
         if (tile == null) return null;
         Job job = new Job(position, JobType.Demolish);
+        job.Cost = null;
         // Create a new job step
         JobStep step = new JobStep(JobType.Demolish, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
         // When complete, this is the work to be done
         step.OnJobStepComplete += (job) => { world.RemoveWorldTile(position, tile.Layer); };
-        step.OnJobStepComplete += job.OnJobStepComplete;
+        step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Reserve tiles for the job
         if (world.GetWorldTile(position, tile.Layer) != null)
         {
@@ -62,13 +55,20 @@ public class Job
         return job;
     }
 
+    private void TriggerOnJobStepComplete(JobStep jobStep)
+    {
+        OnJobStepComplete?.Invoke(jobStep);
+    }
+        
+
     public static Job BuildJob(World world, Vector2Int position, WorldTile tile, PrefabFactory prefab)
     {
         Job job = new Job(position, JobType.Build);
+        job.Cost = tile.Cost;
         // Create a new job step
         JobStep step = new JobStep(JobType.Build, world, tile, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
         step.OnJobStepComplete += (job) => { world.UpdateWorldTile(position, tile); };
-        step.OnJobStepComplete += job.OnJobStepComplete;
+        step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // If this isn't valid, then immediately complete the job and exit
         if (tile.CheckValidity(world, position) == false)
         {
@@ -99,9 +99,10 @@ public class Job
     public static Job HarvestJob(World world, Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile)
     {
         Job job = new Job(endPosition, JobType.Demolish);
+        job.Cost = null;
         // First we visit the table
         JobStep visitTable = new JobStep(JobType.Harvest, world, startTile, startPosition, 2, false, null, Quaternion.identity);
-        visitTable.OnJobStepComplete += job.OnJobStepComplete;
+        visitTable.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Then find the item to be harvested
         WorldTile tile = world.GetWorldTile(endPosition, WorldLayer.Structure);
         if (tile == null) return null;
@@ -109,7 +110,7 @@ public class Job
         JobStep harvest = new JobStep(JobType.Demolish, world, tile, endPosition, tile.BuildTime, false, tile.Tile, tile.Rotation);
         // When complete, this is the work to be done
         harvest.OnJobStepComplete += (job) => { world.RemoveWorldTile(endPosition, tile.Layer); };
-        harvest.OnJobStepComplete += job.OnJobStepComplete;
+        harvest.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Reserve tiles for the job
         if (world.GetWorldTile(endPosition, tile.Layer) != null)
         {
@@ -128,12 +129,12 @@ public class Job
             if (JobSteps.Count == 0)
             {
                 Complete = true;
-                OnJobComplete?.Invoke(this);
                 return;
             }
             else
             {
                 CurrentJobStep = JobSteps.Dequeue();
+                OnNextJobStep?.Invoke(CurrentJobStep);
             }
         }
         CurrentJobStep.Work(points);

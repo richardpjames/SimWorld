@@ -28,7 +28,7 @@ public class Agent : MonoBehaviour
         }
         if (_currentJob != null)
         {
-            Vector3 target = new Vector3(_currentJob.Position.x, _currentJob.Position.y, 0);
+            Vector3 target = new Vector3(_currentJob.CurrentJobStep.Position.x, _currentJob.CurrentJobStep.Position.y, 0);
             // Progress the job if we have reached the location
             if (transform.position == target && !_currentJob.Complete)
             {

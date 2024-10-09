@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Jobs;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -46,44 +47,52 @@ public class JobQueue : MonoBehaviour
     // Add a job to the queue
     public bool Add(Job job)
     {
-        // Check if any jobs of the same type already exist at this position
-        if (_queue.Any<Job>((queuedJob) => queuedJob.Position == job.Position && queuedJob.WorldTile.Layer == job.WorldTile.Layer))
+        // Check if any jobs of the same type already exist at this position -- FIXME: This doesn't work for multi step jobs
+        if (_queue.Any<Job>((queuedJob) => queuedJob.CurrentJobStep.Position == job.CurrentJobStep.Position && 
+        queuedJob.CurrentJobStep.WorldTile.Layer == job.CurrentJobStep.WorldTile.Layer))
         {
             return false;
         }
         // If not then add to the queue
         _queue.Enqueue(job);
         // Hook up the actions
-        job.OnJobComplete += OnJobCompleted;
-        // Update the tilemaps
-        Tilemap tilemap = null;
-        // If there is a tilemap and tile then update 
-        if (job.Type == JobType.Demolish)
-        {
-            tilemap = _tilemaps[WorldLayer.Demolition];
-            tilemap.SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), _demolitionTile);
-        }
-        //else check if there is an indicator provided on the job
-        else if (job.Indicator != null)
-        {
-            // Set the tilemap tile accordingly
-            _tilemaps[job.WorldTile.Layer].SetTile(new Vector3Int(job.Position.x, job.Position.y, 0), job.Indicator);
-            Matrix4x4 matrix = Matrix4x4.Rotate(job.Rotation);
-            _tilemaps[job.WorldTile.Layer].SetTransformMatrix(new Vector3Int(job.Position.x, job.Position.y, 0), matrix);
-        }
+        job.OnJobStepComplete += OnJobStepComplete;
+        job.OnNextJobStep += OnNextJobStep;
+        // Update for the first job step
+        OnNextJobStep(job.CurrentJobStep);
         // Return true to notify complete
         return true;
     }
 
     // Clear up the tilemap after a job is complete
-    private void OnJobCompleted(Job job)
+    private void OnJobStepComplete(JobStep jobStep)
     {
         Tilemap tilemap;
         // Find the correct tilemap for the job
-        if (job.JobType == JobType.Demolish) tilemap = _tilemaps[WorldLayer.Demolition];
-        else tilemap = _tilemaps[job.WorldTile.Layer];
+        if (jobStep.Type == JobType.Demolish || jobStep.Type == JobType.Harvest) tilemap = _tilemaps[WorldLayer.Demolition];
+        else tilemap = _tilemaps[jobStep.WorldTile.Layer];
         // Remove the tile from the map
-        tilemap.SetTile(new Vector3Int(job.JobPosition.x, job.JobPosition.y, 0), null);
+        tilemap.SetTile(new Vector3Int(jobStep.Position.x, jobStep.Position.y, 0), null);
+    }
+
+    private void OnNextJobStep(JobStep jobStep)
+    {
+        // Update the tilemaps
+        Tilemap tilemap = null;
+        // If there is a tilemap and tile then update 
+        if (jobStep.Type == JobType.Demolish || jobStep.Type == JobType.Harvest)
+        {
+            tilemap = _tilemaps[WorldLayer.Demolition];
+            tilemap.SetTile(new Vector3Int(jobStep.Position.x, jobStep.Position.y, 0), _demolitionTile);
+        }
+        //else check if there is an indicator provided on the job
+        else if (jobStep.Indicator != null)
+        {
+            // Set the tilemap tile accordingly
+            _tilemaps[jobStep.WorldTile.Layer].SetTile(new Vector3Int(jobStep.Position.x, jobStep.Position.y, 0), jobStep.Indicator);
+            Matrix4x4 matrix = Matrix4x4.Rotate(jobStep.Rotation);
+            _tilemaps[jobStep.WorldTile.Layer].SetTransformMatrix(new Vector3Int(jobStep.Position.x, jobStep.Position.y, 0), matrix);
+        }
     }
 
     public Job GetNext()
@@ -92,12 +101,12 @@ public class JobQueue : MonoBehaviour
         {
             Job selectedJob = _queue.Dequeue();
             // If this is a building job, then ensure we can afford it
-            if (selectedJob.JobType == JobType.Build)
+            if (selectedJob.Cost != null)
             {
                 // If we can afford it, then take the resources from the inventory now
-                if (_inventory.Check(selectedJob.WorldTile.Cost))
+                if (_inventory.Check(selectedJob.Cost))
                 {
-                    _inventory.Spend(selectedJob.WorldTile.Cost);
+                    _inventory.Spend(selectedJob.Cost);
                     return selectedJob;
                 }
                 // Otherwise put back on the bottom of the queue and return null (agent to check again on next frame)
