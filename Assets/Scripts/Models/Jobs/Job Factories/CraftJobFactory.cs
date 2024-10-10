@@ -2,8 +2,11 @@ using UnityEngine;
 
 public static class CraftJobFactory
 {
-    public static Job Create(World world, Vector2Int position, WorldTile tile, Inventory inventory)
+    public static Job Create(Vector2Int position, WorldTile tile)
     {
+        // Get objects from Unity
+        World world = GameObject.FindAnyObjectByType<World>();
+        Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         if (world == null || position == null || tile == null || inventory == null) return null;
         // Create the job and set the cost to the craft cost
         Job job = new Job(position, JobType.Craft);

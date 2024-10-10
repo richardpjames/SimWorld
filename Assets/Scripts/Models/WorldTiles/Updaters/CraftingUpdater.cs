@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class CraftingUpdater
 {
-    public static void Update(WorldTile tile, World world, Inventory inventory, JobQueue jobQueue, float delta)
+    public static void Update(WorldTile tile, float delta)
     {
         // For harvesters like the woodcutters table
         if (tile.Type == TileType.HarvestersTable || tile.Type == TileType.CraftersTable)
@@ -14,22 +14,22 @@ public static class CraftingUpdater
                 if (tile.Type == TileType.HarvestersTable)
                 {
                     // Get the nearest structure we want to harvest but return if there are none
-                    Vector2Int resourcePosition = world.GetNearestStructure(tile.BasePosition, tile.HarvestType);
+                    Vector2Int resourcePosition = tile.World.GetNearestStructure(tile.BasePosition, tile.HarvestType);
                     if (resourcePosition == null) return;
                     // Otherwise get the tile
-                    WorldTile resourceTile = world.GetWorldTile(resourcePosition, WorldLayer.Structure);
+                    WorldTile resourceTile = tile.World.GetWorldTile(resourcePosition, WorldLayer.Structure);
                     if (resourceTile == null) return;
-                    tile.CurrentJob = HarvestJobFactory.Create(world, tile.BasePosition, tile, resourcePosition, resourceTile, inventory);
+                    tile.CurrentJob = HarvestJobFactory.Create(tile.BasePosition, tile, resourcePosition, resourceTile);
                 }
                 else if (tile.Type == TileType.CraftersTable)
                 {
-                    tile.CurrentJob = CraftJobFactory.Create(world, tile.BasePosition, tile, inventory);
+                    tile.CurrentJob = CraftJobFactory.Create(tile.BasePosition, tile);
                 }
                 // If we have been able to create a new job
                 if (tile.CurrentJob != null)
                 {
                     if (!tile.Continuous) tile.JobCount--;
-                    jobQueue.Add(tile.CurrentJob);
+                    tile.JobQueue.Add(tile.CurrentJob);
                     tile.OnWorldTileUpdated?.Invoke(tile);
                 }
             }

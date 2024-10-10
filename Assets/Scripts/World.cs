@@ -12,10 +12,8 @@ public class World : MonoBehaviour
     [SerializeField] private Vector2 _offset;
     [Header("Graphics Display")]
     [SerializeField] private Grid _grid;
-    [Header("Prefabs")]
-    [SerializeField] private PrefabFactory _prefab;
-    [Header("Inventory")]
-    [SerializeField] private Inventory _inventory;
+    private PrefabFactory _prefab;
+    private Inventory _inventory;
 
     // This holds our world
     private Dictionary<Vector3Int, WorldTile> _worldTiles;
@@ -29,6 +27,8 @@ public class World : MonoBehaviour
     private GameManager _game { get => GameManager.Instance; }
     private void Start()
     {
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
+        _prefab = GameObject.FindAnyObjectByType<PrefabFactory>();
         // Store the name, width and height of the world
         this.Name = _game.WorldName;
         this.Size = new Vector2Int(_game.WorldWidth, _game.WorldHeight);

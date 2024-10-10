@@ -66,7 +66,7 @@ public class TileInformation : MonoBehaviour
         // Check that we have a position and that the floor is not already being demolished/used
         if (_position != null && !_world.GetWorldTile(_position, WorldLayer.Floor).Reserved)
         {
-            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Floor, _inventory));
+            _jobQueue.Add(DemolitionJobFactory.Create(_position, WorldLayer.Floor));
         }
     }
     public void DemolishStructure()
@@ -74,7 +74,7 @@ public class TileInformation : MonoBehaviour
         // Check that we have a position and that the structure is not already being demolished/used
         if (_position != null && !_world.GetWorldTile(_position, WorldLayer.Structure).Reserved)
         {
-            _jobQueue.Add(DemolitionJobFactory.Create(_world, _position, WorldLayer.Structure, _inventory));
+            _jobQueue.Add(DemolitionJobFactory.Create(_position, WorldLayer.Structure));
         }
     }
 

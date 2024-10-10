@@ -76,14 +76,18 @@ public class WorldTile
         string name = "", float movementCost = 1,
         bool buildingAllowed = true, int rotations = 0, Dictionary<InventoryItem, int> cost = null,
         Dictionary<InventoryItem, int> yield = null, bool reserved = false, bool canRotate = false,
-        bool requiresUpdate = false, TileType harvestType = TileType.Tree, JobQueue jobQueue = null,
-        Job currentJob = null, World world = null, Dictionary<InventoryItem, int> craftCost = null,
-        Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0, Inventory inventory = null,
+        bool requiresUpdate = false, TileType harvestType = TileType.Tree,
+        Job currentJob = null, Dictionary<InventoryItem, int> craftCost = null,
+        Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0,
         int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null)
     {
         //********************************************************************
         // Whenever adding a new field, be sure to update the NewInstance too!
         //********************************************************************
+        this.JobQueue = GameObject.FindAnyObjectByType<JobQueue>(); ;
+        this.World = GameObject.FindAnyObjectByType<World>();
+        this.Inventory = GameObject.FindAnyObjectByType<Inventory>();
+
         this.Type = type;
         this.BuildMode = buildMode;
         this.Layer = layer;
@@ -101,13 +105,10 @@ public class WorldTile
         this.CanRotate = canRotate;
         this.RequiresUpdate = requiresUpdate;
         this.HarvestType = harvestType;
-        this.JobQueue = jobQueue;
         this.CurrentJob = currentJob;
-        this.World = world;
         this.CraftCost = craftCost;
         this.CraftYield = craftYield;
         this.CraftTime = craftTime;
-        this.Inventory = inventory;
         this.JobCount = jobCount;
         this.Continuous = continuous;
         this.GrowthTime = growthTime;
@@ -119,7 +120,7 @@ public class WorldTile
         return new WorldTile(Type, BuildMode, Layer, Tile, Width, Height,
             BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
-            JobQueue, CurrentJob, World, CraftCost, CraftYield, CraftTime, Inventory,
+            CurrentJob, CraftCost, CraftYield, CraftTime,
             JobCount, Continuous, GrowthTime, AdultTile);
     }
     public void Update(float delta)
@@ -127,17 +128,17 @@ public class WorldTile
         // If no updates are required then exit
         if (!RequiresUpdate) return;
         // Updates for any saplings, crops etc.
-        CropUpdater.Update(this, World, delta);
+        CropUpdater.Update(this, delta);
         // Updates for any harvesting or crafting tables
-        CraftingUpdater.Update(this, World, Inventory, JobQueue, delta);
+        CraftingUpdater.Update(this, delta);
     }
     public bool CheckValidity(World world, Vector2Int position)
     {
         if (Type == TileType.Terrain) return true;
         // Run through each of the validators and return false if they do
-        if (!TileValidator.Validate(this, world, position)) return false;
-        if (!DoorValidator.Validate(this, world, position)) return false;
-        if (!FurnitureValidator.Validate(this, world, position)) return false;
+        if (!TileValidator.Validate(this, position)) return false;
+        if (!DoorValidator.Validate(this, position)) return false;
+        if (!FurnitureValidator.Validate(this, position)) return false;
         // Otherwise return true
         return true;
     }

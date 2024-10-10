@@ -22,15 +22,17 @@ public class PrefabFactory : MonoBehaviour
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     [SerializeField] private TileBase _stoneFloorTile;
-    [Header("Job Queue")]
-    [SerializeField] private JobQueue _queue;
-    [SerializeField] private World _world;
-    [SerializeField] private Inventory _inventory;
+    private JobQueue _queue;
+    private World _world;
+    private Inventory _inventory;
 
     private Dictionary<string, WorldTile> _prefabs;
 
     private void Awake()
     {
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
+        _world = GameObject.FindAnyObjectByType<World>();
+        _queue = GameObject.FindAnyObjectByType<JobQueue>();
         // List of all prefabs
         _prefabs = new Dictionary<string, WorldTile>();
         // WorldTile reference to re-use
@@ -68,14 +70,14 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 3, name: "Woodcutters Table", movementCost: 0, tile: _woodcuttersTile,
             cost: woodcuttersTableCost, yield: woodcuttersTableCost, canRotate: true, requiresUpdate: true,
-            harvestType: TileType.Tree, jobQueue: _queue, world: _world);
+            harvestType: TileType.Tree);
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> stonecuttersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
         tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 3, name: "Stonecutters Table", movementCost: 0, tile: _stonecuttersTile,
             cost: stonecuttersTableCost, yield: stonecuttersTableCost, canRotate: true, requiresUpdate: true,
-            harvestType: TileType.Rock, jobQueue: _queue, world: _world);
+            harvestType: TileType.Rock);
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> stonemasonsTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 50 }, { InventoryItem.Stone, 50 } };
@@ -84,7 +86,7 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.CraftersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 5, name: "Stonemasons Table", movementCost: 0, tile: _stonemasonsTile,
             cost: stonemasonsTableCost, yield: stonemasonsTableCost, canRotate: true, requiresUpdate: true,
-            jobQueue: _queue, world: _world, craftCost: stonemasonsCraftCost, craftYield: stonemasonsCraftYield, craftTime: 5, inventory: _inventory);
+            craftCost: stonemasonsCraftCost, craftYield: stonemasonsCraftYield, craftTime: 5);
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> carpentersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 50 }, { InventoryItem.Stone, 50 } };
@@ -93,7 +95,7 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.CraftersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 5, name: "Carpenters Table", movementCost: 0, tile: _carpentersTile,
             cost: carpentersTableCost, yield: carpentersTableCost, canRotate: true, requiresUpdate: true,
-            jobQueue: _queue, world: _world, craftCost: carpentersCraftCost, craftYield: carpentersCraftYield, craftTime: 5, inventory: _inventory);
+            craftCost: carpentersCraftCost, craftYield: carpentersCraftYield, craftTime: 5);
         _prefabs.Add(tile.Name, tile);
 
 
@@ -106,7 +108,7 @@ public class PrefabFactory : MonoBehaviour
         Dictionary<InventoryItem, int> saplingCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Seeds, 1 } };
         WorldTile sapling = new WorldTile(type: TileType.Sapling, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 1, height: 2, buildTime: 1, name: "Sapling", movementCost: 0, tile: _saplingTile, requiresUpdate: true,
-            buildingAllowed: false, cost: saplingCost, growthTime: 25, adultTile: tile, world: _world);
+            buildingAllowed: false, cost: saplingCost, growthTime: 25, adultTile: tile);
         _prefabs.Add(sapling.Name, sapling);
 
         Dictionary<InventoryItem, int> rockYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Stone, 2 } };

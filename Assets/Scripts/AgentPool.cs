@@ -5,12 +5,13 @@ using UnityEngine;
 public class AgentPool : MonoBehaviour
 {
     [SerializeField] GameObject _agentPrefab;
-    [SerializeField] private World _world;
+    private World _world;
     private List<GameObject> _agents;
 
 
     private void Start()
     {
+        _world = GameObject.FindAnyObjectByType<World>();
         // Keep a list of all agents
         _agents = new List<GameObject>();
         // Set transform to the center of the world to generate agents

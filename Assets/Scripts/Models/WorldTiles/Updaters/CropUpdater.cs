@@ -1,6 +1,8 @@
+using UnityEngine;
+
 public static class CropUpdater
 {
-    public static void Update(WorldTile tile, World world, float delta)
+    public static void Update(WorldTile tile, float delta)
     {
         // For saplings etc. which will grow into full grown plants/trees
         if (tile.Type == TileType.Sapling)
@@ -11,9 +13,9 @@ public static class CropUpdater
             if (tile.GrowthTime < 0)
             {
                 // Remove this tile from the world
-                world.RemoveWorldTile(tile.BasePosition, tile.Layer);
+                tile.World.RemoveWorldTile(tile.BasePosition, tile.Layer);
                 // Add the adult tile to the world
-                world.UpdateWorldTile(tile.BasePosition, tile.AdultTile);
+                tile.World.UpdateWorldTile(tile.BasePosition, tile.AdultTile);
             }
         }
     }

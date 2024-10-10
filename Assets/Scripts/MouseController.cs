@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class MouseController : MonoBehaviour
 {
-    [SerializeField] private World _world;
+    private World _world;
 
     [Header("Mouse Movement")]
     [SerializeField] private float scrollSpeed = 450f;
@@ -11,8 +11,8 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private float minZoom = 8f;
     [Header("Cursor Display")]
-    [SerializeField] private HUD _hud;
-    [SerializeField] private Builder _builder;
+    private HUD _hud;
+    private Builder _builder;
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 _mousePosition = Vector3.zero;
     private Vector3 _lastMousePosition = Vector3.zero;
@@ -20,6 +20,9 @@ public class MouseController : MonoBehaviour
 
     void Update()
     {
+        _builder = GameObject.FindAnyObjectByType<Builder>();
+        _world = GameObject.FindAnyObjectByType<World>();
+        _hud = GameObject.FindAnyObjectByType<HUD>();
         // Capture the current mouse position
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0;

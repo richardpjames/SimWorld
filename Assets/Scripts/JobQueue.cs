@@ -8,18 +8,20 @@ using UnityEngine.Tilemaps;
 
 public class JobQueue : MonoBehaviour
 {
-    [SerializeField] private World _world;
-    [SerializeField] private Inventory _inventory;
+    private World _world;
+    private Inventory _inventory;
     [SerializeField] private Grid _grid;
     [SerializeField] private TileBase _demolitionTile;
     [SerializeField] private Color _baseColour;
-    private Dictionary<WorldLayer, Tilemap> _tilemaps; 
+    private Dictionary<WorldLayer, Tilemap> _tilemaps;
 
     // The queue of jobs
     private Queue<Job> _queue;
 
     private void Start()
     {
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
+        _world = GameObject.FindAnyObjectByType<World>();
         _queue = new Queue<Job>();
         // Initialise the list of tilemaps
         _tilemaps = new Dictionary<WorldLayer, Tilemap>();
@@ -48,7 +50,7 @@ public class JobQueue : MonoBehaviour
     public bool Add(Job job)
     {
         // Check if any jobs of the same type already exist at this position -- FIXME: This doesn't work for multi step jobs
-        if (_queue.Any<Job>((queuedJob) => queuedJob.CurrentJobStep.Position == job.CurrentJobStep.Position && 
+        if (_queue.Any<Job>((queuedJob) => queuedJob.CurrentJobStep.Position == job.CurrentJobStep.Position &&
         queuedJob.CurrentJobStep.WorldTile.Layer == job.CurrentJobStep.WorldTile.Layer))
         {
             return false;

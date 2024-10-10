@@ -2,8 +2,13 @@ using UnityEngine;
 
 public static class BuildJobFactory
 {
-    public static Job Create(World world, Vector2Int position, WorldTile tile, Inventory inventory, PrefabFactory prefab)
+    public static Job Create(Vector2Int position, WorldTile tile)
     {
+        // Get objects from Unity
+        World world = GameObject.FindAnyObjectByType<World>();
+        Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
+        PrefabFactory prefab = GameObject.FindAnyObjectByType<PrefabFactory>();
+        // Check we have everything we need
         if (world == null || position == null || tile == null || prefab == null) return null;
         Job job = new Job(position, JobType.Build);
         job.Cost = tile.Cost;

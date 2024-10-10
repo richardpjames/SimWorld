@@ -7,10 +7,10 @@ public class Builder : MonoBehaviour
 {
     [Header("Configuration")]
     [SerializeField] private TileBase _indicatorTile;
-    [SerializeField] private World _world;
-    [SerializeField] private JobQueue _jobQueue;
-    [SerializeField] private Inventory _inventory;
-    [SerializeField] private PrefabFactory _prefabFactory;
+    private World _world;
+    private JobQueue _jobQueue;
+    private Inventory _inventory;
+    private PrefabFactory _prefabFactory;
     [SerializeField] private Grid _grid;
     [SerializeField] private Color _baseColour;
     [SerializeField] private Color _successColour;
@@ -47,6 +47,15 @@ public class Builder : MonoBehaviour
         ClearBuildMode();
     }
 
+    private void Start()
+    {
+        // Get the required game objects
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
+        _world = GameObject.FindAnyObjectByType<World>();
+        _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
+        _prefabFactory = GameObject.FindAnyObjectByType<PrefabFactory>();
+
+    }
     private void Update()
     {
         // Clear any temporary indicators which are shown
@@ -291,7 +300,7 @@ public class Builder : MonoBehaviour
                     // Place it into the world
                     if (_tile.CheckValidity(_world, position))
                     {
-                        _jobQueue.Add(BuildJobFactory.Create(_world, position, _tile.NewInstance(), _inventory, _prefabFactory));
+                        _jobQueue.Add(BuildJobFactory.Create(position, _tile.NewInstance()));
                     }
                 }
                 else if (BuildMode == BuildMode.Demolish)
@@ -302,7 +311,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Structure).Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Structure, _inventory));
+                            _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Structure));
                         }
                     }
                     if (_world.GetWorldTile(position, WorldLayer.Floor) != null)
@@ -310,7 +319,7 @@ public class Builder : MonoBehaviour
                         // If the tile is already reserved, then don't place the job
                         if (!_world.GetWorldTile(position, WorldLayer.Floor).Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(_world, position, WorldLayer.Floor, _inventory));
+                            _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Floor));
                         }
                     }
                 }

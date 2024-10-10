@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    [SerializeField] private Inventory _inventory;
-
     [SerializeField] private TextMeshProUGUI _seedsText;
     [SerializeField] private TextMeshProUGUI _woodText;
     [SerializeField] private TextMeshProUGUI _stoneText;
     [SerializeField] private TextMeshProUGUI _planksText;
     [SerializeField] private TextMeshProUGUI _blocksText;
 
+    private Inventory _inventory;
+
     // Start is called before the first frame update
     void Start()
     {
+        _inventory = GameObject.FindAnyObjectByType<Inventory>();
         _inventory.OnInventoryUpdated += UpdateDisplay;
         UpdateDisplay();
     }

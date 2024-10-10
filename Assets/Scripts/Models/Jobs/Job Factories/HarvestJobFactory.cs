@@ -2,8 +2,11 @@ using UnityEngine;
 
 public static class HarvestJobFactory
 {
-    public static Job Create(World world, Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile, Inventory inventory)
+    public static Job Create(Vector2Int startPosition, WorldTile startTile, Vector2Int endPosition, WorldTile harvestTile)
     {
+        // Get objects from Unity
+        World world = GameObject.FindAnyObjectByType<World>();
+        Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         if (world == null || startPosition == null || startTile == null || endPosition == null || harvestTile == null) return null;
         Job job = new Job(endPosition, JobType.Demolish);
         job.Cost = null;

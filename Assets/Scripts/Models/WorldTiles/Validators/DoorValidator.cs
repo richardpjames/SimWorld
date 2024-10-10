@@ -2,15 +2,15 @@ using UnityEngine;
 
 public static class DoorValidator
 {
-    public static bool Validate(WorldTile tile, World world, Vector2Int position)
+    public static bool Validate(WorldTile tile, Vector2Int position)
     {
         if (tile.Type == TileType.Door)
         {
             // Must be walls above and below or side to side, but no more than that
-            WorldTile wallAbove = world.GetWorldTile(position + Vector2Int.up, WorldLayer.Structure);
-            WorldTile wallBelow = world.GetWorldTile(position + Vector2Int.down, WorldLayer.Structure);
-            WorldTile wallLeft = world.GetWorldTile(position + Vector2Int.left, WorldLayer.Structure);
-            WorldTile wallRight = world.GetWorldTile(position + Vector2Int.right, WorldLayer.Structure);
+            WorldTile wallAbove = tile.World.GetWorldTile(position + Vector2Int.up, WorldLayer.Structure);
+            WorldTile wallBelow = tile.World.GetWorldTile(position + Vector2Int.down, WorldLayer.Structure);
+            WorldTile wallLeft = tile.World.GetWorldTile(position + Vector2Int.left, WorldLayer.Structure);
+            WorldTile wallRight = tile.World.GetWorldTile(position + Vector2Int.right, WorldLayer.Structure);
             // Determine whether there is a wall above, below, left and right
             bool isWallAbove = wallAbove != null && wallAbove.Type == TileType.Wall;
             bool isWallBelow = wallBelow != null && wallBelow.Type == TileType.Wall;

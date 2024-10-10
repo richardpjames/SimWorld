@@ -4,8 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class HUD : MonoBehaviour
 {
-    [SerializeField] private World _world;
-
+    private World _world;
     [SerializeField] private TileInformation _tileInformationPrefab;
     [SerializeField] private CraftMenu _craftingMenuPrefab;
     private CraftMenu _craftMenu;
@@ -14,6 +13,7 @@ public class HUD : MonoBehaviour
 
     private void Start()
     {
+        _world = GameObject.FindAnyObjectByType<World>();
         // Determine whether tile updates affect the HUD
         _world.OnTileUpdated += CheckTileUpdated;
     }
