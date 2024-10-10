@@ -23,7 +23,7 @@ public static class CraftingUpdater
                 }
                 else if (tile.Type == TileType.CraftersTable)
                 {
-                    tile.CurrentJob = CraftJobFactory.Create(tile.BasePosition, tile);
+                    tile.CurrentJob = CraftJobFactory.Create(tile.WorkPosition, tile);
                 }
                 // If we have been able to create a new job
                 if (tile.CurrentJob != null)

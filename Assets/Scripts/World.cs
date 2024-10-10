@@ -22,6 +22,7 @@ public class World : MonoBehaviour
     public List<WorldTile> Beds;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
+    public NavigationGraph NavigationGraph { get; private set; }
     // Lets others know that a tile at the specified position is updated
     public Action<Vector2Int> OnTileUpdated;
 
@@ -66,11 +67,15 @@ public class World : MonoBehaviour
         Vector2Int startingStructurePosition = FindClearArea(startingSturctureWidth + 2, startingSturctureHeight + 2);
         // Add one to the starting position in order to center in the wider check area
         BuildStartingStructure(new Vector2Int(startingStructurePosition.x + 1, startingStructurePosition.y + 1), startingSturctureWidth, startingSturctureHeight);
+        // Generate the navigation graph
+        NavigationGraph = new NavigationGraph();
+        NavigationGraph.Calculate(this);
         // Set the camera to the center of the world
         Camera.main.transform.position = new Vector3(startingStructurePosition.x, startingStructurePosition.y, Camera.main.transform.position.z);
     }
     private void Update()
     {
+        NavigationGraph.Calculate(this);
         // Loop through all of the items which require update
         for (int i = 0; i < _needsUpdate.Count; i++)
         {
@@ -390,14 +395,14 @@ public class World : MonoBehaviour
         Queue<Vector2Int> nodes = new Queue<Vector2Int>();
         nodes.Enqueue(position);
         // Keep a list of nodes which have been checked to avoid duplication
-        Dictionary<Vector2Int, bool> checkedNodes = new Dictionary<Vector2Int, bool>();
+        HashSet<Vector2Int> checkedNodes = new HashSet<Vector2Int>();
         // Keep looping while we have nodes to check
         while (nodes.Count > 0)
         {
             Vector2Int currentNode = nodes.Dequeue();
             // Don't continue if we have already checked this node
-            if (checkedNodes.ContainsKey(currentNode)) continue;
-            checkedNodes.Add(currentNode, true);
+            if (checkedNodes.Contains(currentNode)) continue;
+            checkedNodes.Add(currentNode);
             // Check conditions for if this node is inside
             bool inBounds = CheckBounds(currentNode);
             WorldTile floor = GetWorldTile(currentNode, WorldLayer.Floor);
@@ -410,10 +415,10 @@ public class World : MonoBehaviour
             // If there is no floor then we are outside so return false
             if (floor == null || floor.Type == TileType.Reserved) return false;
             // Otherwise we are inside and must check the neighbours
-            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
-            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
-            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
-            if (!checkedNodes.ContainsKey(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.up)) nodes.Enqueue(currentNode + Vector2Int.up);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.right)) nodes.Enqueue(currentNode + Vector2Int.right);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.down)) nodes.Enqueue(currentNode + Vector2Int.down);
+            if (!checkedNodes.Contains(currentNode + Vector2Int.left)) nodes.Enqueue(currentNode + Vector2Int.left);
         }
 
         return true;
