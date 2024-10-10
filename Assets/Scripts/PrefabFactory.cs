@@ -70,14 +70,14 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 3, name: "Woodcutters Table", movementCost: 0, tile: _woodcuttersTile,
             cost: woodcuttersTableCost, yield: woodcuttersTableCost, canRotate: true, requiresUpdate: true,
-            harvestType: TileType.Tree);
+            harvestType: TileType.Tree, workOffset: new Vector2Int(1,-1));
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> stonecuttersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 10 } };
         tile = new WorldTile(type: TileType.HarvestersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 3, name: "Stonecutters Table", movementCost: 0, tile: _stonecuttersTile,
             cost: stonecuttersTableCost, yield: stonecuttersTableCost, canRotate: true, requiresUpdate: true,
-            harvestType: TileType.Rock);
+            harvestType: TileType.Rock, workOffset: new Vector2Int(1, -1));
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> stonemasonsTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 50 }, { InventoryItem.Stone, 50 } };
@@ -86,7 +86,7 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.CraftersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 5, name: "Stonemasons Table", movementCost: 0, tile: _stonemasonsTile,
             cost: stonemasonsTableCost, yield: stonemasonsTableCost, canRotate: true, requiresUpdate: true,
-            craftCost: stonemasonsCraftCost, craftYield: stonemasonsCraftYield, craftTime: 5);
+            craftCost: stonemasonsCraftCost, craftYield: stonemasonsCraftYield, craftTime: 5, workOffset: new Vector2Int(1, -1));
         _prefabs.Add(tile.Name, tile);
 
         Dictionary<InventoryItem, int> carpentersTableCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Wood, 50 }, { InventoryItem.Stone, 50 } };
@@ -95,7 +95,7 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.CraftersTable, buildMode: BuildMode.Single, layer: WorldLayer.Structure,
             width: 3, height: -2, buildTime: 5, name: "Carpenters Table", movementCost: 0, tile: _carpentersTile,
             cost: carpentersTableCost, yield: carpentersTableCost, canRotate: true, requiresUpdate: true,
-            craftCost: carpentersCraftCost, craftYield: carpentersCraftYield, craftTime: 5);
+            craftCost: carpentersCraftCost, craftYield: carpentersCraftYield, craftTime: 5, workOffset: new Vector2Int(1, -1));
         _prefabs.Add(tile.Name, tile);
 
 

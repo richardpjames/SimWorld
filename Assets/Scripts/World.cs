@@ -19,6 +19,7 @@ public class World : MonoBehaviour
     private Dictionary<Vector3Int, WorldTile> _worldTiles;
     private Dictionary<WorldLayer, Tilemap> _tilemaps;
     private List<WorldTile> _needsUpdate;
+    public List<WorldTile> Beds;
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
     // Lets others know that a tile at the specified position is updated
@@ -38,6 +39,8 @@ public class World : MonoBehaviour
         _tilemaps = new Dictionary<WorldLayer, Tilemap>();
         // Initialise the updates list
         _needsUpdate = new List<WorldTile>();
+        // Initialise the beds list
+        Beds = new List<WorldTile>();
         // Generate all required tilemaps
         foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
         {
@@ -56,8 +59,15 @@ public class World : MonoBehaviour
         }
         // Generate random biomes
         GenerateBiomes(_waves, _scale);
+        // Build the starting structure
+        int startingSturctureWidth = 6;
+        int startingSturctureHeight = 6;
+        // Add two to the area checked to make sure villagers can walk around the structure
+        Vector2Int startingStructurePosition = FindClearArea(startingSturctureWidth + 2, startingSturctureHeight + 2);
+        // Add one to the starting position in order to center in the wider check area
+        BuildStartingStructure(new Vector2Int(startingStructurePosition.x + 1, startingStructurePosition.y + 1), startingSturctureWidth, startingSturctureHeight);
         // Set the camera to the center of the world
-        Camera.main.transform.position = new Vector3(Size.x / 2, Size.y / 2, Camera.main.transform.position.z);
+        Camera.main.transform.position = new Vector3(startingStructurePosition.x, startingStructurePosition.y, Camera.main.transform.position.z);
     }
     private void Update()
     {
@@ -139,6 +149,58 @@ public class World : MonoBehaviour
         }
     }
 
+    private Vector2Int FindClearArea(int width, int height)
+    {
+        bool found = false;
+        Vector2Int position = Vector2Int.zero;
+        while (found == false)
+        {
+            // Pick a random position
+            position.x = Random.Range(0, Size.x);
+            position.y = Random.Range(0, Size.y);
+            // Initialise that we have found a spot
+            found = true;
+            // Check whether it can be built on based on width and height
+            for (int x = position.x; x < position.x + width; x++)
+            {
+                for (int y = position.y; y < position.y + height; y++)
+                {
+                    if (!IsBuildable(new Vector2Int(x, y)) || !CheckBounds(new Vector2Int(x, y)))
+                    {
+                        found = false;
+                    }
+                }
+            }
+        }
+        return position;
+    }
+
+    private void BuildStartingStructure(Vector2Int position, int width, int height)
+    {
+        // Place floors and walls in a loop
+        for (int x = position.x; x < position.x + width; x++)
+        {
+            for (int y = position.y; y < position.y + height; y++)
+            {
+                // For all tiles we want to create the floor
+                UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Wooden Floor"));
+                // Around the edges we create a wall
+                if (x == position.x || y == position.y || x == position.x + width - 1 || y == position.y + height - 1)
+                {
+                    // Leave a gap for the door
+                    if (x == (int)(position.x + (width / 2)) && y == (int)position.y) continue;
+                    // Otherwise place a wall
+                    UpdateWorldTile(new Vector2Int(x, y), _prefab.Create("Wooden Wall"));
+                }
+            }
+        }
+        // Add the door
+        UpdateWorldTile(new Vector2Int((int)position.x + (width / 2), position.y), _prefab.Create("Wooden Door"));
+        // Create two beds in the corner
+        UpdateWorldTile(new Vector2Int(position.x + 1, position.y + height - 2), _prefab.Create("Wooden Bed"));
+        UpdateWorldTile(new Vector2Int(position.x + width - 2, position.y + height - 2), _prefab.Create("Wooden Bed"));
+
+    }
     public WorldTile GetWorldTile(Vector2Int position, WorldLayer layer)
     {
         // Get the lookup by casting the layer as the z position
@@ -195,6 +257,11 @@ public class World : MonoBehaviour
                         {
                             _needsUpdate.Remove(_worldTiles[lookup]);
                         }
+                        // Remove from our list of beds if needed
+                        if (_worldTiles[lookup].Type == TileType.Bed)
+                        {
+                            Beds.Remove(_worldTiles[lookup]);
+                        }
                         // Set the new tile
                         _worldTiles[lookup] = newInstance;
                     }
@@ -211,6 +278,11 @@ public class World : MonoBehaviour
             if (newInstance.RequiresUpdate)
             {
                 _needsUpdate.Add(newInstance);
+            }
+            // If this is a bed then add it to our list
+            if (newInstance.Type == TileType.Bed)
+            {
+                Beds.Add(newInstance);
             }
             OnTileUpdated?.Invoke(position);
             // Update the correct tilemap
@@ -249,6 +321,11 @@ public class World : MonoBehaviour
                             if (_worldTiles[lookup].RequiresUpdate)
                             {
                                 _needsUpdate.Remove(_worldTiles[lookup]);
+                            }
+                            // Remove from our list of beds if needed
+                            if (_worldTiles[lookup].Type == TileType.Bed)
+                            {
+                                Beds.Remove(_worldTiles[lookup]);
                             }
                         }
                         _worldTiles.Remove(lookup);

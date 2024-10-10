@@ -227,8 +227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdaf6cfdb38e7e44b9ccc82450de5b3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _world: {fileID: 344687586}
-  _inventory: {fileID: 1349283576}
   _grid: {fileID: 749416476}
   _demolitionTile: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
   _baseColour: {r: 1, g: 1, b: 1, a: 0.5019608}
@@ -268,8 +266,6 @@ MonoBehaviour:
   _scale: 0.00075
   _offset: {x: 0, y: 0}
   _grid: {fileID: 749416476}
-  _prefab: {fileID: 1080139163}
-  _inventory: {fileID: 1349283576}
 --- !u!4 &344687587
 Transform:
   m_ObjectHideFlags: 0
@@ -486,7 +482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _agentPrefab: {fileID: 4870337195678135434, guid: e359cbd9e479f79449c218a46f0292d4, type: 3}
-  _world: {fileID: 344687586}
+  _timer: 60
 --- !u!4 &468064700
 Transform:
   m_ObjectHideFlags: 0
@@ -1095,13 +1091,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03455168a7bc8b4297ba09d6b7d86f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _world: {fileID: 344687586}
   scrollSpeed: 6000
   zoomSpeed: 2
   maxZoom: 2
   minZoom: 32
-  _hud: {fileID: 2078921256}
-  _builder: {fileID: 1999264466}
 --- !u!4 &1033385924
 Transform:
   m_ObjectHideFlags: 0
@@ -1161,9 +1154,6 @@ MonoBehaviour:
   _stonemasonsTile: {fileID: 11400000, guid: 182f2cbce6994fe4dbfbfeb5174fc4c0, type: 2}
   _woodenFloorTile: {fileID: 11400000, guid: e9f12fc69e893bd4aa58f62c3f9aa5ea, type: 2}
   _stoneFloorTile: {fileID: 11400000, guid: 5d2cf06dcb0c78d429a7403a27f70132, type: 2}
-  _queue: {fileID: 125663961}
-  _world: {fileID: 344687586}
-  _inventory: {fileID: 1349283576}
 --- !u!4 &1080139164
 Transform:
   m_ObjectHideFlags: 0
@@ -1804,9 +1794,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _indicatorTile: {fileID: 11400000, guid: 85df3e111b323c7469c70a1b94f1cc8b, type: 2}
-  _world: {fileID: 344687586}
-  _jobQueue: {fileID: 125663961}
-  _prefabFactory: {fileID: 1080139163}
   _grid: {fileID: 749416476}
   _baseColour: {r: 1, g: 1, b: 1, a: 1}
   _successColour: {r: 1, g: 1, b: 1, a: 0.9490196}
@@ -1840,7 +1827,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ab23f257246e3479f3e70b97e33f78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _world: {fileID: 344687586}
   _tileInformationPrefab: {fileID: 3618506480453389596, guid: 6d881ac76f6988248a11a42f69b587e8, type: 3}
   _craftingMenuPrefab: {fileID: 8657300247337389248, guid: 50fb4a2221afeb84cacf0cf0a3621c5f, type: 3}
 --- !u!4 &2078921257
@@ -1979,7 +1965,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 774f919ab9a8f774895602aab9fa1b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory: {fileID: 1349283576}
   _seedsText: {fileID: 1280807783}
   _woodText: {fileID: 707642172}
   _stoneText: {fileID: 727572987}

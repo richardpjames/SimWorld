@@ -24,6 +24,7 @@ public class WorldTile
     public bool Walkable { get => MovementCost != 0; }
     public bool Reserved { get; internal set; } = false;
     public Vector2Int BasePosition { get; internal set; }
+    public Vector2Int WorkOffset { get; internal set; } = Vector2Int.zero;
     public bool CanRotate { get; internal set; }
     public bool RequiresUpdate { get; internal set; }
     public TileType HarvestType { get; internal set; }
@@ -35,6 +36,18 @@ public class WorldTile
     public Inventory Inventory { get; internal set; }
     public float GrowthTime { get; internal set; }
     public WorldTile AdultTile { get; internal set; }
+    public Vector2Int WorkPosition
+    {
+        get
+        {
+            if (BasePosition == null) return Vector2Int.zero;
+            if (Rotations == 1) return BasePosition + new Vector2Int(-WorkOffset.x, WorkOffset.y);
+            if (Rotations == 2) return BasePosition + new Vector2Int(-WorkOffset.x, -WorkOffset.y);
+            if (Rotations == 3) return BasePosition + new Vector2Int(WorkOffset.x, -WorkOffset.y);
+            // If no rotations then simply return the standard offset
+            else return BasePosition + WorkOffset;
+        }
+    }
     public Quaternion Rotation
     {
         get
@@ -79,7 +92,8 @@ public class WorldTile
         bool requiresUpdate = false, TileType harvestType = TileType.Tree,
         Job currentJob = null, Dictionary<InventoryItem, int> craftCost = null,
         Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0,
-        int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null)
+        int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null,
+        Vector2Int workOffset = default)
     {
         //********************************************************************
         // Whenever adding a new field, be sure to update the NewInstance too!
@@ -113,6 +127,7 @@ public class WorldTile
         this.Continuous = continuous;
         this.GrowthTime = growthTime;
         this.AdultTile = adultTile;
+        this.WorkOffset = workOffset;
     }
 
     public WorldTile NewInstance()
@@ -121,7 +136,7 @@ public class WorldTile
             BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
             CurrentJob, CraftCost, CraftYield, CraftTime,
-            JobCount, Continuous, GrowthTime, AdultTile);
+            JobCount, Continuous, GrowthTime, AdultTile, WorkOffset);
     }
     public void Update(float delta)
     {
