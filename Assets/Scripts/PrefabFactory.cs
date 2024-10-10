@@ -19,6 +19,7 @@ public class PrefabFactory : MonoBehaviour
     [SerializeField] private TileBase _stonecuttersTile;
     [SerializeField] private TileBase _carpentersTile;
     [SerializeField] private TileBase _stonemasonsTile;
+    [SerializeField] private TileBase _goblinSpawnTile;
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     [SerializeField] private TileBase _stoneFloorTile;
@@ -124,6 +125,10 @@ public class PrefabFactory : MonoBehaviour
         Dictionary<InventoryItem, int> stoneFloorCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Stone, 2 } };
         tile = new WorldTile(type: TileType.Floor, buildMode: BuildMode.Drag, layer: WorldLayer.Floor,
             width: 1, height: 1, buildTime: 1, name: "Stone Floor", tile: _stoneFloorTile, cost: stoneFloorCost, yield: stoneFloorCost);
+        _prefabs.Add(tile.Name, tile);
+
+        tile = new WorldTile(type: TileType.Spawn, buildMode: BuildMode.Single, layer: WorldLayer.Structure, width: 2, height: -2, buildTime: 0,
+            name: "Goblin Spawn Point", tile: _goblinSpawnTile, movementCost: 5000000);
         _prefabs.Add(tile.Name, tile);
     }
 

@@ -67,6 +67,9 @@ public class World : MonoBehaviour
         Vector2Int startingStructurePosition = FindClearArea(startingSturctureWidth + 2, startingSturctureHeight + 2);
         // Add one to the starting position in order to center in the wider check area
         BuildStartingStructure(new Vector2Int(startingStructurePosition.x + 1, startingStructurePosition.y + 1), startingSturctureWidth, startingSturctureHeight);
+        // Add a goblin spawn point randomly
+        Vector2Int goblinSpawnPosition = FindClearArea(2, 2);
+        UpdateWorldTile(new Vector2Int(goblinSpawnPosition.x, goblinSpawnPosition.y + 1), _prefab.Create("Goblin Spawn Point"));
         // Generate the navigation graph
         NavigationGraph = new NavigationGraph();
         NavigationGraph.Calculate(this);

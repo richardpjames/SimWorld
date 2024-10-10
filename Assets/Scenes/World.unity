@@ -1152,6 +1152,7 @@ MonoBehaviour:
   _stonecuttersTile: {fileID: 11400000, guid: 307919039e833b04aab82dd22077898e, type: 2}
   _carpentersTile: {fileID: 11400000, guid: 5b55bc85d1370234e9bc0f560ce27bea, type: 2}
   _stonemasonsTile: {fileID: 11400000, guid: 182f2cbce6994fe4dbfbfeb5174fc4c0, type: 2}
+  _goblinSpawnTile: {fileID: 11400000, guid: 0f4a5e054c843a84fa9bc26a94fe70d6, type: 2}
   _woodenFloorTile: {fileID: 11400000, guid: e9f12fc69e893bd4aa58f62c3f9aa5ea, type: 2}
   _stoneFloorTile: {fileID: 11400000, guid: 5d2cf06dcb0c78d429a7403a27f70132, type: 2}
 --- !u!4 &1080139164
