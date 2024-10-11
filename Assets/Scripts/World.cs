@@ -23,6 +23,7 @@ public class World : MonoBehaviour
     public Vector2Int Size { get; private set; }
     public string Name { get; private set; }
     public NavigationGraph NavigationGraph { get; private set; }
+    private bool _nagivationGraphInvalid = false;
     // Lets others know that a tile at the specified position is updated
     public Action<Vector2Int> OnTileUpdated;
 
@@ -78,7 +79,10 @@ public class World : MonoBehaviour
     }
     private void Update()
     {
-        NavigationGraph.Calculate(this);
+        if (_nagivationGraphInvalid)
+        {
+            NavigationGraph.Calculate(this);
+        }
         // Loop through all of the items which require update
         for (int i = 0; i < _needsUpdate.Count; i++)
         {
@@ -297,6 +301,8 @@ public class World : MonoBehaviour
             Matrix4x4 matrix = Matrix4x4.Rotate(newInstance.Rotation);
             _tilemaps[newInstance.Layer].SetTile(new Vector3Int(position.x, position.y, 0), newInstance.Tile);
             _tilemaps[newInstance.Layer].SetTransformMatrix(new Vector3Int(position.x, position.y, 0), matrix);
+            // Force a recalculation of the navigation graph
+            _nagivationGraphInvalid = true;
         }
     }
 
@@ -341,7 +347,8 @@ public class World : MonoBehaviour
                         // Remove from the tilemap
                         _tilemaps[worldTile.Layer].SetTile(new Vector3Int(x, y, 0), null);
                         _tilemaps[WorldLayer.Demolition].SetTile(new Vector3Int(x, y, 0), null);
-
+                        // Force a recalculation of the navigation graph
+                        _nagivationGraphInvalid = true;
                     }
                 }
             }
