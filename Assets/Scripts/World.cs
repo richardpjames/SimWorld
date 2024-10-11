@@ -86,7 +86,7 @@ public class World : MonoBehaviour
         // Loop through all of the items which require update
         for (int i = 0; i < _needsUpdate.Count; i++)
         {
-            _needsUpdate[i].Update(Time.deltaTime);
+            _needsUpdate[i].Update(Time.deltaTime * GameManager.Instance.TimeMultiplier);
         }
     }
 

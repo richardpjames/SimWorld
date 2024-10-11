@@ -14,7 +14,7 @@ public class AgentPool : MonoBehaviour
     private void Update()
     {
         // Count down the timer
-        _currentTimer -= Time.deltaTime;
+        _currentTimer -= (Time.deltaTime * GameManager.Instance.TimeMultiplier);
         // If the timer has passed
         if (_currentTimer < 0)
         {

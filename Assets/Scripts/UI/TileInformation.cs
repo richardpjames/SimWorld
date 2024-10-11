@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class TileInformation : MonoBehaviour
 {
-    // The panel and button for tweening in and out
-    [SerializeField] private GameObject _panel;
-    [SerializeField] private GameObject _closeButton;
+
     // Each of the sections for display
     [SerializeField] private GameObject _terrainSection;
     [SerializeField] private GameObject _floorSection;
@@ -16,7 +14,6 @@ public class TileInformation : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _terrainText;
     [SerializeField] private TextMeshProUGUI _floorText;
     [SerializeField] private TextMeshProUGUI _structureText;
-    [SerializeField] private TextMeshProUGUI _debugText;
     // Each of the images for setting sprites
     [SerializeField] private Image _terrainImage;
     [SerializeField] private Image _floorImage;
@@ -40,17 +37,6 @@ public class TileInformation : MonoBehaviour
         _jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
         // Find a reference to the inventory
         _inventory = GameObject.FindAnyObjectByType<Inventory>();
-        // Hide the panel, then scale it in
-        _panel.transform.localScale = Vector3.zero;
-        _closeButton.SetActive(false);
-        _panel.transform.DOScale(1, 0.25f).OnComplete(() => { _closeButton.SetActive(true); });
-    }
-
-    public void Close()
-    {
-        // Scale out the panel and then destroy the dialog
-        _closeButton.SetActive(false);
-        _panel.transform.DOScale(0, 0.25f).OnComplete(() => { Destroy(gameObject); });
     }
 
     public void HideAll()
@@ -60,7 +46,6 @@ public class TileInformation : MonoBehaviour
         _floorSection.SetActive(false);
         _structureSection.SetActive(false);
     }
-
     public void DemolishFloor()
     {
         // Check that we have a position and that the floor is not already being demolished/used
@@ -84,7 +69,6 @@ public class TileInformation : MonoBehaviour
         // Check if the position is within bounds
         if (_world.CheckBounds(position) == false)
         {
-            Close();
             return;
         }
         // Set the tile and updates the UI
@@ -129,8 +113,6 @@ public class TileInformation : MonoBehaviour
             _structureText.text = $"{structure.Name}";
             _structureImage.sprite = _world.GetSprite(structure.BasePosition, structure.Layer);
         }
-        // Further debug information
-        _debugText.text = $"Buildable: {_world.IsBuildable(_position)}, Movement Cost: {_world.MovementCost(_position)}, Walkable: {_world.IsWalkable(_position)}, Inside: {_world.IsInside(_position)}";
     }
 
 }

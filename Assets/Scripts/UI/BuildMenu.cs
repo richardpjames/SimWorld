@@ -4,6 +4,7 @@ public class BuildMenu : MonoBehaviour
 {
     private Builder _builder;
     private PrefabFactory _prefab;
+    private HUD _hud;
     private GameManager _game { get => GameManager.Instance; }
 
     // Start is called before the first frame update
@@ -12,13 +13,14 @@ public class BuildMenu : MonoBehaviour
         // Find the prefab factory
         _prefab = GameObject.FindAnyObjectByType<PrefabFactory>();
         _builder = GameObject.FindAnyObjectByType<Builder>();
+        _hud = GameObject.FindAnyObjectByType<HUD>();
 
         // Get the root from the document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         // Get each of the buttons and set their actions - with the main menu first
         root.Q<Button>("walls-menu-button").clicked += () => { ShowMenu(root, "walls-menu"); };
         root.Q<Button>("floors-menu-button").clicked += () => { ShowMenu(root, "floors-menu"); };
-        root.Q<Button>("quit-button").clicked += () => { _game.MainMenu(); };
+        root.Q<Button>("inventory-button").clicked += () => { _hud.ShowInventory(); };
         // Then each of the construction buttons
         root.Q<Button>("wooden-walls-button").clicked += () => _builder.SetBuild("Wooden Wall");
         root.Q<Button>("woodcutters-button").clicked += () => _builder.SetBuild("Woodcutters Table");

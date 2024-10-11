@@ -16,6 +16,7 @@ public class MouseController : MonoBehaviour
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 _mousePosition = Vector3.zero;
     private Vector3 _lastMousePosition = Vector3.zero;
+    private bool _dragging = false;
     // Accessors for easier access to controllers etc.
 
     void Update()
@@ -27,7 +28,7 @@ public class MouseController : MonoBehaviour
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0;
         // Check for UI Interaction
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject() || _dragging)
         {
             // Handle mouse scrolling
             Scroll();
@@ -45,9 +46,13 @@ public class MouseController : MonoBehaviour
 
     private void Scroll()
     {
+        // Reset dragging
+        _dragging = false;
         // For panning on middle mouse button
         if (Input.GetMouseButton(2))
         {
+            // If the mouse button is down then we are dragging
+            _dragging = true;
             // Get the main camera
             Camera cam = Camera.main;
             // Move it towards the mouse position based on the speed and delta time

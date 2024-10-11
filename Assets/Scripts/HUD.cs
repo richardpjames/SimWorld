@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 public class HUD : MonoBehaviour
 {
     private World _world;
-    [SerializeField] private TileInformation _tileInformationPrefab;
     [SerializeField] private CraftMenu _craftingMenuPrefab;
+    [SerializeField] private GameObject _tileInformationWindow;
+    [SerializeField] private GameObject _inventoryWindow;
+    [SerializeField] private GameObject _pauseScreen;
     private CraftMenu _craftMenu;
-    private TileInformation _tileInformation;
     private Vector2Int _position;
 
     private void Start()
@@ -18,8 +19,26 @@ public class HUD : MonoBehaviour
         _world.OnTileUpdated += CheckTileUpdated;
     }
 
+    private void Update()
+    {
+        // On pressing the escape key, show the pause screen (which will handle pausing the game)
+        // or hide it again
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            _pauseScreen.SetActive(!_pauseScreen.activeSelf);
+        }
+    }
+
+    // Simply show the inventory window
+    public void ShowInventory()
+    {
+        _inventoryWindow.SetActive(true);
+    }
+
     public void HandleClick(Vector2Int position)
     {
+        // If we are on the pause screen, then simply exit
+        if (_pauseScreen.activeSelf) return;
         WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
         if (structure != null &&(structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
         {
@@ -31,24 +50,20 @@ public class HUD : MonoBehaviour
             // Refresh with the tile information
             _craftMenu.Initialize(structure);
         }
-        // If a dialog is already open then we just update, otherwise create a new one
-        if (_tileInformation == null)
-        {
-            _tileInformation = Instantiate(_tileInformationPrefab, transform.position, Quaternion.identity);
-        }
         // Set the position, which forces the dialog to show the tile information
         _position = position;
-        _tileInformation.SetPosition(position);
+        _tileInformationWindow.SetActive(true);
+        _tileInformationWindow.GetComponent<TileInformation>().SetPosition(position);
     }
 
     // Determine whether a change to a tile has any effect
     private void CheckTileUpdated(Vector2Int position)
     {
-        // If the tile information dialog is open and looking at the updated position
-        if (position == _position && _tileInformation != null)
+        // If the tile information dialog looking at the updated position
+        if (position == _position)
         {
             // Setting the position again will force a refresh
-            _tileInformation.SetPosition(position);
+            _tileInformationWindow.GetComponent<TileInformation>().SetPosition(position);
         }
     }
 }

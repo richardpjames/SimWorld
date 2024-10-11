@@ -66,7 +66,7 @@ public class Agent : MonoBehaviour
             // Progress the job if we have reached the location
             if (transform.position == _target && !_currentJob.Complete)
             {
-                _currentJob.Work(Time.deltaTime);
+                _currentJob.Work(Time.deltaTime * GameManager.Instance.TimeMultiplier);
                 return;
             }
             // Otherwise move towards the location
@@ -77,7 +77,7 @@ public class Agent : MonoBehaviour
                     _nextPosition = _astar.GetNextPosition();
                 }
                 Vector3 nextPosition3 = new Vector3(_nextPosition.x, _nextPosition.y, 0);
-                transform.position = Vector3.MoveTowards(transform.position, nextPosition3, Time.deltaTime * _speed);
+                transform.position = Vector3.MoveTowards(transform.position, nextPosition3, Time.deltaTime * _speed * GameManager.Instance.TimeMultiplier);
                 return;
             }
         }

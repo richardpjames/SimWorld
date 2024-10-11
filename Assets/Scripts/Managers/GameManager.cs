@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public string WorldName = "Default";
     public int WorldWidth = 50;
     public int WorldHeight = 50;
+    public int TimeMultiplier = 1;
     public Dictionary<InventoryItem, int> StartingResources;
 
     public int StartingAgents = 5;
@@ -43,6 +44,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        // Set the time scale to default
+        TimeMultiplier = 1;
         // Create a loading screen and don't destory on the reload of the scene
         GameObject loadingScreen = Instantiate(_loadingScreen, new Vector3(0f, 0f, 0f), Quaternion.identity);
         DontDestroyOnLoad(loadingScreen);
