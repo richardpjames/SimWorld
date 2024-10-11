@@ -18,6 +18,11 @@ public class HUD : MonoBehaviour
         _world = GameObject.FindAnyObjectByType<World>();
         // Determine whether tile updates affect the HUD
         _world.OnTileUpdated += CheckTileUpdated;
+        // Disable all UI windows by default
+        _inventoryWindow.SetActive(false);
+        _buildWindow.SetActive(false);
+        _pauseScreen.SetActive(false);
+        _tileInformationWindow.SetActive(false);
     }
 
     private void Update()
@@ -29,7 +34,6 @@ public class HUD : MonoBehaviour
             _pauseScreen.SetActive(!_pauseScreen.activeSelf);
         }
     }
-
     public void ShowPauseMenu()
     {
         _pauseScreen.SetActive(true);
@@ -46,20 +50,6 @@ public class HUD : MonoBehaviour
     }
     public void HandleClick(Vector2Int position)
     {
-        // If we are on the pause screen, then simply exit
-        if (_pauseScreen.activeSelf) return;
-        WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
-        if (structure != null && (structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
-        {
-            // If a dialog is already open then we just update, otherwise create a new one
-            if (_craftMenu == null)
-            {
-                _craftMenu = Instantiate(_craftingMenuPrefab, transform.position, Quaternion.identity);
-            }
-            // Refresh with the tile information
-            _craftMenu.Initialize(structure);
-        }
-        // Set the position, which forces the dialog to show the tile information
         _position = position;
         _tileInformationWindow.SetActive(true);
         _tileInformationWindow.GetComponent<TileInformation>().SetPosition(position);

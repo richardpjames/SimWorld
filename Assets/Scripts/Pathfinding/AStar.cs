@@ -56,6 +56,11 @@ public class AStar
                 // If that tentative g score is less than that for the neighbour
                 if (tentativeGScore < gScore[neighbour.Node])
                 {
+                    // If already exists then remove (will be re-added)
+                    if(cameFrom.ContainsKey(neighbour.Node))
+                    {
+                        cameFrom.Remove(neighbour.Node);
+                    }
                     cameFrom.Add(neighbour.Node, current);
                     gScore[neighbour.Node] = tentativeGScore;
                     // If the neighbour is already in the open set then remove

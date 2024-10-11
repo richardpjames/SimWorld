@@ -1,4 +1,3 @@
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,7 @@ public class TileInformation : MonoBehaviour
 {
 
     // Each of the sections for display
+    [SerializeField] private GameObject _craftingSection;
     [SerializeField] private GameObject _terrainSection;
     [SerializeField] private GameObject _floorSection;
     [SerializeField] private GameObject _structureSection;
@@ -18,6 +18,10 @@ public class TileInformation : MonoBehaviour
     [SerializeField] private Image _terrainImage;
     [SerializeField] private Image _floorImage;
     [SerializeField] private Image _structureImage;
+    // For the crafting part of the UI
+    [SerializeField] private TextMeshProUGUI _craftTableName;
+    [SerializeField] private TextMeshProUGUI _jobCountText;
+    [SerializeField] private Toggle _continuousToggle;
 
     // Hold the position
     private Vector2Int _position;
@@ -27,6 +31,8 @@ public class TileInformation : MonoBehaviour
     private JobQueue _jobQueue;
     // Get the inventory
     private Inventory _inventory;
+    // Hold a reference to the crafting tile 
+    private WorldTile _craftingTile;
 
     // Start is called before the first frame update
     void Awake()
@@ -42,6 +48,7 @@ public class TileInformation : MonoBehaviour
     public void HideAll()
     {
         // Hide all of the sections of the UI
+        _craftingSection.SetActive(false);
         _terrainSection.SetActive(false);
         _floorSection.SetActive(false);
         _structureSection.SetActive(false);
@@ -79,6 +86,25 @@ public class TileInformation : MonoBehaviour
         WorldTile structure = _world.GetWorldTile(_position, WorldLayer.Structure);
         // Initially set all sections to hide until we can decide what to show
         HideAll();
+        // Unsubscribe from the existing tile
+        if (_craftingTile != null)
+        {
+            _craftingTile.OnWorldTileUpdated -= RefreshCrafting;
+        }
+        // Decide whether to show the crafting menu
+        if (structure != null && (structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
+        {
+            _craftingTile = structure;
+            // Initialise the toggle and title
+            _continuousToggle.isOn = _craftingTile.Continuous;
+            _craftTableName.text = _craftingTile.Name;
+            // Print the number of current jobs
+            _jobCountText.text = $"Currently Queued Jobs: {_craftingTile.JobCount}";
+            // Set this area of the canvas active
+            _craftingSection.SetActive(true);
+            // Subscribe to new changes
+            _craftingTile.OnWorldTileUpdated += RefreshCrafting;
+        }
         // Run through the terrain layers to decide what to show
         if (water != null)
         {
@@ -113,6 +139,25 @@ public class TileInformation : MonoBehaviour
             _structureText.text = $"{structure.Name}";
             _structureImage.sprite = _world.GetSprite(structure.BasePosition, structure.Layer);
         }
+    }
+
+    public void RefreshCrafting(WorldTile tile)
+    {
+        _jobCountText.text = $"Currently Queued Jobs: {_craftingTile.JobCount}";
+    }
+    public void ClearQueue()
+    {
+        _craftingTile.SetJobCount(0);
+    }
+    // The number of jobs is set on the button being clicked
+    public void AddJobs(int jobs)
+    {
+        _craftingTile.SetJobCount(_craftingTile.JobCount + jobs);
+    }
+    // This updates the continuous nature based on the toggle
+    public void SetContinuous()
+    {
+        _craftingTile.SetContinuous(_continuousToggle.isOn);
     }
 
 }
