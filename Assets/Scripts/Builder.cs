@@ -67,12 +67,6 @@ public class Builder : MonoBehaviour
         // Check for UI Interaction
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            // Cheek for right mouse button
-            if (Input.GetMouseButtonDown(1))
-            {
-                // Indicate that we have deselected
-                ClearBuildMode();
-            }
             // Rotate if allowed
             if (Input.GetKeyUp(KeyCode.Tab) && _tile != null)
             {

@@ -8,6 +8,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private CraftMenu _craftingMenuPrefab;
     [SerializeField] private GameObject _tileInformationWindow;
     [SerializeField] private GameObject _inventoryWindow;
+    [SerializeField] private GameObject _buildWindow;
     [SerializeField] private GameObject _pauseScreen;
     private CraftMenu _craftMenu;
     private Vector2Int _position;
@@ -29,18 +30,26 @@ public class HUD : MonoBehaviour
         }
     }
 
+    public void ShowPauseMenu()
+    {
+        _pauseScreen.SetActive(true);
+    }
+
     // Simply show the inventory window
     public void ShowInventory()
     {
         _inventoryWindow.SetActive(true);
     }
-
+    public void ShowBuildWindow()
+    {
+        _buildWindow.SetActive(true);
+    }
     public void HandleClick(Vector2Int position)
     {
         // If we are on the pause screen, then simply exit
         if (_pauseScreen.activeSelf) return;
         WorldTile structure = _world.GetWorldTile(position, WorldLayer.Structure);
-        if (structure != null &&(structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
+        if (structure != null && (structure.Type == TileType.CraftersTable || structure.Type == TileType.HarvestersTable))
         {
             // If a dialog is already open then we just update, otherwise create a new one
             if (_craftMenu == null)
