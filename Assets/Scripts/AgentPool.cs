@@ -64,4 +64,39 @@ public class AgentPool : MonoBehaviour
         // Start the timer for evaluations
         _currentTimer = _timer;
     }
+
+    public AgentPoolSave Serialize()
+    {
+        // Create the save
+        AgentPoolSave save = new AgentPoolSave();
+        // Add each of the agents to a list
+        List<AgentSave> list = new List<AgentSave>();
+        foreach (GameObject agent in _agents)
+        {
+            list.Add(agent.GetComponent<Agent>().Serialize());
+        }
+        //
+        save.Agents = list.ToArray();
+        // Set the array
+        return save;
+    }
+
+    public void Deserialize(AgentPoolSave save)
+    {
+        // Destroy existing agents
+        foreach(GameObject agent in _agents)
+        {
+            Destroy(agent);
+        }
+        // Clear the list
+        _agents = new List<GameObject>();
+        // Create the loaded agents and deserialize them
+        foreach (AgentSave agentSave in save.Agents)
+        {
+            GameObject agent = Instantiate(_agentPrefab, Vector3.zero, Quaternion.identity);
+            agent.transform.SetParent(transform, true);
+            agent.GetComponent<Agent>().Deserialize(agentSave);
+            _agents.Add(agent);
+        }
+    }
 }

@@ -464,8 +464,8 @@ public class World : MonoBehaviour
         List<WorldTileSave> worldTileSaves = new List<WorldTileSave>();
         foreach (Vector3Int tilePosition in _worldTiles.Keys)
         {
-            // Only save each tile at its base position (don't save tiles multiple times)
-            if (new Vector2Int(tilePosition.x, tilePosition.y) == _worldTiles[tilePosition].BasePosition)
+            // Only save each tile at its base position (don't save tiles multiple times) and not reserved tiles
+            if (new Vector2Int(tilePosition.x, tilePosition.y) == _worldTiles[tilePosition].BasePosition && _worldTiles[tilePosition].Type != TileType.Reserved)
             {
                 // Add this to the list of world tiles
                 worldTileSaves.Add(_worldTiles[tilePosition].Serialize());

@@ -82,4 +82,19 @@ public class Agent : MonoBehaviour
             }
         }
     }
+
+    public AgentSave Serialize()
+    {
+        // Create a new save and store the location of the agents
+        AgentSave save = new AgentSave();
+        save.PositionY = transform.position.y;
+        save.PositionX = transform.position.x;
+        return save;
+    }
+
+    public void Deserialize(AgentSave save)
+    {
+        // Set the position of the agent as per the save
+        transform.position = new Vector3(save.PositionX, save.PositionY, transform.position.z);
+    }
 }

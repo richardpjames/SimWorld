@@ -56,4 +56,38 @@ public class Inventory : MonoBehaviour
         }
         OnInventoryUpdated?.Invoke();
     }
+
+    public InventorySave Serialize()
+    {
+        // Create a new save
+        InventorySave save = new InventorySave();
+        List<InventoryItemSave> saveItems = new List<InventoryItemSave>();
+        // Loop through each inventory item and add it
+        foreach(InventoryItem item in Items.Keys)
+        {
+            // Create an object for each type and populate it
+            InventoryItemSave itemSave = new InventoryItemSave();
+            // Store the item and amount
+            itemSave.Item = (int) item;
+            itemSave.Amount = Items[item];
+            // Add it to the temporary list
+            saveItems.Add(itemSave);
+        }
+        // Now convert to array for saving
+        save.Items = saveItems.ToArray();
+        return save;
+    }
+
+    public void Deserialize(InventorySave save)
+    {
+        // Clear the existing inventory
+        Items = new Dictionary<InventoryItem, int>();
+        // Load each of the saved elements
+        foreach(InventoryItemSave item in save.Items)
+        {
+            Items.Add((InventoryItem) item.Item, item.Amount);
+        }
+        // Let others know the inventory has changed
+        OnInventoryUpdated?.Invoke();
+    }
 }

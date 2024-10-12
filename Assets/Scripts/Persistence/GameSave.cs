@@ -4,9 +4,6 @@ using System;
 public class GameSave
 {
     public WorldSave WorldSave { get; set; }
-
-    public GameSave()
-    {
-
-    }
+    public AgentPoolSave AgentPoolSave { get; set; }
+    public InventorySave InventorySave { get; set; }
 }

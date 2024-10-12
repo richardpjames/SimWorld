@@ -7,10 +7,14 @@ public class SaveManager : MonoBehaviour
     {
         // Get reference to the world
         World world = GameObject.FindAnyObjectByType<World>();
+        AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
+        Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         string savePath = $"{Application.persistentDataPath}/{world.Name}.json";
         // Create a save and then populate it from the appropriate objects
         GameSave save = new GameSave();
+        save.AgentPoolSave = agentPool.Serialize();
         save.WorldSave = world.Serialize();
+        save.InventorySave = inventory.Serialize();
         // Finally convert to a save file
         string jsonSave = JsonConvert.SerializeObject(save);
         System.IO.File.WriteAllText(savePath, jsonSave);
@@ -20,6 +24,9 @@ public class SaveManager : MonoBehaviour
     {
         // Get reference to the world
         World world = GameObject.FindAnyObjectByType<World>();
+        AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
+        Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
+
         string loadPath = $"{Application.persistentDataPath}/{world.Name}.json";
         // Return if the file to load doesn't exist
         if (!System.IO.File.Exists(loadPath)) return;
@@ -29,5 +36,7 @@ public class SaveManager : MonoBehaviour
         GameSave save = JsonConvert.DeserializeObject<GameSave>(jsonData);
         // Then get the world to load the data
         world.Deserialize(save.WorldSave);
+        agentPool.Deserialize(save.AgentPoolSave);
+        inventory.Deserialize(save.InventorySave);
     }
 }
