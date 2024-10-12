@@ -191,6 +191,7 @@ public class WorldTile
         worldTileSave.BasePositionX = BasePosition.x;
         worldTileSave.BasePositionY = BasePosition.y;
         worldTileSave.Layer = (int) Layer;
+        worldTileSave.GrowthTime = GrowthTime;
         // Then return
         return worldTileSave;
     }

@@ -9,6 +9,7 @@ public class WorldTileSave
     public int Layer;
     public string Name;
     public int Rotations;
+    public float GrowthTime;
 
     public WorldTile Deserialize()
     {
@@ -17,6 +18,8 @@ public class WorldTileSave
         WorldTile tile = prefabFactory.Create(Name);
         // Set the number of rotations (everything else dealt with by the factory or the world)
         tile.Rotations = Rotations;
+        // Set the growth time for crops etc.
+        tile.GrowthTime = GrowthTime;
         // Return the tile
         return tile;
     }
