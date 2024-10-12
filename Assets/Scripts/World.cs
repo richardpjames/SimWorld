@@ -481,7 +481,12 @@ public class World : MonoBehaviour
     {
         // Store the name, width and height of the world
         Name = worldSave.Name;
+        // Also update the game manager
+        GameManager.Instance.WorldName = worldSave.Name;
         Size = new Vector2Int(worldSave.SizeX, worldSave.SizeY);
+        // Also update the game manager
+        GameManager.Instance.WorldHeight = worldSave.SizeY;
+        GameManager.Instance.WorldWidth = worldSave.SizeX;
         // Initialise the array of tiles
         _worldTiles = new Dictionary<Vector3Int, WorldTile>();
         // Initialise the list of tilemaps
