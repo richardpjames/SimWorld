@@ -14,13 +14,13 @@ public class JobQueue : MonoBehaviour
     private Dictionary<WorldLayer, Tilemap> _tilemaps;
 
     // The queue of jobs
-    private Queue<Job> _queue;
+    private Queue<Guid> _queue;
     private Dictionary<Guid, Job> _jobRegister;
 
     private void Awake()
     {
         // Initialise the general queue and the register
-        _queue = new Queue<Job>();
+        _queue = new Queue<Guid>();
         _jobRegister = new Dictionary<Guid, Job>();
     }
 
@@ -54,16 +54,15 @@ public class JobQueue : MonoBehaviour
     // Add a job to the queue
     public bool Add(Job job)
     {
-        // Register the job 
-        RegisterJob(job);
         // Check if any jobs of the same type already exist at this position -- FIXME: This doesn't work for multi step jobs
-        if (_queue.Any<Job>((queuedJob) => queuedJob.CurrentJobStep.Position == job.CurrentJobStep.Position &&
-        queuedJob.CurrentJobStep.WorldTile.Layer == job.CurrentJobStep.WorldTile.Layer))
+        if (_queue.Any<Guid>((queuedJobGuid) => GetJob(queuedJobGuid).CurrentJobStep.Position == job.CurrentJobStep.Position &&
+        GetJob(queuedJobGuid).CurrentJobStep.WorldTile.Layer == job.CurrentJobStep.WorldTile.Layer))
         {
             return false;
         }
-        // If not then add to the queue
-        _queue.Enqueue(job);
+        // Register the job 
+        RegisterJob(job);
+        _queue.Enqueue(job.Guid);
         // Hook up the actions
         job.OnJobStepComplete += OnJobStepComplete;
         job.OnNextJobStep += OnNextJobStep;
@@ -104,11 +103,13 @@ public class JobQueue : MonoBehaviour
         }
     }
 
-    public Job GetNext()
+    public Job GetNext(Agent agent)
     {
         if (_queue.Count > 0)
         {
-            Job selectedJob = _queue.Dequeue();
+            Job selectedJob = GetJob(_queue.Dequeue());
+            // Assign to the appropriate agent
+            selectedJob.AssignedAgent = agent.Guid;
             // If this is a building job, then ensure we can afford it
             if (selectedJob.Cost != null)
             {
@@ -121,7 +122,7 @@ public class JobQueue : MonoBehaviour
                 // Otherwise put back on the bottom of the queue and return null (agent to check again on next frame)
                 else
                 {
-                    _queue.Enqueue(selectedJob);
+                    _queue.Enqueue(selectedJob.Guid);
                     return null;
                 }
 
@@ -140,7 +141,7 @@ public class JobQueue : MonoBehaviour
             // Add the job to the register
             _jobRegister.Add(job.Guid, job);
             // Unregister the job once it is complete
-            job.OnJobComplete += (job) => UnregisterJob(job.Guid); 
+            job.OnJobComplete += (job) => UnregisterJob(job.Guid);
         }
     }
 
@@ -162,4 +163,42 @@ public class JobQueue : MonoBehaviour
         }
     }
 
+    public JobQueueSave Serialize()
+    {
+        JobQueueSave save = new JobQueueSave();
+        // Create a list for our job saves
+        List<JobSave> jobs = new List<JobSave>();
+        // Loop through the entire register and serialize
+        foreach (Job job in _jobRegister.Values)
+        {
+            jobs.Add(job.Serialize());
+        }
+        // Convert to the array
+        save.Register = jobs.ToArray();
+        // Convert the job queue to an array
+        save.JobQueue = _queue.ToArray();
+        // Return the save
+        return save;
+    }
+
+    public void Deserialize(JobQueueSave save)
+    {
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            _tilemaps[layer].ClearAllTiles();
+        }
+        // Reset the queue and register
+        _queue = new Queue<Guid>();
+        _jobRegister = new Dictionary<Guid, Job>();
+        // Load each of the jobs into the register
+        foreach (JobSave jobSave in save.Register)
+        {
+            RegisterJob(jobSave.Deserialize());
+        }
+        // Queue all of those in the list
+        foreach (Guid jobGuid in save.JobQueue)
+        {
+            Add(GetJob(jobGuid));
+        }
+    }
 }

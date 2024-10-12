@@ -61,7 +61,7 @@ public class Agent : MonoBehaviour
         if (currentJob == null || currentJob.Complete)
         {
             // Get the next job from the list
-            Job nextJob = _jobQueue.GetNext();
+            Job nextJob = _jobQueue.GetNext(this);
             if (nextJob != null)
             {
                 _currentJobGuid = nextJob.Guid;
@@ -110,11 +110,18 @@ public class Agent : MonoBehaviour
 
     public void Deserialize(AgentSave save)
     {
+        // Initialise the agent as this will be run after awake
+        Start();
         // Set the agents ID
         Guid = save.Guid;
         // Get the current job
         _currentJobGuid = save.CurrentJobGuid;
         // Set the position of the agent as per the save
         transform.position = new Vector3(save.PositionX, save.PositionY, transform.position.z);
+        Job currentJob = _jobQueue.GetJob(_currentJobGuid);
+        if(currentJob != null)
+        {
+            UpdateAstar(currentJob.CurrentJobStep);
+        }
     }
 }

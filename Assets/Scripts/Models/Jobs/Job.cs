@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Job
 {
     public Guid Guid { get; internal set; }
-    public Queue<JobStep> JobSteps { get; internal set; }
+    public Guid AssignedAgent { get; internal set; }
+    public LinkedList<JobStep> JobSteps { get; internal set; }
     public bool Complete { get; set; }
     public JobStep CurrentJobStep { get; internal set; }
     public Dictionary<InventoryItem, int> Cost { get; set; }
@@ -18,7 +20,7 @@ public class Job
         // Create a guid
         Guid = Guid.NewGuid();
         // Initialize the queue and variables
-        JobSteps = new Queue<JobStep>();
+        JobSteps = new LinkedList<JobStep>();
         Complete = false;
         CurrentJobStep = null;
     }
@@ -29,11 +31,7 @@ public class Job
         {
             CurrentJobStep = step;
         }
-        // Otherwise add it to the queue to be picked up in order
-        else
-        {
-            JobSteps.Enqueue(step);
-        }
+        JobSteps.AddFirst(step);
     }
     // When job steps are complete we need to let others know, this provides the plumbing to do that
     public void TriggerOnJobStepComplete(JobStep jobStep)
@@ -49,7 +47,7 @@ public class Job
         if (CurrentJobStep == null || CurrentJobStep.Complete)
         {
             // Mark the job as complete if there are no steps remaining
-            if (JobSteps.Count == 0)
+            if (JobSteps.Count((step) => step.Complete == false) == 0)
             {
                 Complete = true;
                 OnJobComplete?.Invoke(this);
@@ -58,11 +56,45 @@ public class Job
             // Otherwise pick up the next job step and invoke the action to let others know
             else
             {
-                CurrentJobStep = JobSteps.Dequeue();
+                // Get the first item in the list which is not complete
+                CurrentJobStep = JobSteps.FirstOrDefault<JobStep>((step) => step.Complete == false);
                 OnNextJobStep?.Invoke(CurrentJobStep);
             }
         }
         // Finally, we apply work to any action we are currently performing 
         CurrentJobStep.Work(points);
+    }
+
+    public JobSave Serialize()
+    {
+        JobSave save = new JobSave();
+        // Set basic data
+        save.Guid = Guid;
+        save.Complete = Complete;
+        save.AssignedAgent = AssignedAgent;
+        // Gather all of the job steps
+        List<JobStepSave> jobStepSaves = new List<JobStepSave>();
+        foreach (JobStep step in JobSteps)
+        {
+            jobStepSaves.Add(step.Serialize());
+        }
+        save.JobSteps = jobStepSaves.ToArray();
+        // Loop through each cost item and add it
+        List<InventoryItemSave> saveItems = new List<InventoryItemSave>();
+        if (Cost != null)
+        {
+            foreach (InventoryItem item in Cost.Keys)
+            {
+                // Create an object for each type and populate it
+                InventoryItemSave itemSave = new InventoryItemSave();
+                // Store the item and amount
+                itemSave.Item = (int)item;
+                itemSave.Amount = Cost[item];
+                // Add it to the temporary list
+                saveItems.Add(itemSave);
+            }
+        }
+        save.Cost = saveItems.ToArray();
+        return save;
     }
 }

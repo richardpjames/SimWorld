@@ -9,9 +9,11 @@ public class SaveManager : MonoBehaviour
         World world = GameObject.FindAnyObjectByType<World>();
         AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
+        JobQueue jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
         string savePath = $"{Application.persistentDataPath}/{world.Name}.json";
         // Create a save and then populate it from the appropriate objects
         GameSave save = new GameSave();
+        save.JobQueueSave = jobQueue.Serialize();
         save.AgentPoolSave = agentPool.Serialize();
         save.WorldSave = world.Serialize();
         save.InventorySave = inventory.Serialize();
@@ -26,6 +28,7 @@ public class SaveManager : MonoBehaviour
         World world = GameObject.FindAnyObjectByType<World>();
         AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
+        JobQueue jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
 
         string loadPath = $"{Application.persistentDataPath}/{world.Name}.json";
         // Return if the file to load doesn't exist
@@ -35,8 +38,9 @@ public class SaveManager : MonoBehaviour
         // Convert back into a game save
         GameSave save = JsonConvert.DeserializeObject<GameSave>(jsonData);
         // Then get the world to load the data
+        jobQueue.Deserialize(save.JobQueueSave);
         world.Deserialize(save.WorldSave);
-        agentPool.Deserialize(save.AgentPoolSave);
         inventory.Deserialize(save.InventorySave);
+        agentPool.Deserialize(save.AgentPoolSave);
     }
 }

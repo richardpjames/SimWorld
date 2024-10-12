@@ -194,6 +194,7 @@ public class WorldTile
         worldTileSave.GrowthTime = GrowthTime;
         worldTileSave.JobCount = JobCount;
         worldTileSave.Continuous = Continuous;
+        worldTileSave.Type = (int)Type;
         // Then return
         return worldTileSave;
     }

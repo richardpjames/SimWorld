@@ -357,6 +357,8 @@ public class World : MonoBehaviour
     public float MovementCost(Vector2Int position)
     {
         float cost = 1f;
+        // If the world is not yet initialised then return the cost as is
+        if (_worldTiles == null) return cost;
         // Check all layers for tiles
         foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
         {
@@ -465,7 +467,7 @@ public class World : MonoBehaviour
         foreach (Vector3Int tilePosition in _worldTiles.Keys)
         {
             // Only save each tile at its base position (don't save tiles multiple times) and not reserved tiles
-            if (new Vector2Int(tilePosition.x, tilePosition.y) == _worldTiles[tilePosition].BasePosition && _worldTiles[tilePosition].Type != TileType.Reserved)
+            if (new Vector2Int(tilePosition.x, tilePosition.y) == _worldTiles[tilePosition].BasePosition)
             {
                 // Add this to the list of world tiles
                 worldTileSaves.Add(_worldTiles[tilePosition].Serialize());
