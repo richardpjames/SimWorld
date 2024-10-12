@@ -12,7 +12,7 @@ public static class DemolitionJobFactory
         Job job = new Job();
         job.Cost = null;
         // Create a new job step
-        JobStep step = new JobStep(JobType.Demolish, world, tile, inventory, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
+        JobStep step = new JobStep(JobType.Demolish, tile, position, tile.BuildTime, false, tile.Rotation);
         // When complete, this is the work to be done
         step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Reserve tiles for the job

@@ -11,30 +11,28 @@ public class JobStep
     public Vector2Int Position { get; protected set; }
     public float Cost { get; protected set; }
     public bool Complete { get; protected set; }
-    public TileBase Indicator { get; protected set; }
+    public TileBase Indicator { get => WorldTile.Tile; }
     public Quaternion Rotation { get; protected set; }
     public Inventory Inventory { get; protected set; }
 
     public Action<JobStep> OnJobStepComplete;
 
     // FIXME: Doesn't always need the inventory, so add a check and remove unneeded references
-    public JobStep(JobType type, World world, WorldTile worldTile, Inventory inventory, Vector2Int position, float cost, bool complete, TileBase indicator, Quaternion rotation)
+    public JobStep(JobType type, WorldTile worldTile, Vector2Int position, float cost, bool complete, Quaternion rotation)
     {
         // Create a guid
         Guid = Guid.NewGuid();
-
-        World = world;
+        World = GameObject.FindAnyObjectByType<World>();
         Type = type;
         WorldTile = worldTile;
         Position = position;
         Cost = cost;
         Complete = complete;
-        Indicator = indicator;
         Rotation = rotation;
-        Inventory = inventory;
+        Inventory = GameObject.FindAnyObjectByType<Inventory>();
 
-        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { world.UpdateWorldTile(Position, WorldTile); };
-        if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { world.RemoveWorldTile(Position, WorldTile.Layer); };
+        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { World.UpdateWorldTile(Position, WorldTile); };
+        if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { World.RemoveWorldTile(Position, WorldTile.Layer); };
         if (Type == JobType.Craft) OnJobStepComplete += (JobStep) => { Inventory.Add(WorldTile.CraftYield); };
 
     }
@@ -54,4 +52,21 @@ public class JobStep
             }
         }
     }
+
+    public JobStepSave Serialize()
+    {
+        JobStepSave save = new JobStepSave();
+        // Save the required data
+        save.Guid = Guid;
+        save.Type = (int)Type;
+        save.TileName = WorldTile.Name;
+        save.PositionX = Position.x;
+        save.PositionY = Position.y;
+        save.Cost = Cost;
+        save.Complete = Complete;
+        save.RotationZ = Rotation.eulerAngles.z;
+        // Now return the saved job step
+        return save;
+    }
+
 }

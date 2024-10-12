@@ -13,7 +13,7 @@ public static class BuildJobFactory
         Job job = new Job();
         job.Cost = tile.Cost;
         // Create a new job step
-        JobStep step = new JobStep(JobType.Build, world, tile, inventory, position, tile.BuildTime, false, tile.Tile, tile.Rotation);
+        JobStep step = new JobStep(JobType.Build, tile, position, tile.BuildTime, false, tile.Rotation);
         step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // If this isn't valid, then immediately complete the job and exit
         if (tile.CheckValidity(world, position) == false)
