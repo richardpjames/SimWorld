@@ -453,4 +453,51 @@ public class World : MonoBehaviour
         return new Vector2Int((int)position.x, (int)position.y);
     }
 
+    public WorldSave Serialize()
+    {
+        WorldSave worldSave = new WorldSave();
+        // Store the basics about the world
+        worldSave.Name = Name;
+        worldSave.SizeX = Size.x;
+        worldSave.SizeY = Size.y;
+        // Get a list of all world tiles and create their saves
+        List<WorldTileSave> worldTileSaves = new List<WorldTileSave>();
+        foreach (Vector3Int tilePosition in _worldTiles.Keys)
+        {
+            // Only save each tile at its base position (don't save tiles multiple times)
+            if (new Vector2Int(tilePosition.x, tilePosition.y) == _worldTiles[tilePosition].BasePosition)
+            {
+                // Add this to the list of world tiles
+                worldTileSaves.Add(_worldTiles[tilePosition].Serialize());
+            }
+        }
+        // Save the list on the object as an array
+        worldSave.WorldTiles = worldTileSaves.ToArray();
+        // return the save object
+        return worldSave;
+    }
+
+    public void Deserialize(WorldSave worldSave)
+    {
+        // Store the name, width and height of the world
+        Name = worldSave.Name;
+        Size = new Vector2Int(worldSave.SizeX, worldSave.SizeY);
+        // Initialise the array of tiles
+        _worldTiles = new Dictionary<Vector3Int, WorldTile>();
+        // Initialise the list of tilemaps
+        foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
+        {
+            _tilemaps[layer].ClearAllTiles();
+        }
+        // Initialise the updates list
+        _needsUpdate = new List<WorldTile>();
+        // Initialise the beds list
+        Beds = new List<WorldTile>();
+        // Loop through all World tiles and add them back
+        foreach(WorldTileSave save in worldSave.WorldTiles)
+        {
+            UpdateWorldTile(new Vector2Int(save.BasePositionX, save.BasePositionY), save.Deserialize());
+        }
+    }
+
 }

@@ -181,4 +181,17 @@ public class WorldTile
         Continuous = value;
         OnWorldTileUpdated?.Invoke(this);
     }
+
+    public WorldTileSave Serialize()
+    {
+        // Create a save object and populate
+        WorldTileSave worldTileSave = new WorldTileSave();
+        worldTileSave.Name = Name;
+        worldTileSave.Rotations = Rotations;
+        worldTileSave.BasePositionX = BasePosition.x;
+        worldTileSave.BasePositionY = BasePosition.y;
+        worldTileSave.Layer = (int) Layer;
+        // Then return
+        return worldTileSave;
+    }
 }
