@@ -10,6 +10,8 @@ public class WorldTileSave
     public string Name;
     public int Rotations;
     public float GrowthTime;
+    public bool Continuous;
+    public int JobCount;
 
     public WorldTile Deserialize()
     {
@@ -20,6 +22,9 @@ public class WorldTileSave
         tile.Rotations = Rotations;
         // Set the growth time for crops etc.
         tile.GrowthTime = GrowthTime;
+        // Details for generating jobs
+        tile.Continuous = Continuous;
+        tile.JobCount = JobCount;
         // Return the tile
         return tile;
     }

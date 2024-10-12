@@ -192,6 +192,8 @@ public class WorldTile
         worldTileSave.BasePositionY = BasePosition.y;
         worldTileSave.Layer = (int) Layer;
         worldTileSave.GrowthTime = GrowthTime;
+        worldTileSave.JobCount = JobCount;
+        worldTileSave.Continuous = Continuous;
         // Then return
         return worldTileSave;
     }

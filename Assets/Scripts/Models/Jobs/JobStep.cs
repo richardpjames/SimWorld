@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class JobStep
 {
+    public Guid Guid { get; internal set; }
     public JobType Type { get; protected set; }
     public World World { get; protected set; }
     public WorldTile WorldTile { get; protected set; }
@@ -19,6 +20,9 @@ public class JobStep
     // FIXME: Doesn't always need the inventory, so add a check and remove unneeded references
     public JobStep(JobType type, World world, WorldTile worldTile, Inventory inventory, Vector2Int position, float cost, bool complete, TileBase indicator, Quaternion rotation)
     {
+        // Create a guid
+        Guid = Guid.NewGuid();
+
         World = world;
         Type = type;
         WorldTile = worldTile;
@@ -29,7 +33,7 @@ public class JobStep
         Rotation = rotation;
         Inventory = inventory;
 
-        if(Type == JobType.Build) OnJobStepComplete += (JobStep) => { world.UpdateWorldTile(Position, WorldTile); };
+        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { world.UpdateWorldTile(Position, WorldTile); };
         if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { world.RemoveWorldTile(Position, WorldTile.Layer); };
         if (Type == JobType.Craft) OnJobStepComplete += (JobStep) => { Inventory.Add(WorldTile.CraftYield); };
 

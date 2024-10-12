@@ -10,7 +10,7 @@ public static class BuildJobFactory
         PrefabFactory prefab = GameObject.FindAnyObjectByType<PrefabFactory>();
         // Check we have everything we need
         if (world == null || position == null || tile == null || prefab == null) return null;
-        Job job = new Job(position, JobType.Build);
+        Job job = new Job();
         job.Cost = tile.Cost;
         // Create a new job step
         JobStep step = new JobStep(JobType.Build, world, tile, inventory, position, tile.BuildTime, false, tile.Tile, tile.Rotation);

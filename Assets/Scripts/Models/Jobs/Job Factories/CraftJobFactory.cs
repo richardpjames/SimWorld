@@ -9,7 +9,7 @@ public static class CraftJobFactory
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         if (world == null || position == null || tile == null || inventory == null) return null;
         // Create the job and set the cost to the craft cost
-        Job job = new Job(position, JobType.Craft);
+        Job job = new Job();
         job.Cost = tile.CraftCost;
         // Create the actual step to craft the item and hook up the triggers
         JobStep step = new JobStep(JobType.Craft, world, tile, inventory, position, tile.CraftTime, false, null, Quaternion.identity);

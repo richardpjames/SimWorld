@@ -9,7 +9,7 @@ public class AgentPool : MonoBehaviour
     [SerializeField] private float _timer;
     private float _currentTimer;
     private World _world;
-    private List<GameObject> _agents;
+    private Dictionary<Guid, GameObject> _agents;
 
     private void Update()
     {
@@ -28,20 +28,30 @@ public class AgentPool : MonoBehaviour
                 {
                     GameObject agent = Instantiate(_agentPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                     agent.transform.SetParent(transform, true);
-                    _agents.Add(agent);
+                    _agents.Add(agent.GetComponent<Agent>().Guid, agent);
                 }
             }
             // If we have more villagers than beds
             if (_agents.Count > _world.Beds.Count)
             {
-                // Determine how many agents we need to remove
-                int numberToRemove = _agents.Count - _world.Beds.Count;
-                // Ensure that we will always have at least one agent left
-                numberToRemove = Mathf.Min(numberToRemove, _agents.Count - 1);
-                for (int x = 0; x < numberToRemove; x++)
+                // Keep a list of Guids to remove
+                List<Guid> guidList = new List<Guid>();
+                // Build a list of agents to remove
+                int i = 0;
+                foreach (Guid agentGuid in _agents.Keys)
                 {
-                    Destroy(_agents[0]);
-                    _agents.RemoveAt(0);
+                    // If we have looped through more than we require (but always ensure 1 agent)
+                    if(i >= _world.Beds.Count && i > 0)
+                    {
+                        guidList.Add(agentGuid);
+                    }
+                    i++;
+                }
+                // Now remove any not needed
+                foreach (Guid agentGuid in guidList)
+                {
+                    Destroy(_agents[agentGuid]);
+                    _agents.Remove(agentGuid);
                 }
             }
         }
@@ -51,7 +61,7 @@ public class AgentPool : MonoBehaviour
     {
         _world = GameObject.FindAnyObjectByType<World>();
         // Keep a list of all agents
-        _agents = new List<GameObject>();
+        _agents = new Dictionary<Guid, GameObject>();
         // Set transform to the center of the world to generate agents
         transform.position = new Vector3(_world.Size.x / 2, _world.Size.y / 2, 0);
         // Generate a number of starting for each bed in the world and keep a list
@@ -59,7 +69,7 @@ public class AgentPool : MonoBehaviour
         {
             GameObject agent = Instantiate(_agentPrefab, new Vector3(_world.Beds[i].BasePosition.x, _world.Beds[i].BasePosition.y, 0), Quaternion.identity);
             agent.transform.SetParent(transform, true);
-            _agents.Add(agent);
+            _agents.Add(agent.GetComponent<Agent>().Guid, agent);
         }
         // Start the timer for evaluations
         _currentTimer = _timer;
@@ -71,7 +81,7 @@ public class AgentPool : MonoBehaviour
         AgentPoolSave save = new AgentPoolSave();
         // Add each of the agents to a list
         List<AgentSave> list = new List<AgentSave>();
-        foreach (GameObject agent in _agents)
+        foreach (GameObject agent in _agents.Values)
         {
             list.Add(agent.GetComponent<Agent>().Serialize());
         }
@@ -84,19 +94,19 @@ public class AgentPool : MonoBehaviour
     public void Deserialize(AgentPoolSave save)
     {
         // Destroy existing agents
-        foreach(GameObject agent in _agents)
+        foreach(Guid agentGuid in _agents.Keys)
         {
-            Destroy(agent);
+            Destroy(_agents[agentGuid]);
         }
         // Clear the list
-        _agents = new List<GameObject>();
+        _agents = new Dictionary<Guid, GameObject>();
         // Create the loaded agents and deserialize them
         foreach (AgentSave agentSave in save.Agents)
         {
             GameObject agent = Instantiate(_agentPrefab, Vector3.zero, Quaternion.identity);
             agent.transform.SetParent(transform, true);
             agent.GetComponent<Agent>().Deserialize(agentSave);
-            _agents.Add(agent);
+            _agents.Add(agent.GetComponent<Agent>().Guid, agent);
         }
     }
 }

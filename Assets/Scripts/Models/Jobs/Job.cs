@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class Job
 {
-    public Queue<JobStep> JobSteps { get; protected set; }
+    public Guid Guid { get; internal set; }
+    public Queue<JobStep> JobSteps { get; internal set; }
     public bool Complete { get; set; }
-    public JobStep CurrentJobStep { get; protected set; }
+    public JobStep CurrentJobStep { get; internal set; }
     public Dictionary<InventoryItem, int> Cost { get; set; }
     public Action<JobStep> OnJobStepComplete;
     public Action<JobStep> OnNextJobStep;
+    public Action<Job> OnJobComplete;
 
-    public Job(Vector2Int position, JobType type, bool complete = false)
+    public Job()
     {
+        // Create a guid
+        Guid = Guid.NewGuid();
         // Initialize the queue and variables
         JobSteps = new Queue<JobStep>();
-        Complete = complete;
+        Complete = false;
         CurrentJobStep = null;
     }
     public void AddStep(JobStep step)
@@ -48,6 +52,7 @@ public class Job
             if (JobSteps.Count == 0)
             {
                 Complete = true;
+                OnJobComplete?.Invoke(this);
                 return;
             }
             // Otherwise pick up the next job step and invoke the action to let others know

@@ -8,7 +8,7 @@ public static class HarvestJobFactory
         World world = GameObject.FindAnyObjectByType<World>();
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         if (world == null || startPosition == null || startTile == null || endPosition == null || harvestTile == null) return null;
-        Job job = new Job(endPosition, JobType.Demolish);
+        Job job = new Job();
         job.Cost = null;
         // First we visit the table
         JobStep visitTable = new JobStep(JobType.Harvest, world, startTile, inventory, startPosition, 2, false, null, Quaternion.identity);

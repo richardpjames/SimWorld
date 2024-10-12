@@ -9,7 +9,7 @@ public static class DemolitionJobFactory
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         WorldTile tile = world.GetWorldTile(position, layer);
         if (tile == null) return null;
-        Job job = new Job(position, JobType.Demolish);
+        Job job = new Job();
         job.Cost = null;
         // Create a new job step
         JobStep step = new JobStep(JobType.Demolish, world, tile, inventory, position, tile.BuildTime, false, tile.Tile, tile.Rotation);

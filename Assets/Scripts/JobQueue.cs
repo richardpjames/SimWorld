@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Jobs;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -17,12 +15,19 @@ public class JobQueue : MonoBehaviour
 
     // The queue of jobs
     private Queue<Job> _queue;
+    private Dictionary<Guid, Job> _jobRegister;
+
+    private void Awake()
+    {
+        // Initialise the general queue and the register
+        _queue = new Queue<Job>();
+        _jobRegister = new Dictionary<Guid, Job>();
+    }
 
     private void Start()
     {
         _inventory = GameObject.FindAnyObjectByType<Inventory>();
         _world = GameObject.FindAnyObjectByType<World>();
-        _queue = new Queue<Job>();
         // Initialise the list of tilemaps
         _tilemaps = new Dictionary<WorldLayer, Tilemap>();
         // Generate all required tilemaps
@@ -49,6 +54,8 @@ public class JobQueue : MonoBehaviour
     // Add a job to the queue
     public bool Add(Job job)
     {
+        // Register the job 
+        RegisterJob(job);
         // Check if any jobs of the same type already exist at this position -- FIXME: This doesn't work for multi step jobs
         if (_queue.Any<Job>((queuedJob) => queuedJob.CurrentJobStep.Position == job.CurrentJobStep.Position &&
         queuedJob.CurrentJobStep.WorldTile.Layer == job.CurrentJobStep.WorldTile.Layer))
@@ -122,6 +129,37 @@ public class JobQueue : MonoBehaviour
             return selectedJob;
         }
         return null;
+    }
+
+    // Adds a job to the central register
+    public void RegisterJob(Job job)
+    {
+        // Avoid duplicates by checking the key
+        if (!_jobRegister.ContainsKey(job.Guid))
+        {
+            // Add the job to the register
+            _jobRegister.Add(job.Guid, job);
+            // Unregister the job once it is complete
+            job.OnJobComplete += (job) => UnregisterJob(job.Guid); 
+        }
+    }
+
+    // Gets a job from the central register
+    public Job GetJob(Guid jobGuid)
+    {
+        // May return null if this does not exist
+        if (!_jobRegister.ContainsKey(jobGuid)) return null;
+        return _jobRegister[jobGuid];
+    }
+
+    // Removes a job from the central register
+    public void UnregisterJob(Guid jobGuid)
+    {
+        // Check that the key exists and then remove
+        if (_jobRegister.ContainsKey(jobGuid))
+        {
+            _jobRegister.Remove(jobGuid);
+        }
     }
 
 }
