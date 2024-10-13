@@ -46,7 +46,8 @@ public class Agent : MonoBehaviour
             // Run the update of the a star algorithm in the background
             await Task.Run(() =>
             {
-                _astar = new AStar(start, end, _world);
+                AStar newAstar = new AStar(start, end, _world);
+                _astar = newAstar;
                 _processing = false;
             });
         }
@@ -105,6 +106,12 @@ public class Agent : MonoBehaviour
         save.PositionY = transform.position.y;
         save.PositionX = transform.position.x;
         save.CurrentJobGuid = _currentJobGuid;
+        save.TargetX = _target.x;
+        save.TargetY = _target.y;
+        save.TargetZ = _target.z;
+        save.NextPositionX = _nextPosition.x;
+        save.NextPositionY = _nextPosition.y;
+        save.AStar = _astar.Serialize();
         return save;
     }
 
@@ -118,11 +125,15 @@ public class Agent : MonoBehaviour
         _currentJobGuid = save.CurrentJobGuid;
         // Set the position of the agent as per the save
         transform.position = new Vector3(save.PositionX, save.PositionY, transform.position.z);
+        // Get target and next position
+        _target = new Vector3(save.TargetX, save.TargetY, save.TargetZ);
+        _nextPosition = new Vector2Int(save.NextPositionX, save.NextPositionY);
+        // Get the a star from the save
+        _astar = save.AStar.Deserialize();
         Job currentJob = _jobQueue.GetJob(_currentJobGuid);
         if(currentJob != null)
         {
-            // Update the A star and make sure that jobs are hooked up
-            UpdateAstar(currentJob.CurrentJobStep);
+            // Make sure that jobs are hooked up
             currentJob.OnNextJobStep += UpdateAstar;
         }
     }

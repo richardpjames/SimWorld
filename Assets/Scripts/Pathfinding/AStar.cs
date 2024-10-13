@@ -5,13 +5,20 @@ using Priority_Queue;
 
 public class AStar
 {
-    public Queue<Vector2Int> Path { get; private set; }
+    public Queue<Vector2Int> Path { get; internal set; }
+
+    // Allowed only for deserializing where path is then also set
+    public AStar()
+    {
+    }
     public AStar(Vector2Int startPosition, Vector2Int endPosition, World world)
     {
         // Initialise the path list
         Path = new Queue<Vector2Int>();
         // Get the navigation graph from the world
         NavigationGraph graph = world.NavigationGraph;
+        // If the graph is calculating then wait
+        while (graph.Nodes == null) { }
         // Check that we are on a start tile which is in the graph and asking for an end tile on the graph
         if (!graph.Nodes.ContainsKey(startPosition) || !graph.Nodes.ContainsKey(endPosition)) return;
         // Those nodes already evaluated
@@ -110,5 +117,20 @@ public class AStar
         {
             return Vector2Int.zero;
         }
+    }
+
+    public AStarSave Serialize()
+    {
+        AStarSave save = new AStarSave();
+        List<AStarPoint> pointList = new List<AStarPoint>();
+        foreach (Vector2Int pathPoints in Path)
+        {
+            AStarPoint point = new AStarPoint();
+            point.x = pathPoints.x;
+            point.y = pathPoints.y;
+            pointList.Add(point);
+        }
+        save.Points = pointList.ToArray();
+        return save;
     }
 }

@@ -359,6 +359,7 @@ public class World : MonoBehaviour
         float cost = 1f;
         // If the world is not yet initialised then return the cost as is
         if (_worldTiles == null) return cost;
+        if (!CheckBounds(position)) return cost;
         // Check all layers for tiles
         foreach (WorldLayer layer in Enum.GetValues(typeof(WorldLayer)))
         {
@@ -501,7 +502,7 @@ public class World : MonoBehaviour
         // Initialise the beds list
         Beds = new List<WorldTile>();
         // Loop through all World tiles and add them back
-        foreach(WorldTileSave save in worldSave.WorldTiles)
+        foreach (WorldTileSave save in worldSave.WorldTiles)
         {
             UpdateWorldTile(new Vector2Int(save.BasePositionX, save.BasePositionY), save.Deserialize());
         }
