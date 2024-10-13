@@ -227,7 +227,7 @@ public class World : MonoBehaviour
         return null;
     }
 
-    public void UpdateWorldTile(Vector2Int position, WorldTile worldTile)
+    public void UpdateWorldTile(Vector2Int position, WorldTile worldTile, bool skipValidity = false)
     {
         // Create a new instance of the provided tile so as not to link together
         WorldTile newInstance = worldTile.NewInstance();
@@ -251,7 +251,7 @@ public class World : MonoBehaviour
             }
         }
         // Now check validity and build if possible
-        if (newInstance.CheckValidity(this, position))
+        if (skipValidity || newInstance.CheckValidity(this, position))
         {
             // Loop through the width and height of the object from the start position
             // Remove any reserved tiles
@@ -504,7 +504,7 @@ public class World : MonoBehaviour
         // Loop through all World tiles and add them back
         foreach (WorldTileSave save in worldSave.WorldTiles)
         {
-            UpdateWorldTile(new Vector2Int(save.BasePositionX, save.BasePositionY), save.Deserialize());
+            UpdateWorldTile(new Vector2Int(save.BasePositionX, save.BasePositionY), save.Deserialize(), true);
         }
         // Recalculate the navigation graph
         NavigationGraph = new NavigationGraph();
