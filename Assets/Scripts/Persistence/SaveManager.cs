@@ -10,7 +10,9 @@ public class SaveManager : MonoBehaviour
         AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         JobQueue jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
-        string savePath = $"{Application.persistentDataPath}/{world.Name}.json";
+        string saveDirectory = $"{Application.persistentDataPath}/{world.Name}";
+        string saveFile = $"{saveDirectory}/save.json";
+
         // Create a save and then populate it from the appropriate objects
         GameSave save = new GameSave();
         save.JobQueueSave = jobQueue.Serialize();
@@ -19,7 +21,13 @@ public class SaveManager : MonoBehaviour
         save.InventorySave = inventory.Serialize();
         // Finally convert to a save file
         string jsonSave = JsonConvert.SerializeObject(save);
-        System.IO.File.WriteAllText(savePath, jsonSave);
+        // Check for the directory and create if it doesn't exist
+        if(!System.IO.Directory.Exists(saveDirectory))
+        {
+            System.IO.Directory.CreateDirectory(saveDirectory);
+        }
+        // Save the file
+        System.IO.File.WriteAllText(saveFile, jsonSave);
     }
 
     public void Load()
@@ -30,7 +38,7 @@ public class SaveManager : MonoBehaviour
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         JobQueue jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
 
-        string loadPath = $"{Application.persistentDataPath}/{world.Name}.json";
+        string loadPath = $"{Application.persistentDataPath}/{world.Name}/save.json";
         // Return if the file to load doesn't exist
         if (!System.IO.File.Exists(loadPath)) return;
         // Read the data from the file

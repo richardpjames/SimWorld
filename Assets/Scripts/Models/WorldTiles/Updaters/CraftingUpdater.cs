@@ -7,8 +7,12 @@ public static class CraftingUpdater
         // For harvesters like the woodcutters table
         if (tile.Type == TileType.HarvestersTable || tile.Type == TileType.CraftersTable)
         {
+            // Get the current job from the job register
+            Job job = tile.JobQueue.GetJob(tile.CurrentJob);
+            // For holding the next job if it is created
+            Job nextJob = null;
             // If no jobs have been created, or the current job is complete
-            if ((tile.CurrentJob == null || tile.CurrentJob.Complete) && (tile.JobCount > 0 || tile.Continuous))
+            if ((job == null || job.Complete) && (tile.JobCount > 0 || tile.Continuous))
             {
                 // Create a new job to harvest the resource
                 if (tile.Type == TileType.HarvestersTable)
@@ -19,17 +23,18 @@ public static class CraftingUpdater
                     // Otherwise get the tile
                     WorldTile resourceTile = tile.World.GetWorldTile(resourcePosition, WorldLayer.Structure);
                     if (resourceTile == null) return;
-                    tile.CurrentJob = HarvestJobFactory.Create(tile.WorkPosition, tile, resourcePosition, resourceTile);
+                    nextJob = HarvestJobFactory.Create(tile.WorkPosition, tile, resourcePosition, resourceTile);
                 }
                 else if (tile.Type == TileType.CraftersTable)
                 {
-                    tile.CurrentJob = CraftJobFactory.Create(tile.WorkPosition, tile);
+                    nextJob = CraftJobFactory.Create(tile.WorkPosition, tile);
                 }
                 // If we have been able to create a new job
-                if (tile.CurrentJob != null)
+                if (nextJob != null)
                 {
                     if (!tile.Continuous) tile.JobCount--;
-                    tile.JobQueue.Add(tile.CurrentJob);
+                    tile.CurrentJob = nextJob.Guid;
+                    tile.JobQueue.Add(nextJob);
                     tile.OnWorldTileUpdated?.Invoke(tile);
                 }
             }

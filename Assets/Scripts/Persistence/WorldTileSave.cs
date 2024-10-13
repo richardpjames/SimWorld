@@ -13,6 +13,7 @@ public class WorldTileSave
     public float GrowthTime;
     public bool Continuous;
     public int JobCount;
+    public Guid CurrentJob;
 
     public WorldTile Deserialize()
     {
@@ -34,6 +35,7 @@ public class WorldTileSave
         // Details for generating jobs
         tile.Continuous = Continuous;
         tile.JobCount = JobCount;
+        tile.CurrentJob = CurrentJob;
         // Return the tile
         return tile;
     }

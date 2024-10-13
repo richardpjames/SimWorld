@@ -29,7 +29,7 @@ public class WorldTile
     public bool RequiresUpdate { get; internal set; }
     public TileType HarvestType { get; internal set; }
     public JobQueue JobQueue { get; internal set; }
-    public Job CurrentJob { get; internal set; }
+    public Guid CurrentJob { get; internal set; }
     public int JobCount { get; internal set; }
     public bool Continuous { get; internal set; }
     public World World { get; internal set; }
@@ -90,7 +90,7 @@ public class WorldTile
         bool buildingAllowed = true, int rotations = 0, Dictionary<InventoryItem, int> cost = null,
         Dictionary<InventoryItem, int> yield = null, bool reserved = false, bool canRotate = false,
         bool requiresUpdate = false, TileType harvestType = TileType.Tree,
-        Job currentJob = null, Dictionary<InventoryItem, int> craftCost = null,
+        string currentJob = "00000000-0000-0000-0000-000000000000", Dictionary<InventoryItem, int> craftCost = null,
         Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0,
         int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null,
         Vector2Int workOffset = default)
@@ -119,7 +119,7 @@ public class WorldTile
         this.CanRotate = canRotate;
         this.RequiresUpdate = requiresUpdate;
         this.HarvestType = harvestType;
-        this.CurrentJob = currentJob;
+        this.CurrentJob = Guid.Parse(currentJob);
         this.CraftCost = craftCost;
         this.CraftYield = craftYield;
         this.CraftTime = craftTime;
@@ -135,7 +135,7 @@ public class WorldTile
         return new WorldTile(Type, BuildMode, Layer, Tile, Width, Height,
             BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
-            CurrentJob, CraftCost, CraftYield, CraftTime,
+            CurrentJob.ToString(), CraftCost, CraftYield, CraftTime,
             JobCount, Continuous, GrowthTime, AdultTile, WorkOffset);
     }
     public void Update(float delta)
@@ -195,6 +195,7 @@ public class WorldTile
         worldTileSave.JobCount = JobCount;
         worldTileSave.Continuous = Continuous;
         worldTileSave.Type = (int)Type;
+        worldTileSave.CurrentJob = CurrentJob;
         // Then return
         return worldTileSave;
     }
