@@ -10,7 +10,7 @@ public class SaveManager : MonoBehaviour
         AgentPool agentPool = GameObject.FindAnyObjectByType<AgentPool>();
         Inventory inventory = GameObject.FindAnyObjectByType<Inventory>();
         JobQueue jobQueue = GameObject.FindAnyObjectByType<JobQueue>();
-        string saveDirectory = $"{Application.persistentDataPath}/{world.Name}";
+        string saveDirectory = $"{Application.persistentDataPath}/Worlds/{world.Name}";
         string saveFile = $"{saveDirectory}/save.json";
 
         // Create a save and then populate it from the appropriate objects
