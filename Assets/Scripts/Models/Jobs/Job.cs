@@ -10,6 +10,7 @@ public class Job
     public LinkedList<JobStep> JobSteps { get; internal set; }
     public bool Complete { get; set; }
     public JobStep CurrentJobStep { get; internal set; }
+    public float TimeQueued { get; internal set; }
     public Dictionary<InventoryItem, int> Cost { get; set; }
     public Action<JobStep> OnJobStepComplete;
     public Action<JobStep> OnNextJobStep;
@@ -72,6 +73,7 @@ public class Job
         save.Guid = Guid;
         save.Complete = Complete;
         save.AssignedAgent = AssignedAgent;
+        save.TimeQueued = TimeQueued;
         // Gather all of the job steps
         List<JobStepSave> jobStepSaves = new List<JobStepSave>();
         foreach (JobStep step in JobSteps)

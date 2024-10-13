@@ -23,6 +23,8 @@ public class PauseMenu : MonoBehaviour
     // For the quit button we simply call the game manager to go to the main menu
     public void Quit()
     {
+        SaveManager saveManager = FindAnyObjectByType<SaveManager>();
+        saveManager.Save();
         GameManager.Instance.MainMenu();
     }
 

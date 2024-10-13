@@ -121,7 +121,9 @@ public class Agent : MonoBehaviour
         Job currentJob = _jobQueue.GetJob(_currentJobGuid);
         if(currentJob != null)
         {
+            // Update the A star and make sure that jobs are hooked up
             UpdateAstar(currentJob.CurrentJobStep);
+            currentJob.OnNextJobStep += UpdateAstar;
         }
     }
 }

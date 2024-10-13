@@ -9,6 +9,7 @@ public class JobSave
     public JobStepSave[] JobSteps;
     public bool Complete;
     public InventoryItemSave[] Cost;
+    public float TimeQueued;
 
     public Job Deserialize()
     {
@@ -16,6 +17,7 @@ public class JobSave
         job.Guid = Guid;
         job.Complete = Complete;
         job.AssignedAgent = AssignedAgent;
+        job.TimeQueued = TimeQueued;
         // Clear the existing cost
         job.Cost = new Dictionary<InventoryItem, int>();
         // Create a linked list of the job steps

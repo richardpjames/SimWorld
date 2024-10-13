@@ -1,3 +1,4 @@
+using PlasticGui.WorkspaceWindow.Locks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,8 @@ public class JobQueue : MonoBehaviour
         {
             // Add the job to the register
             _jobRegister.Add(job.Guid, job);
+            // Record the time that the job was added to the queue
+            job.TimeQueued = Time.time;
             // Unregister the job once it is complete
             job.OnJobComplete += (job) => UnregisterJob(job.Guid);
         }
@@ -110,16 +113,29 @@ public class JobQueue : MonoBehaviour
     {
         if (_jobRegister.Count > 0)
         {
+            float minTime = float.MaxValue;
+            Job selectedJob = null;
             foreach (Job candidate in _jobRegister.Values)
             {
                 // We don't want any where the job is complete or assigned
                 if (candidate.Complete || candidate.AssignedAgent != Guid.Empty) continue;
                 // We don't want any where we cannot afford the cost
                 if (candidate.Cost != null && !_inventory.Check(candidate.Cost)) continue;
-                // Otherwise assign the agent and return
-                candidate.AssignedAgent = agent.Guid;
-                return candidate;
+                // Check the time it was added and select if lowest (this means we return the oldest suitable job)
+                if (candidate.TimeQueued < minTime)
+                {
+                    selectedJob = candidate;
+                    minTime = candidate.TimeQueued;
+                }
             }
+            // If that process has been able to select a job
+            if (selectedJob != null)
+            {
+                // Assign the selected job and return it
+                selectedJob.AssignedAgent = agent.Guid;
+                return selectedJob;
+            }
+
         }
         // If there are no jobs or we couldn't find a suitable one then return null
         return null;

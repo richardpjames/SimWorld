@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public int WorldHeight = 50;
     public int TimeMultiplier = 1;
     public Dictionary<InventoryItem, int> StartingResources;
+    private GameObject _loadingScreenInstance;
 
     public int StartingAgents = 5;
 
@@ -47,21 +48,15 @@ public class GameManager : MonoBehaviour
         // Set the time scale to default
         TimeMultiplier = 1;
         // Create a loading screen and don't destory on the reload of the scene
-        GameObject loadingScreen = Instantiate(_loadingScreen, new Vector3(0f, 0f, 0f), Quaternion.identity);
-        DontDestroyOnLoad(loadingScreen);
+        _loadingScreenInstance = Instantiate(_loadingScreen, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        DontDestroyOnLoad(_loadingScreenInstance);
         SceneManager.LoadScene("World");
-        // After the scene has loaded, destroy the loading screen
-        StartCoroutine(CheckStart(loadingScreen));
     }
 
-    private IEnumerator CheckStart(GameObject loadingScreen)
+    public void DestroyLoadingScreen()
     {
-        // Check for instances of the world manager being complete and then subscribe
-        while(GameObject.FindAnyObjectByType<World>() == null)
-        {
-            yield return null;
-        }
-        Destroy(loadingScreen);
+        Destroy(_loadingScreenInstance);
+
     }
 
     /// <summary>
