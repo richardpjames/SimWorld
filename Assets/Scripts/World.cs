@@ -505,6 +505,9 @@ public class World : MonoBehaviour
         {
             UpdateWorldTile(new Vector2Int(save.BasePositionX, save.BasePositionY), save.Deserialize());
         }
+        // Recalculate the navigation graph
+        NavigationGraph = new NavigationGraph();
+        NavigationGraph.Calculate(this);
     }
 
 }

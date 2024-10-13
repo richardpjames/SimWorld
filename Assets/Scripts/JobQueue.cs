@@ -131,6 +131,8 @@ public class JobQueue : MonoBehaviour
             // If that process has been able to select a job
             if (selectedJob != null)
             {
+                // Take the required resources
+                _inventory.Spend(selectedJob.Cost);
                 // Assign the selected job and return it
                 selectedJob.AssignedAgent = agent.Guid;
                 return selectedJob;
