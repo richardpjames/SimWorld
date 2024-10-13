@@ -12,13 +12,23 @@ public class JobStep
     public float Cost { get; protected set; }
     public bool Complete { get; protected set; }
     public TileBase Indicator { get => WorldTile.Tile; }
-    public Quaternion Rotation { get; protected set; }
+    public int Rotations { get; internal set; }
     public Inventory Inventory { get; protected set; }
+    public Quaternion Rotation
+    {
+        get
+        {
+            if (Rotations == 1) return Quaternion.Euler(0, 0, -90f);
+            else if (Rotations == 2) return Quaternion.Euler(0, 0, -180f);
+            else if (Rotations == 3) return Quaternion.Euler(0, 0, -270f);
+            else return Quaternion.identity;
+        }
+    }
 
     public Action<JobStep> OnJobStepComplete;
 
     // FIXME: Doesn't always need the inventory, so add a check and remove unneeded references
-    public JobStep(JobType type, WorldTile worldTile, Vector2Int position, float cost, bool complete, Quaternion rotation)
+    public JobStep(JobType type, WorldTile worldTile, Vector2Int position, float cost, bool complete, int rotations)
     {
         // Create a guid
         Guid = Guid.NewGuid();
@@ -28,10 +38,10 @@ public class JobStep
         Position = position;
         Cost = cost;
         Complete = complete;
-        Rotation = rotation;
+        Rotations = rotations;
         Inventory = GameObject.FindAnyObjectByType<Inventory>();
 
-        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { World.UpdateWorldTile(Position, WorldTile); };
+        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { WorldTile.Rotations = JobStep.Rotations;  World.UpdateWorldTile(Position, WorldTile); };
         if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { World.RemoveWorldTile(Position, WorldTile.Layer); };
         if (Type == JobType.Craft) OnJobStepComplete += (JobStep) => { Inventory.Add(WorldTile.CraftYield); };
 
@@ -64,7 +74,7 @@ public class JobStep
         save.PositionY = Position.y;
         save.Cost = Cost;
         save.Complete = Complete;
-        save.RotationZ = Rotation.eulerAngles.z;
+        save.Rotations = Rotations;
         // Now return the saved job step
         return save;
     }

@@ -1,4 +1,3 @@
-using PlasticGui.WorkspaceWindow.Locks;
 using System;
 using System.Collections.Generic;
 using System.Linq;

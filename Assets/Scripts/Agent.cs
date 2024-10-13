@@ -111,7 +111,10 @@ public class Agent : MonoBehaviour
         save.TargetZ = _target.z;
         save.NextPositionX = _nextPosition.x;
         save.NextPositionY = _nextPosition.y;
-        save.AStar = _astar.Serialize();
+        if (_astar != null)
+        {
+            save.AStar = _astar.Serialize();
+        }
         return save;
     }
 
@@ -129,9 +132,12 @@ public class Agent : MonoBehaviour
         _target = new Vector3(save.TargetX, save.TargetY, save.TargetZ);
         _nextPosition = new Vector2Int(save.NextPositionX, save.NextPositionY);
         // Get the a star from the save
-        _astar = save.AStar.Deserialize();
+        if (save.AStar != null)
+        {
+            _astar = save.AStar.Deserialize();
+        }
         Job currentJob = _jobQueue.GetJob(_currentJobGuid);
-        if(currentJob != null)
+        if (currentJob != null)
         {
             // Make sure that jobs are hooked up
             currentJob.OnNextJobStep += UpdateAstar;

@@ -11,13 +11,13 @@ public class JobStepSave
     public int PositionY;
     public float Cost;
     public bool Complete;
-    public float RotationZ;
+    public int Rotations;
 
     public JobStep Deserialize()
     {
         PrefabFactory prefabFactory = GameObject.FindAnyObjectByType<PrefabFactory>();
         // Create a new jobstep from the recorded information
-        JobStep jobStep = new JobStep((JobType)Type, prefabFactory.Create(TileName), new Vector2Int(PositionX, PositionY), Cost, Complete, Quaternion.Euler(0, 0, RotationZ));
+        JobStep jobStep = new JobStep((JobType)Type, prefabFactory.Create(TileName), new Vector2Int(PositionX, PositionY), Cost, Complete, Rotations);
         // Set the GUID
         jobStep.Guid = Guid;
         // Return the job step

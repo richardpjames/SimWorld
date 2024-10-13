@@ -12,7 +12,7 @@ public static class CraftJobFactory
         Job job = new Job();
         job.Cost = tile.CraftCost;
         // Create the actual step to craft the item and hook up the triggers
-        JobStep step = new JobStep(JobType.Craft, tile, position, tile.CraftTime, false, Quaternion.identity);
+        JobStep step = new JobStep(JobType.Craft, tile, position, tile.CraftTime, false, 0);
         step.OnJobStepComplete += (jobStep) => { inventory.Add(tile.CraftYield); };
         step.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Add the step to the job and return

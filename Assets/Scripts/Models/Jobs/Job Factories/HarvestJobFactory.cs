@@ -11,13 +11,13 @@ public static class HarvestJobFactory
         Job job = new Job();
         job.Cost = null;
         // First we visit the table
-        JobStep visitTable = new JobStep(JobType.Harvest, startTile, startPosition, 2, false, Quaternion.identity);
+        JobStep visitTable = new JobStep(JobType.Harvest, startTile, startPosition, 2, false, 0);
         visitTable.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Then find the item to be harvested
         WorldTile tile = world.GetWorldTile(endPosition, WorldLayer.Structure);
         if (tile == null) return null;
         // Create the job to harvest (demolish) the item
-        JobStep harvest = new JobStep(JobType.Demolish, tile, endPosition, tile.BuildTime, false, tile.Rotation);
+        JobStep harvest = new JobStep(JobType.Demolish, tile, endPosition, tile.BuildTime, false, tile.Rotations);
         // When complete, this is the work to be done
         harvest.OnJobStepComplete += job.TriggerOnJobStepComplete;
         // Reserve tiles for the job
