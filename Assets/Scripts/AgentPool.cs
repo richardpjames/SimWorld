@@ -41,7 +41,7 @@ public class AgentPool : MonoBehaviour
                 foreach (Guid agentGuid in _agents.Keys)
                 {
                     // If we have looped through more than we require (but always ensure 1 agent)
-                    if(i >= _world.Beds.Count && i > 0)
+                    if (i >= _world.Beds.Count && i > 0)
                     {
                         guidList.Add(agentGuid);
                     }
@@ -53,6 +53,13 @@ public class AgentPool : MonoBehaviour
                     Destroy(_agents[agentGuid]);
                     _agents.Remove(agentGuid);
                 }
+            }
+            // Allocate all of the beds to remaining agents
+            int j = 0;
+            foreach (GameObject agent in _agents.Values)
+            {
+                agent.GetComponent<Agent>().BedLocation = _world.Beds[j].BasePosition;
+                j++;
             }
         }
     }
@@ -94,7 +101,7 @@ public class AgentPool : MonoBehaviour
     public void Deserialize(AgentPoolSave save)
     {
         // Destroy existing agents
-        foreach(Guid agentGuid in _agents.Keys)
+        foreach (Guid agentGuid in _agents.Keys)
         {
             Destroy(_agents[agentGuid]);
         }

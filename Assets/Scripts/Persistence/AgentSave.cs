@@ -13,4 +13,8 @@ public class AgentSave
     public float TargetY;
     public float TargetZ;
     public AStarSave AStar;
+    public int BedLocationX;
+    public int BedLocationY;
+    public float Energy;
+    public bool NeedsSleep;
 }
