@@ -93,7 +93,7 @@ public class JobQueue : MonoBehaviour
         // Update the tilemaps
         Tilemap tilemap = null;
         // If there is a tilemap and tile then update 
-        if (jobStep.Type == JobType.Demolish || jobStep.Type == JobType.Harvest)
+        if (jobStep.Type == JobType.Demolish || jobStep.Type == JobType.Harvest || jobStep.Type == JobType.Craft)
         {
             tilemap = _tilemaps[WorldLayer.Demolition];
             tilemap.SetTile(new Vector3Int(jobStep.Position.x, jobStep.Position.y, 0), _demolitionTile);
