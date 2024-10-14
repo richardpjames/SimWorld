@@ -14,6 +14,10 @@ public class WorldTileSave
     public bool Continuous;
     public int JobCount;
     public Guid CurrentJob;
+    public bool CanHarvest;
+    public bool CanDemolish;
+    public int Yields;
+    public Guid Owner;
 
     public WorldTile Deserialize()
     {
@@ -36,6 +40,12 @@ public class WorldTileSave
         tile.Continuous = Continuous;
         tile.JobCount = JobCount;
         tile.CurrentJob = CurrentJob;
+        // Details for harvest and demolition
+        tile.CanDemolish = CanDemolish;
+        tile.CanHarvest = CanHarvest;
+        tile.Yields = Yields;
+        // Reset the owner
+        tile.Owner = Owner;
         // Return the tile
         return tile;
     }

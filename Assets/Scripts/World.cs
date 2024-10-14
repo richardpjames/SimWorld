@@ -306,6 +306,16 @@ public class World : MonoBehaviour
         }
     }
 
+    public void HarvestTile(Vector2Int position, WorldLayer layer)
+    {
+        // Get the lookup by casting the layer as the z position
+        WorldTile tile = GetWorldTile(position, layer);
+        if(tile == null) return;
+        tile.Harvest();
+        // Let others know that the tile is updated
+        OnTileUpdated?.Invoke(position);
+    }
+
     public void RemoveWorldTile(Vector2Int position, WorldLayer layer)
     {
         // Get the lookup by casting the layer as the z position

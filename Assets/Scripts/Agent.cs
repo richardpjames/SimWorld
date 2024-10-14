@@ -46,21 +46,29 @@ public class Agent : MonoBehaviour
     {
         if (!_processing)
         {
-            _processing = true;
-            // Set our target
-            _target = new Vector3(position.x, position.y, 0);
-            // Blank out a start until calculated
-            _astar = null;
-            // Inputs for a star
-            Vector2Int start = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-            Vector2Int end = new Vector2Int((int)_target.x, (int)_target.y);
-            // Run the update of the a star algorithm in the background
-            await Task.Run(() =>
+            try
             {
-                AStar newAstar = new AStar(start, end, _world);
-                _astar = newAstar;
-                _processing = false;
-            });
+                _processing = true;
+                // Set our target
+                _target = new Vector3(position.x, position.y, 0);
+                // Blank out a start until calculated
+                _astar = null;
+                // Inputs for a star
+                Vector2Int start = new Vector2Int((int)transform.position.x, (int)transform.position.y);
+                Vector2Int end = new Vector2Int((int)_target.x, (int)_target.y);
+                // Run the update of the a star algorithm in the background
+                await Task.Run(() =>
+                {
+                    AStar newAstar = new AStar(start, end, _world);
+                    _astar = newAstar;
+                    _processing = false;
+                });
+            }
+            // In the case of exception
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 

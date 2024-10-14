@@ -41,10 +41,10 @@ public class JobStep
         Rotations = rotations;
         Inventory = GameObject.FindAnyObjectByType<Inventory>();
 
-        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { WorldTile.Rotations = JobStep.Rotations;  World.UpdateWorldTile(Position, WorldTile); };
+        if (Type == JobType.Build) OnJobStepComplete += (JobStep) => { WorldTile.Rotations = JobStep.Rotations; World.UpdateWorldTile(Position, WorldTile); };
         if (Type == JobType.Demolish) OnJobStepComplete += (JobStep) => { World.RemoveWorldTile(Position, WorldTile.Layer); };
         if (Type == JobType.Craft) OnJobStepComplete += (JobStep) => { Inventory.Add(WorldTile.CraftYield); };
-
+        if (Type == JobType.Harvest) OnJobStepComplete += (JobStep) => { World.HarvestTile(Position, WorldTile.Layer); };
     }
 
     public virtual void Work(float points)

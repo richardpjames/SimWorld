@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -20,6 +21,31 @@ public class AgentPool : MonoBehaviour
         {
             // Reset the timer
             _currentTimer = _timer;
+            // Remove all agents who have lost their bed
+            HashSet<Guid> keys = new HashSet<Guid>();
+            foreach (GameObject agent in _agents.Values)
+            {
+                WorldTile bedTile = _world.GetWorldTile(agent.GetComponent<Agent>().BedLocation, WorldLayer.Structure);
+                if (bedTile == null || bedTile.Type != TileType.Bed)
+                {
+                    // Ensure we have at least one agent (even without a bed)
+                    if (_agents.Count > 1)
+                    {
+                        keys.Add(agent.GetComponent<Agent>().Guid);
+                        Destroy(agent);
+                    }
+                    // If this is our last agent and no bed - set vector 2 out of bunds
+                    if (_agents.Count == 1)
+                    {
+                        agent.GetComponent<Agent>().BedLocation = new Vector2Int(-1, -1);
+                    }
+                }
+            }
+            // Remove each of the items from the list
+            foreach (Guid agentGuid in keys)
+            {
+                _agents.Remove(agentGuid);
+            }
             // If we have more beds than villagers
             if (_agents.Count < _world.Beds.Count)
             {
@@ -31,35 +57,21 @@ public class AgentPool : MonoBehaviour
                     _agents.Add(agent.GetComponent<Agent>().Guid, agent);
                 }
             }
-            // If we have more villagers than beds
-            if (_agents.Count > _world.Beds.Count)
-            {
-                // Keep a list of Guids to remove
-                List<Guid> guidList = new List<Guid>();
-                // Build a list of agents to remove
-                int i = 0;
-                foreach (Guid agentGuid in _agents.Keys)
-                {
-                    // If we have looped through more than we require (but always ensure 1 agent)
-                    if (i >= _world.Beds.Count && i > 0)
-                    {
-                        guidList.Add(agentGuid);
-                    }
-                    i++;
-                }
-                // Now remove any not needed
-                foreach (Guid agentGuid in guidList)
-                {
-                    Destroy(_agents[agentGuid]);
-                    _agents.Remove(agentGuid);
-                }
-            }
             // Allocate all of the beds to remaining agents
-            int j = 0;
             foreach (GameObject agent in _agents.Values)
             {
-                agent.GetComponent<Agent>().BedLocation = _world.Beds[j].BasePosition;
-                j++;
+                // If the agent doesn't have a bed, then assign one and spawn there
+                if (agent.GetComponent<Agent>().BedLocation == Vector2.zero || agent.GetComponent<Agent>().BedLocation == new Vector2Int(-1, -1))
+                {
+                    // Find a bed and assign to the agent (there may not be one if this is the last agent and no beds)
+                    WorldTile tile = _world.Beds.FirstOrDefault<WorldTile>((tile) => tile.Owner == Guid.Empty);
+                    if (tile != null)
+                    {
+                        agent.GetComponent<Agent>().BedLocation = tile.BasePosition;
+                        tile.Owner = agent.GetComponent<Agent>().Guid;
+                        agent.transform.position = new Vector3(tile.BasePosition.x, tile.BasePosition.y, 0);
+                    }
+                }
             }
         }
     }
@@ -76,6 +88,8 @@ public class AgentPool : MonoBehaviour
         {
             GameObject agent = Instantiate(_agentPrefab, new Vector3(_world.Beds[i].BasePosition.x, _world.Beds[i].BasePosition.y, 0), Quaternion.identity);
             agent.transform.SetParent(transform, true);
+            agent.GetComponent<Agent>().BedLocation = _world.Beds[i].BasePosition;
+            _world.Beds[i].Owner = agent.GetComponent<Agent>().Guid;
             _agents.Add(agent.GetComponent<Agent>().Guid, agent);
         }
         // Start the timer for evaluations

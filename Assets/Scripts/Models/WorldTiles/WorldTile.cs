@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class WorldTile
 {
@@ -36,6 +37,10 @@ public class WorldTile
     public Inventory Inventory { get; internal set; }
     public float GrowthTime { get; internal set; }
     public WorldTile AdultTile { get; internal set; }
+    public bool CanDemolish { get; internal set; }
+    public bool CanHarvest { get; internal set; }
+    public int Yields { get; internal set; }
+    public Guid Owner { get; internal set; }
     public Vector2Int WorkPosition
     {
         get
@@ -93,7 +98,8 @@ public class WorldTile
         string currentJob = "00000000-0000-0000-0000-000000000000", Dictionary<InventoryItem, int> craftCost = null,
         Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0,
         int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null,
-        Vector2Int workOffset = default)
+        Vector2Int workOffset = default, bool canHarvest = false, bool canDemolish = false, int yields = 1,
+        string owner = "00000000-0000-0000-0000-000000000000")
     {
         //********************************************************************
         // Whenever adding a new field, be sure to update the NewInstance too!
@@ -101,7 +107,6 @@ public class WorldTile
         this.JobQueue = GameObject.FindAnyObjectByType<JobQueue>(); ;
         this.World = GameObject.FindAnyObjectByType<World>();
         this.Inventory = GameObject.FindAnyObjectByType<Inventory>();
-
         this.Type = type;
         this.BuildMode = buildMode;
         this.Layer = layer;
@@ -120,6 +125,7 @@ public class WorldTile
         this.RequiresUpdate = requiresUpdate;
         this.HarvestType = harvestType;
         this.CurrentJob = Guid.Parse(currentJob);
+        this.Owner = Guid.Parse(owner);
         this.CraftCost = craftCost;
         this.CraftYield = craftYield;
         this.CraftTime = craftTime;
@@ -128,6 +134,9 @@ public class WorldTile
         this.GrowthTime = growthTime;
         this.AdultTile = adultTile;
         this.WorkOffset = workOffset;
+        this.CanDemolish = canDemolish;
+        this.CanHarvest = canHarvest;
+        this.Yields = yields;
     }
 
     public WorldTile NewInstance()
@@ -136,7 +145,8 @@ public class WorldTile
             BuildTime, Name, MovementCost, BuildingAllowed, Rotations,
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
             CurrentJob.ToString(), CraftCost, CraftYield, CraftTime,
-            JobCount, Continuous, GrowthTime, AdultTile, WorkOffset);
+            JobCount, Continuous, GrowthTime, AdultTile, WorkOffset,
+            CanHarvest, CanDemolish, Yields, Owner.ToString());
     }
     public void Update(float delta)
     {
@@ -146,6 +156,25 @@ public class WorldTile
         CropUpdater.Update(this, delta);
         // Updates for any harvesting or crafting tables
         CraftingUpdater.Update(this, delta);
+    }
+
+    public void Harvest()
+    {
+        // Check that we are allowed to harvest the tile
+        if (!CanHarvest) return;
+        // To harvest we add to the inventory and then remove the tile
+        Inventory.Add(Yield);
+        Yields--;
+        // If the number of yields has reached zero then remove from the world
+        if (Yields <= 0)
+        {
+            World.RemoveWorldTile(BasePosition, Layer);
+        }
+        // Otherwise allow the item to be harvested again
+        else
+        {
+            Reserved = false;
+        }
     }
     public bool CheckValidity(World world, Vector2Int position)
     {
@@ -190,12 +219,16 @@ public class WorldTile
         worldTileSave.Rotations = Rotations;
         worldTileSave.BasePositionX = BasePosition.x;
         worldTileSave.BasePositionY = BasePosition.y;
-        worldTileSave.Layer = (int) Layer;
+        worldTileSave.Layer = (int)Layer;
         worldTileSave.GrowthTime = GrowthTime;
         worldTileSave.JobCount = JobCount;
         worldTileSave.Continuous = Continuous;
         worldTileSave.Type = (int)Type;
         worldTileSave.CurrentJob = CurrentJob;
+        worldTileSave.CanDemolish = CanDemolish;
+        worldTileSave.CanHarvest = CanHarvest;
+        worldTileSave.Yields = Yields;
+        worldTileSave.Owner = Owner;
         // Then return
         return worldTileSave;
     }

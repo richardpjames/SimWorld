@@ -1,3 +1,4 @@
+using Codice.CM.Client.Differences;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -84,7 +85,7 @@ public class Builder : MonoBehaviour
                 SingleSelect();
             }
             // For other tile types which allow dragging or lines
-            if (BuildMode == BuildMode.Demolish || (_tile != null && _tile.BuildMode == BuildMode.Drag))
+            if (BuildMode == BuildMode.Demolish || BuildMode == BuildMode.Harvest || (_tile != null && _tile.BuildMode == BuildMode.Drag))
             {
                 DragSelect();
             }
@@ -295,7 +296,7 @@ public class Builder : MonoBehaviour
             for (int y = bottomRight.y; y >= topLeft.y; y--)
             {
                 Vector2Int position = new Vector2Int(x, y);
-                if (BuildMode != BuildMode.Demolish && BuildMode != BuildMode.None)
+                if (BuildMode != BuildMode.Demolish && BuildMode != BuildMode.Harvest && BuildMode != BuildMode.None)
                 {
                     // Place it into the world
                     if (_tile.CheckValidity(_world, position))
@@ -303,23 +304,28 @@ public class Builder : MonoBehaviour
                         _jobQueue.Add(BuildJobFactory.Create(position, _tile.NewInstance()));
                     }
                 }
-                else if (BuildMode == BuildMode.Demolish)
+                else if (BuildMode == BuildMode.Demolish || BuildMode == BuildMode.Harvest)
                 {
+                    // Get references to appropriate tiles
+                    WorldTile structureTile = _world.GetWorldTile(position, WorldLayer.Structure);
+                    WorldTile floorTile = _world.GetWorldTile(position, WorldLayer.Floor);
                     // During demolision we first look for any structures (and remove) and then next, any floors
-                    if (_world.GetWorldTile(position, WorldLayer.Structure) != null)
+                    if (structureTile != null)
                     {
                         // If the tile is already reserved, then don't place the job
-                        if (!_world.GetWorldTile(position, WorldLayer.Structure).Reserved)
+                        if (!structureTile.Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Structure));
+                            if (BuildMode == BuildMode.Demolish && structureTile.CanDemolish) _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Structure));
+                            if (BuildMode == BuildMode.Harvest && structureTile.CanHarvest) _jobQueue.Add(HarvestJobFactory.Create(position, WorldLayer.Structure));
                         }
                     }
-                    if (_world.GetWorldTile(position, WorldLayer.Floor) != null)
+                    if (floorTile != null)
                     {
                         // If the tile is already reserved, then don't place the job
-                        if (!_world.GetWorldTile(position, WorldLayer.Floor).Reserved)
+                        if (!floorTile.Reserved)
                         {
-                            _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Floor));
+                            if (BuildMode == BuildMode.Demolish && floorTile.CanDemolish) _jobQueue.Add(DemolitionJobFactory.Create(position, WorldLayer.Floor));
+                            if (BuildMode == BuildMode.Harvest && floorTile.CanHarvest) _jobQueue.Add(HarvestJobFactory.Create(position, WorldLayer.Floor));
                         }
                     }
                 }
@@ -343,6 +349,12 @@ public class Builder : MonoBehaviour
     {
         _tile = null;
         BuildMode = BuildMode.Demolish;
+    }
+
+    public void SetHarvest()
+    {
+        _tile = null;
+        BuildMode = BuildMode.Harvest;
     }
 
 }
