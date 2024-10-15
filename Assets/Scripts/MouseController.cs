@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,14 +11,18 @@ public class MouseController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 1500f;
     [SerializeField] private float maxZoom = 1f;
     [SerializeField] private float minZoom = 8f;
-    [Header("Cursor Display")]
+    public List<Agent> SelectedAgents;
     private HUD _hud;
     private Builder _builder;
     // For keeping the mouse position at the start and end of the last frame
     private Vector3 _mousePosition = Vector3.zero;
     private Vector3 _lastMousePosition = Vector3.zero;
     private bool _dragging = false;
-    // Accessors for easier access to controllers etc.
+
+    private void Awake()
+    {
+        SelectedAgents = new List<Agent>();
+    }
 
     void Update()
     {

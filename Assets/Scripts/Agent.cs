@@ -20,6 +20,18 @@ public class Agent : MonoBehaviour
     public float Energy;
     public bool NeedsSleep;
 
+    private void OnMouseEnter()
+    {
+        MouseController _mouseController = GameObject.FindAnyObjectByType<MouseController>();
+        _mouseController.SelectedAgents.Add(this);
+    }
+
+    private void OnMouseExit()
+    {
+        MouseController _mouseController = GameObject.FindAnyObjectByType<MouseController>();
+        _mouseController.SelectedAgents.Remove(this);
+    }
+
     private void Awake()
     {
         Guid = Guid.NewGuid();
