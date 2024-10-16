@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f594c8b943fdc4b8b0ff07db1b5c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 15
+  _speed: 8
   BedLocation: {x: 0, y: 0}
   Energy: 0
   NeedsSleep: 0

@@ -1,15 +1,16 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class HUD : MonoBehaviour
 {
     private World _world;
-    [SerializeField] private CraftMenu _craftingMenuPrefab;
     [SerializeField] private GameObject _tileInformationWindow;
     [SerializeField] private GameObject _inventoryWindow;
     [SerializeField] private GameObject _buildWindow;
     [SerializeField] private GameObject _pauseScreen;
+    [SerializeField] private GameObject _villagerWindow;
     private CraftMenu _craftMenu;
     private Vector2Int _position;
 
@@ -23,6 +24,7 @@ public class HUD : MonoBehaviour
         _buildWindow.SetActive(false);
         _pauseScreen.SetActive(false);
         _tileInformationWindow.SetActive(false);
+        _villagerWindow.SetActive(false);
     }
 
     private void Update()
@@ -48,11 +50,16 @@ public class HUD : MonoBehaviour
     {
         _buildWindow.SetActive(true);
     }
-    public void HandleClick(Vector2Int position)
+    public void HandleClick(Vector2Int position, List<Agent> agents)
     {
         _position = position;
         _tileInformationWindow.SetActive(true);
         _tileInformationWindow.GetComponent<TileInformation>().SetPosition(position);
+        // If any angents are included in the selection then show the villager window
+        if (agents.Count > 0)
+        {
+            _villagerWindow.SetActive(true);
+        }
     }
 
     // Determine whether a change to a tile has any effect
