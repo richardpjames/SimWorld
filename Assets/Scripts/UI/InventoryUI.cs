@@ -10,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stoneText;
     [SerializeField] private TextMeshProUGUI _planksText;
     [SerializeField] private TextMeshProUGUI _blocksText;
+    [SerializeField] private TextMeshProUGUI _cottonText;
 
     private Inventory _inventory;
 
@@ -28,6 +29,7 @@ public class InventoryUI : MonoBehaviour
         _stoneText.text = $"Stone: {_inventory.Items[InventoryItem.Stone]}";
         _planksText.text = $"Planks: {_inventory.Items[InventoryItem.Planks]}";
         _blocksText.text = $"Blocks: {_inventory.Items[InventoryItem.Blocks]}";
+        _cottonText.text = $"Cotton: {_inventory.Items[InventoryItem.Cotton]}";
 
     }
 }

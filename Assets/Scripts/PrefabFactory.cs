@@ -23,6 +23,9 @@ public class PrefabFactory : MonoBehaviour
     [Header("Floors")]
     [SerializeField] private TileBase _woodenFloorTile;
     [SerializeField] private TileBase _stoneFloorTile;
+    [Header("Crops")]
+    [SerializeField] private TileBase _fieldTile;
+    [SerializeField] private TileBase _cottonTile;
     private JobQueue _queue;
     private World _world;
     private Inventory _inventory;
@@ -130,6 +133,19 @@ public class PrefabFactory : MonoBehaviour
         tile = new WorldTile(type: TileType.Spawn, buildMode: BuildMode.Single, layer: WorldLayer.Structure, width: 2, height: -2, buildTime: 0,
             name: "Goblin Spawn Point", tile: _goblinSpawnTile, movementCost: 5000000);
         _prefabs.Add(tile.Name, tile);
+
+        Dictionary<InventoryItem, int> cottonFieldCost = new Dictionary<InventoryItem, int>() { { InventoryItem.Seeds, 5 } };
+        WorldTile cottonField = new WorldTile(type: TileType.CropField, buildMode: BuildMode.Drag, layer: WorldLayer.Structure, buildTime: 5,
+            name: "Cotton Field", tile: _fieldTile, canDemolish: true, canHarvest: false, cost: cottonFieldCost, growthTime: 30, requiresUpdate: true);
+
+        Dictionary<InventoryItem, int> cottonCropYield = new Dictionary<InventoryItem, int>() { { InventoryItem.Cotton, 5 } };
+        WorldTile cottonPlant = new WorldTile(type: TileType.Crop, buildMode: BuildMode.Drag, layer: WorldLayer.Structure, buildTime: 5,
+            name: "Cotton Plant", tile: _cottonTile, canDemolish: true, canHarvest: true, yield: cottonCropYield, cost: cottonCropYield, 
+            childTile: cottonField, yields: 1);
+        cottonField.AdultTile = cottonPlant;
+        _prefabs.Add(cottonPlant.Name, cottonPlant);
+        _prefabs.Add(cottonField.Name, cottonField);
+
     }
 
     public WorldTile Create(string name)

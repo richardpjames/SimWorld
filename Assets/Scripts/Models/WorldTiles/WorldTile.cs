@@ -37,6 +37,7 @@ public class WorldTile
     public Inventory Inventory { get; internal set; }
     public float GrowthTime { get; internal set; }
     public WorldTile AdultTile { get; internal set; }
+    public WorldTile ChildTile { get; internal set; }
     public bool CanDemolish { get; internal set; }
     public bool CanHarvest { get; internal set; }
     public int Yields { get; internal set; }
@@ -99,7 +100,7 @@ public class WorldTile
         Dictionary<InventoryItem, int> craftYield = null, int craftTime = 0,
         int jobCount = 0, bool continuous = false, float growthTime = 0, WorldTile adultTile = null,
         Vector2Int workOffset = default, bool canHarvest = false, bool canDemolish = false, int yields = 1,
-        string owner = "00000000-0000-0000-0000-000000000000")
+        string owner = "00000000-0000-0000-0000-000000000000", WorldTile childTile = null)
     {
         //********************************************************************
         // Whenever adding a new field, be sure to update the NewInstance too!
@@ -137,6 +138,7 @@ public class WorldTile
         this.CanDemolish = canDemolish;
         this.CanHarvest = canHarvest;
         this.Yields = yields;
+        this.ChildTile = childTile;
     }
 
     public WorldTile NewInstance()
@@ -146,7 +148,7 @@ public class WorldTile
             Cost, Yield, Reserved, CanRotate, RequiresUpdate, HarvestType,
             CurrentJob.ToString(), CraftCost, CraftYield, CraftTime,
             JobCount, Continuous, GrowthTime, AdultTile, WorkOffset,
-            CanHarvest, CanDemolish, Yields, Owner.ToString());
+            CanHarvest, CanDemolish, Yields, Owner.ToString(), ChildTile);
     }
     public void Update(float delta)
     {
@@ -158,6 +160,14 @@ public class WorldTile
         CraftingUpdater.Update(this, delta);
     }
 
+    public void Demolish()
+    {
+        // Check that we are allowed to harvest the tile
+        if (!CanDemolish) return;
+        // To demolish we add to the inventory and then remove the tile
+        Inventory.Add(Cost);
+        World.RemoveWorldTile(BasePosition, Layer);
+    }
     public void Harvest()
     {
         // Check that we are allowed to harvest the tile
@@ -169,6 +179,10 @@ public class WorldTile
         if (Yields <= 0)
         {
             World.RemoveWorldTile(BasePosition, Layer);
+            if (ChildTile != null)
+            {
+                World.UpdateWorldTile(BasePosition, ChildTile);
+            }
         }
         // Otherwise allow the item to be harvested again
         else
@@ -183,6 +197,7 @@ public class WorldTile
         if (!TileValidator.Validate(this, position)) return false;
         if (!DoorValidator.Validate(this, position)) return false;
         if (!FurnitureValidator.Validate(this, position)) return false;
+        if (!CropValidator.Validate(this, position)) return false;
         // Otherwise return true
         return true;
     }

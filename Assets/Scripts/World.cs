@@ -316,6 +316,16 @@ public class World : MonoBehaviour
         OnTileUpdated?.Invoke(position);
     }
 
+    public void DemolishTile(Vector2Int position, WorldLayer layer)
+    {
+        // Get the lookup by casting the layer as the z position
+        WorldTile tile = GetWorldTile(position, layer);
+        if (tile == null) return;
+        tile.Demolish();
+        // Let others know that the tile is updated
+        OnTileUpdated?.Invoke(position);
+    }
+
     public void RemoveWorldTile(Vector2Int position, WorldLayer layer)
     {
         // Get the lookup by casting the layer as the z position
@@ -340,7 +350,6 @@ public class World : MonoBehaviour
                         // If this is the base of the object, then collect any yield from it
                         if (_worldTiles[lookup].BasePosition == new Vector2Int(x, y))
                         {
-                            _inventory.Add(_worldTiles[lookup].Yield);
                             // If it requires update then remove from the list
                             if (_worldTiles[lookup].RequiresUpdate)
                             {
